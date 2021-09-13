@@ -9,6 +9,7 @@ use App\Http\Controllers\Logs\AuditLogsController;
 use App\Http\Controllers\Logs\SystemLogsController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\QuestionnaireController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
@@ -79,6 +80,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/questionnaire/data_list/{category?}', [QuestionnaireController::class, 'data_list']);
     Route::post('/questionnaire/delete/{questionnaire?}', [QuestionnaireController::class, 'delete']);
     
+    
+    
+    Route::get('/project', [ProjectController::class, 'index']);
+    Route::get('/project/list', [ProjectController::class, 'data_list']);
 });
 
 //Home client 

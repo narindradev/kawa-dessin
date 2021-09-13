@@ -1,7 +1,7 @@
 <x-base-layout>
 
     <div class="card card-xxl-stretch mb-5 mb-xl-8">
-        <div id="kt_docs_jkanban_basic"></div>
+        
         <div class="card-header border-0 pt-2">
             <h3 class="card-title align-items-start flex-column">
                 <span class="card-label  fs-3 mb-1"> @lang('lang.list_of_offers') </span>
@@ -47,43 +47,6 @@
                     dataTableInstance.offerTable.ajax.reload();
                 });
 
-                var kanban = new jKanban({
-    element: '#kt_docs_jkanban_basic',
-    gutter: '0',
-    widthBoard: '250px',
-    boards: [{
-            'id': '_inprocess',
-            'title': 'In Process',
-            'item': [{
-                    'title': '<span class="font-weight-bold">You can drag me too</span>'
-                },
-                {
-                    'title': '<span class="font-weight-bold">Buy Milk</span>'
-                }
-            ]
-        }, {
-            'id': '_working',
-            'title': 'Working',
-            'item': [{
-                    'title': '<span class="font-weight-bold">Do Something!</span>'
-                },
-                {
-                    'title': '<span class="font-weight-bold">Run?</span>'
-                }
-            ]
-        }, {
-            'id': '_done',
-            'title': 'Done',
-            'item': [{
-                    'title': '<span class="font-weight-bold">All right</span>'
-                },
-                {
-                    'title': '<span class="font-weight-bold">Ok!</span>'
-                }
-            ]
-        }
-    ]
-});
             })
         </script>
     @endsection

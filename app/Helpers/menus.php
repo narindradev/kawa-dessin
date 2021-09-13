@@ -31,6 +31,7 @@ if (!function_exists('get_menus_list')) {
 
         $menu_vertical[] = ["classes" => ['content' => 'pt-8 pb-2'], 'content' => '<span class="menu-section text-muted text-uppercase fs-8 ls-1">Gerée</span>',];
         $menu_vertical[] = ["title" => __("lang.offers"), 'path'  => 'offer/index',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
+        $menu_vertical[] = ["title" => __("lang.project"), 'path'  => 'project',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
         
         $menu_vertical[] =  ['content' => '<div class="separator mx-1 my-4"></div>'];
        

@@ -62,4 +62,9 @@ return [
     'prev' => 'Precedent',
     'continue_and_envoyer' => 'Continué et envoyé',
     'success_client_request' => 'Merci de nous avoir confié votre porjet 😍 , vos inforamtions ont bien été enreigistrés. Un expert vous conatactera pour vous conseiller sur votre projet',
+    'projects' => 'Projets',
+    'project' => 'Projet',
+    'list_of_project' => 'Liste des project',
+    'particular' => 'Particulier',
+    'corporate' => 'Entreprise',
 ];
