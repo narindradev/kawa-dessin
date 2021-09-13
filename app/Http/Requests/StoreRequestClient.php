@@ -37,6 +37,7 @@ class StoreRequestClient extends FormRequest
             $rules["company_head_office"] = "required";
             $rules["siret"] = "required";
             $rules["num_tva"] = "required";
+            $rules["company_phone"] = "required";
         }
         if(request()->hasFile("files")){
             $rules["files"] =  'max:5000';

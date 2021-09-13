@@ -180,7 +180,6 @@ var KTApp = function() {
 
     var initCountUp = function() {
         var elements = [].slice.call(document.querySelectorAll('[data-kt-countup="true"]:not(.counted)'));
-
         elements.map(function (element) {
             if (KTUtil.isInViewport(element) && KTUtil.visible(element) ) {
                 var options = {};

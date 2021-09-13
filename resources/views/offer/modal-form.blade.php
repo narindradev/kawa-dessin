@@ -33,6 +33,7 @@
     $(document).ready(function() {
         $("#offer-form").appForm({
             onSuccess: function(response) {
+                // dataTableInstance.offerTable.row(0).data(response.data).draw();
                 dataTableInstance.offerTable.ajax.reload();
             },
         })

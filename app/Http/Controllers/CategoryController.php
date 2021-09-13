@@ -33,7 +33,7 @@ class CategoryController extends Controller
     public function data_list(Offer $offer)
     {
         $data = [];
-        $categories = $offer->categories;
+        $categories = $offer->categories()->whereDeleted(0)->get();
         foreach ($categories as $category) {
             $data[] = $this->_make_row($category,$offer);
         }

@@ -15,11 +15,6 @@
         </div>
     </div>
     <div class="card card-flush ">
-        <div class="col-2">
-
-            <button class="button">test</button>
-            <input type="text" name="offer_id" value=""  id ="offer_id" class="filter">
-        </div>
         <div class="card-body py-5">
             <table id="offerTable" class="table table-row-bordered  table-hover "></table>
         </div>
@@ -37,16 +32,8 @@
                     ],
                     ajax: {
                         url: url("/offer/data_list"),
-                        data: function(d) {
-                            d.offer_id = $("#offer_id").val();
-                        }
                     },
                 });
-
-                $('.button').on('click', function() {
-                    dataTableInstance.offerTable.ajax.reload();
-                });
-
             })
         </script>
     @endsection

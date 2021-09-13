@@ -33,7 +33,7 @@ class QuestionnaireController extends Controller
     public function data_list(Category $category)
     {
         $data = [];
-        $questionnairenaires = $category->questionnaires;
+        $questionnairenaires = $category->questionnaires()->whereDeleted(0)->get();
         foreach ($questionnairenaires as $questionnaire) {
             $data[] = $this->_make_row($questionnaire, $category);
         }

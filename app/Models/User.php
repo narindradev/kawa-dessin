@@ -45,7 +45,6 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
     /**
      * Get a fullname combination of first_name and last_name
      *
@@ -55,26 +54,14 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return "{$this->first_name} {$this->last_name}";
     }
-
-    /**
-     * Prepare proper error handling for url attribute
-     *
-     * @return string
-     */
     public function getAvatarUrlAttribute()
     {
         if ($this->info) {
             return asset($this->info->avatar_url);
         }
-
-        return asset(theme()->getMediaUrlPath().'avatars/blank.png');
+        return asset(theme()->getMediaUrlPath() . 'avatars/blank.png');
     }
 
-    /**
-     * User relation to info model
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
     public function info()
     {
         return $this->hasOne(UserInfo::class);
@@ -82,5 +69,9 @@ class User extends Authenticatable implements MustVerifyEmail
     public function client()
     {
         return $this->hasOne(Client::class);
+    }
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class,"project_member");
     }
 }

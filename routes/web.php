@@ -84,6 +84,7 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/project', [ProjectController::class, 'index']);
     Route::get('/project/list', [ProjectController::class, 'data_list']);
+    Route::get('/project/detail/{project}', [ProjectController::class, 'detail']);
 });
 
 //Home client 

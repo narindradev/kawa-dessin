@@ -60,7 +60,7 @@
                 console.log('stepper.next');
                 // Validate form before change stepper step
                 var validator = validations[stepper.getCurrentStepIndex() - 1]; // get validator for currnt step
-                var inputs = ["company_name", "company_head_office", "sirdet", "num_tva"]
+                var inputs = ["company_name", "company_head_office", "siret", "num_tva","company_phone"]
                 console.log("validator")
                 console.log(validator)
                 inputs.forEach(function(input) {

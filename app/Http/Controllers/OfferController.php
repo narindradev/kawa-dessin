@@ -35,19 +35,19 @@ class OfferController extends Controller
             upload($request->file("image"));
         }
         if ($offer->save()) {
-            die(json_encode(["success" => true, "message" => trans("lang.success_record")]));
+            die(json_encode(["success" => true, "message" => trans("lang.success_record") , "data" =>$this->_make_row($offer) ]));
         }
     }
-    public function data_list(Request $request)
+    public function data_list()
     {
         $data = [];
-        $offers = $request->offer_id ? Offer::where("id" , $request->offer_id )->get() : Offer::all();
+        $offers =  Offer::whereDeleted(0)->get();
         foreach ($offers as $offer) {
-            $data[] = $this->_make_row($offer,$request);
+            $data[] = $this->_make_row($offer);
         }
         return (["data" => $data]);
     }
-    private function _make_row($data ,$request = null)
+    private function _make_row($data )
     {
 
         return [

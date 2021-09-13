@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\Questionnaire;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreRequestClient;
+use App\Models\Project;
 use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
@@ -50,10 +51,12 @@ class HomeController extends Controller
         $project = $user->client->projects()->create(["status_id" => 1 ,"priority_id" => 1]);
         // Attach project category
         $project->categories()->attach([$request->input("categorie")]);
-        // 
-        die(json_encode(["success" => true , "message" => trans("lang.success_client_request")]));
+        // Assination project to commerciale
+        $this->assigned_to($project->id);
 
+        die(json_encode(["success" => true , "message" => trans("lang.success_client_request")]));
     }
+    
     private function validate_question(StoreRequestClient $request){
         $inputs = $inputs_name = [];
         foreach ((new Questionnaire())->preliminary_question() as $question) {
@@ -64,5 +67,9 @@ class HomeController extends Controller
         if($validator->fails()){
             die(json_encode(["success" => false ,"message" => trans("lang.required_all_response")]));
         }
+    }
+    private function assigned_to($project_id = 0)
+    {
+        $user = User::find(1)->projects()->attach([$project_id]);
     }
 }
