@@ -45,11 +45,19 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    protected $with = [];
     /**
      * Get a fullname combination of first_name and last_name
      *
      * @return string
      */
+
+     public function __construct() {
+        if(isset($this->client->id)){
+            $this->with[] = "client";
+        }
+     }
     public function getNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";
@@ -74,4 +82,5 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(Project::class,"project_member");
     }
+    
 }

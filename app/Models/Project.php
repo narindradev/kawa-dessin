@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DateTime;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,6 +13,7 @@ class Project extends Model
 
     protected $table = "projects";
     protected $guarded = [];
+    protected $with = ["categories" ,"client" ,"status"];
 
     public function client()
     {
@@ -26,6 +28,9 @@ class Project extends Model
     {
         return $this->belongsToMany(User::class,"project_member");
     }
+    public function status(){
+        return $this->belongsTo(Status::class);
+    }
     public function scopeGetDetails($query, $options = [])
     {
 
@@ -33,7 +38,7 @@ class Project extends Model
         if( 0 ){
             /** All project  */
             $project = Project::query();
-        }elseif($user_id ){
+        }elseif($user_id){
            /** load use'projects */
             $project = User::find($user_id)->projects();
         }else{
@@ -63,7 +68,11 @@ class Project extends Model
         if ($version) {
             $project->where("version", $version);
         }
-
+        $date = get_array_value($options, "date");
+        if($date){
+            $dates = explode("-",$date);
+            $project->whereBetween("start_date",[to_date($dates[0]),to_date($dates[1])]);
+        }
         return $project->latest('created_at');
     }
 }

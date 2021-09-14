@@ -16,6 +16,8 @@ class CreateTableStatus extends Migration
         Schema::create('status', function (Blueprint $table) {
             $table->id();
             $table->string("name");
+            $table->string("color");
+            $table->string("class");
             $table->timestamps();
         });
     }

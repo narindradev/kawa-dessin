@@ -21,10 +21,11 @@ class CreateTableProjects extends Migration
             $table->integer("validation")->nullable();
             $table->integer("version")->nullable();
             $table->boolean("deleted")->default(0);
+            $table->date("start_date")->nullable();
+            $table->date("due_date")->nullable();
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      *

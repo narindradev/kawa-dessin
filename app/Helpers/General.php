@@ -205,6 +205,7 @@ if (!function_exists('isRTL')) {
 if (!function_exists('get_array_value')) {
     function get_array_value($array = [], $key = "", $default = null)
     {
+        
         $value = null;
         if (array_key_exists($key, $array)) {
             $value = $array[$key];
@@ -499,3 +500,23 @@ if (!function_exists('anchor')) {
     }
 }
 
+
+if (!function_exists('inputs_filter_datatable')) {
+
+    function inputs_filter_datatable($filters= [])
+    {
+        $ids=[];
+        foreach ($filters as $filter) {
+            $ids[]= get_array_value($filter,"name");
+        }
+        return $ids;
+    }
+}
+if (!function_exists('to_date')) {
+
+    function to_date($date="")
+    {
+       return DateTime::createFromFormat('d/m/Y', str_replace(" ","",$date))->format('Y-m-d');
+        
+    }
+}

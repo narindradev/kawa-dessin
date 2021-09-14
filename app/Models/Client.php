@@ -11,8 +11,9 @@ class Client extends Model
 
     protected $table = "clients";
     protected $guarded = [];
+    protected $with = ["user","company"];
 
-     public function user()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
@@ -22,6 +23,7 @@ class Client extends Model
     }
     public function company()
     {
+
         return $this->hasOne(Company::class);
     }
 }
