@@ -1,42 +1,43 @@
 <?php
 
-if (!function_exists('get_menus_list')) {
 
-    function get_menus_list($key = "")
+/** Make menu user's localisation in views\layout\demo1\aside\_menu.blade.php */
+if (!function_exists('get_menus_list')) {
+    function get_menus_list($key = "", $auth_user)
     {
         /** Verical menu */
         $menu_vertical  = $menu_horizontal = [];
-
-        $menu_vertical[] = ["title" => "Dashboard", 'path'  => 'index',  'icon'  => theme()->getSvgIcon("demo1/media/icons/duotune/art/art002.svg", "svg-icon-2")];
-
+        $menu_vertical[] = ["title" => "Dashboard", 'path'  => 'dashboard/index',  'icon'  => theme()->getSvgIcon("demo1/media/icons/duotune/art/art002.svg", "svg-icon-2")];
         $menu_vertical[] = ["classes" => ['content' => 'pt-8 pb-2'], 'content' => '<span class="menu-section text-muted text-uppercase fs-8 ls-1">Modules</span>',];
+        if (!$auth_user->is_client()) {
+            $account_sub_items = [];
+            $account_sub_items[]  = ["title" => "Overview", "path" => "account/overview", "bullet" => '<span class="bullet bullet-dot"></span>'];
+            $account_sub_items[]  = ["title" => "Settings", "path" => "account/settings", "bullet" => '<span class="bullet bullet-dot"></span>'];
+            $account_sub_items[]  = ["title" => "Security", "path" => "#", "bullet" => '<span class="bullet bullet-dot"></span>', "attributes" => ["tiltle" => "blabla"]];
 
+            $menu_vertical[] = ["title" => "Account", "sub" => ["class" => "menu-sub-accordion menu-active-bg", "items" => $account_sub_items],  'attributes' => array("data-kt-menu-trigger" => "click"), 'classes'    => array('item' => 'menu-accordion'),  'icon' => ['svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/communication/com006.svg", "svg-icon-2"), 'font' => '<i class="bi bi-person fs-2"></i>']];
+            $system_sub_items = [];
+            $system_sub_items[]  = ["title" => "Settings", "path" => '#', "bullet" => '<span class="bullet bullet-dot"></span>'];
+            $system_sub_items[]  = ["title" => "Audit Log", "path" => "log/audit", "bullet" => '<span class="bullet bullet-dot"></span>'];
+            $system_sub_items[]  = ["title" => "System Log", "path" => "log/system", "bullet" => '<span class="bullet bullet-dot"></span>', "attributes" => ["tiltle" => "blabla"]];
 
-        $account_sub_items = [];
-        $account_sub_items[]  = ["title" => "Overview", "path" => "account/overview", "bullet" => '<span class="bullet bullet-dot"></span>'];
-        $account_sub_items[]  = ["title" => "Settings", "path" => "account/settings", "bullet" => '<span class="bullet bullet-dot"></span>'];
-        $account_sub_items[]  = ["title" => "Security", "path" => "#", "bullet" => '<span class="bullet bullet-dot"></span>', "attributes" => ["tiltle" => "blabla"]];
+            $menu_vertical[] = ["title" => "System", "sub" => ["class" => "menu-sub-accordion menu-active-bg", "items" => $system_sub_items],  'attributes' => array("data-kt-menu-trigger" => "click"), 'classes'    => array('item' => 'menu-accordion'),  'icon' => ['svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/general/gen025.svg", "svg-icon-2"), 'font' => '<i class="bi bi-layers fs-3"></i>']];
 
-        $menu_vertical[] = ["title" => "Account", "sub" => ["class" => "menu-sub-accordion menu-active-bg", "items" => $account_sub_items],  'attributes' => array("data-kt-menu-trigger" => "click"), 'classes'    => array('item' => 'menu-accordion'),  'icon' => ['svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/communication/com006.svg", "svg-icon-2"), 'font' => '<i class="bi bi-person fs-2"></i>']];
+            $menu_vertical[] = ["classes" => ['content' => 'pt-8 pb-2'], 'content' => '<span class="menu-section text-muted text-uppercase fs-8 ls-1">Gerée</span>',];
+            $menu_vertical[] = ["title" => __("lang.offers"), 'path'  => 'offer/index',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
 
-        $system_sub_items = [];
-        $system_sub_items[]  = ["title" => "Settings", "path" => '#', "bullet" => '<span class="bullet bullet-dot"></span>'];
-        $system_sub_items[]  = ["title" => "Audit Log", "path" => "log/audit", "bullet" => '<span class="bullet bullet-dot"></span>'];
-        $system_sub_items[]  = ["title" => "System Log", "path" => "log/system", "bullet" => '<span class="bullet bullet-dot"></span>', "attributes" => ["tiltle" => "blabla"]];
+            $menu_vertical[] = ["title" => __("lang.projects"), 'path'  => 'project',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
+            $menu_vertical[] = ["title" => __("lang.questionnaire"), 'path'  => 'questionnaire/preliminary_info',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
 
+            $menu_vertical[] = ["classes" => ['content' => 'pt-8 pb-2'], 'content' => '<span class="menu-section text-muted text-uppercase fs-8 ls-1">Utilisateurs</span>',];
+            $menu_vertical[] = ["title" => __("lang.collaborator"), 'path'  => 'users/list',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
+            // $menu_vertical[] = ["title" => __("lang.clients"), 'path'  => 'questionnaire/preliminary_info',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
 
-
-
-        $menu_vertical[] = ["title" => "System", "sub" => ["class" => "menu-sub-accordion menu-active-bg", "items" => $system_sub_items],  'attributes' => array("data-kt-menu-trigger" => "click"), 'classes'    => array('item' => 'menu-accordion'),  'icon' => ['svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/general/gen025.svg", "svg-icon-2"), 'font' => '<i class="bi bi-layers fs-3"></i>']];
-
-        $menu_vertical[] = ["classes" => ['content' => 'pt-8 pb-2'], 'content' => '<span class="menu-section text-muted text-uppercase fs-8 ls-1">Gerée</span>',];
-        $menu_vertical[] = ["title" => __("lang.offers"), 'path'  => 'offer/index',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
-        $menu_vertical[] = ["title" => __("lang.project"), 'path'  => 'project',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
-        
-        $menu_vertical[] =  ['content' => '<div class="separator mx-1 my-4"></div>'];
-       
-        $menu_vertical[] = ['title' => 'Changelog v' . theme()->getVersion(),'icon'  => theme()->getSvgIcon("demo1/media/icons/duotune/general/gen005.svg", "svg-icon-2"),'path'  => 'documentation/getting-started/changelog'];
-        
+            $menu_vertical[] =  ['content' => '<div class="separator mx-1 my-4"></div>'];
+        } elseif ($auth_user->is_client()) {
+            $menu_vertical[] = ["title" => __("lang.my_project"), 'path'  => 'client/project/index',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
+        } else {
+        }
 
         /**  Menu horizontal */
         $menu_horizontal[] =  ['title'   => 'Dashboard', 'path'    => 'index', 'classes' => array('item' => 'me-lg-1')];

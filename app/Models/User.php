@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Traits\HasRoles;
 use App\Core\Traits\SpatieLogsActivity;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -20,11 +21,13 @@ class User extends Authenticatable implements MustVerifyEmail
      *
      * @var array
      */
-    protected $fillable = [
+
+    protected $fillable  = [
         'first_name',
         'last_name',
         'email',
         'password',
+        'user_type_id',
     ];
 
     /**
@@ -46,18 +49,14 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    protected $with = [];
+
+    protected $with = ["client" ,"type"];
     /**
      * Get a fullname combination of first_name and last_name
      *
      * @return string
      */
 
-     public function __construct() {
-        if(isset($this->client->id)){
-            $this->with[] = "client";
-        }
-     }
     public function getNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";
@@ -74,13 +73,36 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(UserInfo::class);
     }
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class, "project_member");
+    }
+    
+    public function is_member($user_id = null)
+    {
+        return in_array($user_id ?? Auth::user()->id , cache("project_members_$this->id" , $this->projects()->pluck("user_id")->toArray())  ) || Auth::user()->admin ;
+    }
+    public function own_project()
+    {
+        return $this->client_id ===  Auth::user()->id ;
+    }
     public function client()
     {
         return $this->hasOne(Client::class);
     }
-    public function projects()
+    public function client_id()
     {
-        return $this->belongsToMany(Project::class,"project_member");
+        return $this->client->id;
     }
     
+    public function type()
+    {
+       return $this->belongsTo(UserType::class ,"user_type_id");
+    }
+    public function is_client($user = null)
+    {
+       return $user ? $user->user_type_id === 5 :  Auth::user()->user_type_id === 5;
+    }
+    
+
 }

@@ -11,34 +11,25 @@ class Questionnaire extends Model
     
     protected $table = "questionnaires";
     protected $guarded = [];
-    
-    public $questions = [
-        [
-            "question" => "Quelles sont les constructions concernées par le projet?",
-            "value" =>  "question1"
-        ],
-        [
-            "question" => "Quelles sont les constructions concernées par le projet?",
-            "value" =>  "question2"
-        ],
-        [
-            "question" => "Quel est la surface de plancher créée par le projet?",
-            "value" =>  "question3"
-        ],
-        [
-            "question" => "Quel est la surface de plancher des constructions existantes ?",
-            "value" =>  "question4",
-            "rows" =>  "3"
-        ],
-    ];
-
-
     public function preliminary_question (){
-         return $this->questions;
+        $questionstion_list = [];
+        $questions  = $this->whereDeleted(0)->wherePreliminary(1)->get();
+        foreach ($questions as $question ) {
+            $questionstion_list[] = ["question"  => $question->question , "name" => "question_$question->id" ,"id" => $question->id ];
+        }
+        return  $questionstion_list;
     }
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+    public function offer()
+    {
+        return $this->belongsTo(Offer::class);
+    }
+    public function responses()
+    {
+        return $this->hasMany(ProjectDescription::class);
     }
 
 }

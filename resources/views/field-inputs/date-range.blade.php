@@ -12,9 +12,9 @@ if ($attributes) {
     }
 }
 @endphp
-<input {!! $attr !!} name="{{ get_array_value($input, 'name') }}" value="" autocomplete="off"
-    placeholder="--/--/---- {{ trans('lang.to') }} --/--/----" id="{{ get_array_value($input, 'name') }}" />
-
+<div class="row">
+<input {!! $attr !!} name="{{ get_array_value($input, 'name') }}" value="" autocomplete="off" placeholder="--/--/---- {{ trans('lang.to') }} --/--/----" id="{{ get_array_value($input, 'name') }}" />
+</div>
 <script>
     $(document).ready(function() {
         $("#{{ get_array_value($input, 'name') }}").daterangepicker({

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
 class PagesController extends Controller
@@ -11,6 +12,25 @@ class PagesController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
+
+     /**
+    * 
+        Redirecting all user handle
+    */
+    public function index()
+    {
+       
+        $redirect = request()->redirect;
+        if($redirect){
+            $redirect =  $redirect;
+        }elseif (Auth::user()->is_client()) {
+            $redirect = "client/project/index";
+        }else {
+            $redirect = "dashboard/index";
+        }
+        return redirect($redirect);
+    }
+    /*
     public function index()
     {
         // Get view file location from menu config
@@ -24,6 +44,7 @@ class PagesController extends Controller
         // Get the default inner page
         return view('inner');
     }
+    */
 
     /**
      * Temporary function to replace icon duotone

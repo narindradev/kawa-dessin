@@ -5,6 +5,7 @@ namespace App\Core\Bootstraps;
 use App\Core\Adapters\BootstrapBase;
 use App\Core\Adapters\Menu;
 use App\Core\Adapters\Theme;
+use Auth;
 
 class BootstrapDemo1 extends BootstrapBase {
     // Private Properties
@@ -135,7 +136,7 @@ class BootstrapDemo1 extends BootstrapBase {
 
     private static function initAsideMenu() {
        
-        self::$asideMenu = new Menu( get_menus_list("main"), Theme::getPagePath() );
+        self::$asideMenu = new Menu( [], Theme::getPagePath() );
 
         if (Theme::getOption('layout', 'aside/menu-icons-display') === false) {
             self::$asideMenu->displayIcons(false);
@@ -145,7 +146,7 @@ class BootstrapDemo1 extends BootstrapBase {
     }
 
     private static function initHorizontalMenu() {
-        self::$horizontalMenu = new Menu( get_menus_list("horizontal"), Theme::getPagePath() );
+        self::$horizontalMenu = new Menu( [], Theme::getPagePath() );
         self::$horizontalMenu->setItemLinkClass('py-3');
         self::$horizontalMenu->setIconType(Theme::getOption('layout', 'header/menu-icon', 'svg'));
     }

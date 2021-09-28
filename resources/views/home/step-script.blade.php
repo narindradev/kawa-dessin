@@ -147,7 +147,6 @@
                         console.log(new FormData(form))
                         axios.post(formSubmitButton.closest('form').getAttribute('action'),new FormData(form))
                             .then(resp => {
-                                console.log(resp.data)
                                 var icon = resp.data.success ? "success" : "error"
                                 Swal.fire({
                                     text: resp.data.message,

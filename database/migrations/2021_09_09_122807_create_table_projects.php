@@ -18,9 +18,10 @@ class CreateTableProjects extends Migration
             $table->foreignId("client_id");
             $table->foreignId("priority_id")->default(1);
             $table->foreignId("status_id")->default(1);
+            $table->decimal("price")->default(0.00);
             $table->integer("validation")->nullable();
             $table->integer("version")->nullable();
-            $table->boolean("deleted")->default(0);
+            $table->boolean("deleted")->nullable();
             $table->date("start_date")->nullable();
             $table->date("due_date")->nullable();
             $table->timestamps();

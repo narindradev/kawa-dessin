@@ -16,7 +16,7 @@
     </div>
     <div class="card card-flush ">
         <div class="card-body py-5">
-            <table id="offerTable" class="table table-row-bordered  table-hover "></table>
+            <table id="offerTable" class="table table-row-dashed table-row-gray-200 align-middle gs-0 gy-4 table-hover "></table>
         </div>
     </div>
     @section('scripts')

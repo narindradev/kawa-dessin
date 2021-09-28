@@ -205,7 +205,6 @@ if (!function_exists('isRTL')) {
 if (!function_exists('get_array_value')) {
     function get_array_value($array = [], $key = "", $default = null)
     {
-        
         $value = null;
         if (array_key_exists($key, $array)) {
             $value = $array[$key];
@@ -363,31 +362,30 @@ if (!function_exists('get_format_image')) {
  * @return array
  */
 if (!function_exists('upload')) {
-    function upload($file, $path = null ,$storage = "public")
+    function upload($file, $path = null ,$public = true)
     {
         
         $extension = $file->extension();
         $size = $file->getSize();
         $file_type = get_file_type("." . $extension) ;
         $file_info = [];
-        $file_info["file_error"] = false;
+        $file_info["success"] = false;
         if (!$file) {
-            $file_info["file_error"] = true;
             return $file_info;
         }
         $path =  $path ? $path : "uploads";
-        $real_storage = ($storage === "public") ? public_path($path) : storage_path($path);
+        $real_storage = ($public === "public") ? public_path($path) : storage_path("app/public/".$path);
         $name =  $file_type."-". Str::uuid(). '.' . $extension;
-
         $file->move($real_storage, $name);
+        $file_info["success"] = true;
         if ($name) {
-            $file_info["url"]  = get_file_uri($name,$path);
+            $file_info["url"]  = $path."/".$name;
             $file_info["src"]  = $real_storage."\\".$name;
             $file_info["type"] = $file_type;
             $file_info["size"] = $size;
             $file_info["name"] = $name;
             $file_info["extension"] = $extension;
-            $file_info["name_originale"] = $file->getClientOriginalName();
+            $file_info["originale_name"] = $file->getClientOriginalName();
             return $file_info;
         }
     }
@@ -443,7 +441,12 @@ if (!function_exists('modal_anchor')) {
 
     function modal_anchor($url, $title = '', $attributes = [])
     {
-        $attributes["data-act"] = "ajax-modal";
+        if(!get_array_value($attributes, "data-drawer")){
+            $attributes["data-act"] = "ajax-modal";
+        }else{
+            $attributes["data-act"] = "ajax-drawer";
+        }
+
         if (get_array_value($attributes, "data-modal-title")) {
             $attributes["data-title"] = get_array_value($attributes, "data-modal-title");
         } else {
@@ -489,7 +492,13 @@ if (!function_exists('anchor')) {
         $uri = url($uri);
         $title = (string) $title;
         $html_attributes = "";
-
+        if(1){
+            $attributes['data-bs-toggle'] = "tooltip";
+            $attributes['data-bs-custom-class'] = "tooltip-dark";
+            $attributes['data-bs-placement'] = "left";
+            // unset($attributes['title']);
+            // $attributes['data-bs-original-title'] = "qsdqsdqsdqsd";
+        }
         if (is_array($attributes)) {
             foreach ($attributes as $key => $value) {
                 $html_attributes .= ' ' . $key . '="' . $value . '"';
@@ -520,3 +529,21 @@ if (!function_exists('to_date')) {
         
     }
 }
+if (!function_exists('file_sisze')) {
+
+    function file_sisze( $size = 0)
+    {
+        
+        $units = array( 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+        $power = $size > 0 ? floor(log($size, 1024)) : 0;
+        return number_format($size / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power];
+    }
+}
+
+if (!function_exists('row_id')) {
+    function row_id($table_name = "table" ,$id = 0)
+    {
+        return $table_name."_row_".$id;
+    }
+}
+

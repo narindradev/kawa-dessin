@@ -24,13 +24,16 @@ class StoreRequestClient extends FormRequest
     public function rules()
     {
         $rules = [
+            'email' => 'required|unique:users,email,'.request()->id.'|max:255|email',
             'first_name' => 'required',
             'last_name' => 'required',
-            'email' => 'required|unique:users,email,'.request()->id.'|max:255|email',
             'phone' => 'required',
             'address' => 'required',
             'city' => 'required',
             'zip' => 'required',
+            "accept" => 'required',
+            "categorie" => 'required',
+
         ];
         if(request("client_type") == "corporate"){
             $rules["company_name"] = "required";
@@ -42,8 +45,15 @@ class StoreRequestClient extends FormRequest
         if(request()->hasFile("files")){
             $rules["files"] =  'max:5000';
         }
-        $rules["categorie"] = "required";
+        
         return $rules ;
+    }
+
+    public function messages()
+    {
+        return [
+            'email.unique' => 'sdqsdqsdsdqsd',
+        ];
     }
 
     public function withValidator($validator)

@@ -1,1 +1,0 @@
-<span class="bullet bullet-vertical h-40px bg-success"></span>

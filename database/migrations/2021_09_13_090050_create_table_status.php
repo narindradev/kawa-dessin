@@ -8,13 +8,10 @@ class CreateTableStatus extends Migration
 {
 
     private $table = "status";
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
+  
     public function up()
     {
+      
         $this->down();
         Schema::create($this->table, function (Blueprint $table) {
             $table->id();

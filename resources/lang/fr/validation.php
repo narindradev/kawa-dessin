@@ -38,13 +38,13 @@ return array(
     "integer"          => "Le champ :attribute doit être un entier.",
     "ip"               => "Le champ :attribute doit être une adresse IP valide.",
     "max"              => array(
-        "numeric" => "La valeur de :attribute ne peut être supérieure à :max.",
+        "numeric" => "La valeur de :attribute ne peut être inférieur à :max.",
         "file"    => "Le fichier :attribute ne peut être plus gros que :max kilobytes.",
         "string"  => "Le texte de :attribute ne peut contenir plus de :max caractères.",
     ),
     "mimes"            => "Le champ :attribute doit être un fichier de type : :values.",
     "min"              => array(
-        "numeric" => "La valeur de :attribute doit être inférieure à :min.",
+        "numeric" => "La valeur de :attribute doit être supérieur à :min.",
         "file"    => "Le fichier :attribute doit être plus que gros que :min kilobytes.",
         "string"  => "Le texte :attribute doit contenir au moins :min caractères.",
     ),

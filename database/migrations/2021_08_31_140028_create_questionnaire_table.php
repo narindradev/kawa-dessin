@@ -16,8 +16,9 @@ class CreateQuestionnaireTable extends Migration
         Schema::create('questionnaires', function (Blueprint $table) {
             $table->id();
             $table->longText("question");
-            $table->foreignId("category_id");
-            $table->foreignId("offer_id");
+            $table->foreignId("category_id")->nullable();
+            $table->foreignId("offer_id")->nullable();
+            $table->boolean("preliminary")->default(0);
             $table->boolean("deleted")->default(0);
             $table->timestamps();
         });

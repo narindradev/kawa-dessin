@@ -5,20 +5,15 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>{{ ucfirst(theme()->getOption('meta', 'title')) }} | Keenthemes</title>
+    <title> {{ config("app_name") }}</title>
     <meta name="description" content="{{ ucfirst(theme()->getOption('meta', 'description')) }}" />
     <meta name="keywords" content="{{ theme()->getOption('meta', 'keywords') }}" />
     <link rel="canonical" href="{{ ucfirst(theme()->getOption('meta', 'canonical')) }}" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="shortcut icon"
-        href="{{ asset(theme()->getDemo() . '/' . theme()->getOption('assets', 'favicon')) }}" />
+    <link rel="shortcut icon" href="{{ asset("app/logo/logo.png") }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script
-  src="https://code.jquery.com/jquery-3.5.1.min.js"
-  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
-  crossorigin="anonymous"></script>
-    <link href="{{ url('demo1/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet"
-        type="text/css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script> 
+    <link href="{{ url('demo1/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
 
         {{-- begin::Fonts --}}
         {{ theme()->includeFonts() }}
@@ -72,7 +67,9 @@
     @endif
 
     @yield('content')
+   
     @include('includes.ajax-modal')
+   
     {{-- begin::Javascript --}}
     @if (theme()->hasOption('assets', 'js'))
     {{-- begin::Global Javascript Bundle(used by all pages) --}}
@@ -104,16 +101,15 @@
     @endif
     
     @include('includes.helper-js')
-    
     <script src="{{ asset('library/jquery.validate/jquery.validate.js') }}"></script>
     <script src="{{ asset('library/jquery.form/jquery.form.js') }}"></script>
     <script src="{{ asset('main.js') }} "></script>
-    
     <script src=" {{ url('demo1/plugins/custom/datatables/datatables.bundle.js') }}"></script>
     <script src="{{ asset('library/bootstrap-fileinput/js/fileinput.min.js') }}"></script>
     <script src="{{ asset('library/bootstrap-fileinput/themes/explorer/theme.min.js') }}"></script>
     @yield('scripts')
-    
+    @include('includes.ajax-drawer')
+    @include('includes.debugs')
 </body>
 {{-- end::Body --}}
 

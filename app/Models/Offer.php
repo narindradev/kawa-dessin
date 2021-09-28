@@ -17,4 +17,9 @@ class Offer extends Model
     {
         return $this->hasMany(Category::class,"offer_id")->whereDeleted(0);
     }
+    public function questionnaires()
+    {
+        return $this->hasMany(Questionnaire::class,"offer_id")->whereDeleted(0);
+    }
+    
 }

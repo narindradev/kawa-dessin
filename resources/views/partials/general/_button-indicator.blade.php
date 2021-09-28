@@ -5,7 +5,7 @@
 
 <!--begin::Indicator-->
 <span class="indicator-label">
-    {{ $label }}
+    {!! $label !!}
 </span>
 <span class="indicator-progress">
     {{ $message }}

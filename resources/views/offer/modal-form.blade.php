@@ -7,7 +7,7 @@
                 <div class="mb-10">
                     <label for="title" class="required form-label">@lang('lang.title')</label>
                     <input type="text" value="{{ $offer->name }}" autocomplete="off" name="title"
-                        class="form-control form-control-solid" placeholder="Titre de l'offre" data-rule-required="true"
+                        class="form-control form-control-solid" placeholder="@lang('lang.title_offer')" data-rule-required="true"
                         data-msg-required="@lang('lang.required_input')" />
                 </div>
             </div>
@@ -29,11 +29,11 @@
         </div>
     </form>
 </div>
+
 <script>
     $(document).ready(function() {
         $("#offer-form").appForm({
             onSuccess: function(response) {
-                // dataTableInstance.offerTable.row(0).data(response.data).draw();
                 dataTableInstance.offerTable.ajax.reload();
             },
         })

@@ -17,7 +17,6 @@ var KTApp = function() {
 
     var initBootstrapTooltip = function(el, options) {
         var delay = {};
-
         // Handle delay options
         if (el.hasAttribute('data-bs-delay-hide')) {
             delay['hide'] = el.getAttribute('data-bs-delay-hide');
@@ -330,6 +329,17 @@ var KTApp = function() {
             });
         }
     }
+    var initDebug = function(e){
+        $('.dropdown-menu').on('click', function(e) {
+            e.stopPropagation();
+          });
+        $('.table-responsive').on('show.bs.dropdown', function() {
+            $('.table-responsive').css("overflow", "inherit");
+        });
+        $('.table-responsive').on('hide.bs.dropdown', function() {
+            $('.table-responsive').css("overflow", "auto");
+        })
+    }
 
     var initAjaxModal = function(){
         // Ajax modal 
@@ -363,10 +373,6 @@ var KTApp = function() {
             });
         });
         $("#trigger-ajax-modal").trigger("click")
-        // if(crud){
-        //     url = url +"/"+data["id"]
-        // }
-        
          $.ajax({
             url: url,
             data: data,
@@ -411,7 +417,8 @@ var KTApp = function() {
             this.initBootstrapPopovers();
 
             this.initScrollSpy();
-
+           
+           
             this.initButtons();
 
             this.initCheck();
@@ -428,7 +435,9 @@ var KTApp = function() {
 
             this.initSmoothScroll();
 
-            this.initAjaxModal()
+            this.initAjaxModal();
+            this.initDebug();
+
             
            
         },
@@ -497,6 +506,9 @@ var KTApp = function() {
         
         initAjaxModal: function () {
             initAjaxModal()
+        },
+        initDebug: function () {
+            initDebug()
         },
       
     };

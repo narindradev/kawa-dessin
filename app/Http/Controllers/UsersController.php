@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\CreateUserRequest;
 
 class UsersController extends Controller
 {
@@ -14,9 +17,8 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $config = theme()->getOption('page');
-
-        return User::all();
+        
+        return view("users.index");
     }
 
     /**
@@ -24,9 +26,29 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+
+    public function data_list(){
+        $data = [];
+        $users = User::all();
+      
+        foreach ($users as $user) {
+          $data[] = $this->_make_row($user);
+        }
+        return ["data" => $data];
+    }
+
+    public function _make_row($user){
+        return [
+            "name" => view("users.columns.name",["user" => $user])->render(),
+            "email" => $user->email,
+            "fonction" => $user->type->description,
+            "actions" => "",
+        ];
+    }
+
+    public function form()
     {
-        //
+        return view("users.form",["user_type" => UserType::dropdown(UserType::where("name","=","client")->get())]);
     }
 
     /**
@@ -36,9 +58,13 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateUserRequest $request)
+    
     {
-        //
+        $user = User::create($request->only("first_name", "last_name", "email","user_type_id") + ['password' => Hash::make("123456789")]);
+        $new_user =  $user;
+        // $user->delete();
+        die(json_encode(["success" => true, "message" => trans("lang.success_record") , "data" =>$this->_make_row( $new_user ) ]));
     }
 
     /**
@@ -93,6 +119,7 @@ class UsersController extends Controller
     {
         //
     }
+
 
     public function email_exist(Request $request)
     {

@@ -54,9 +54,10 @@ class OfferController extends Controller
             "#" . $data->id,
             $data->name,
             Str::limit($data->description, 50) ?? '-',
-            anchor(url("/offer/detail/$data->id"), '<i class="fas fa-eye" style="font-size:15px"></i>', ["class" => "btn btn-sm btn-clean "]) .
-            modal_anchor(url("/offer/form_modal/$data->id"), '<i class="fas fa-pen" style="font-size:15px"></i>', ["class" => "btn btn-sm btn-clean " ,'title' => trans('lang.edit')]) .
-            js_anchor('<i class="fas fa-trash" style="font-size:15px" ></i>', ["data-id" => $data->id, "data-action-url" => url("/offer/delete/$data->id"), "class" => "btn btn-sm btn-clean ", "title" => "delete", "data-action" => "delete"])
+            modal_anchor(url("/questionnaireOffer/form_modal/$data->id"), '<i class="text-hover-primary fas fa-question-circle" style="font-size:15px"></i>', ["class" => "btn btn-sm btn-clean " ,'title' => trans('lang.add_question')]) .
+            anchor(url("/offer/detail/$data->id"), '<i class=" text-hover-primary fas fa-eye" style="font-size:15px"></i>', ["class" => "btn btn-sm btn-clean "]) .
+            modal_anchor(url("/offer/form_modal/$data->id"), '<i class="text-hover-primary fas fa-pen" style="font-size:15px"></i>', ["class" => "btn btn-sm btn-clean " ,'title' => trans('lang.edit')]) .
+            js_anchor('<i class="text-hover-primary fas fa-trash" style="font-size:15px" ></i>', ["data-id" => $data->id, "data-action-url" => url("/offer/delete/$data->id"), "class" => "btn btn-sm btn-clean ", "title" => "delete", "data-action" => "delete"])
         ];
     }
 

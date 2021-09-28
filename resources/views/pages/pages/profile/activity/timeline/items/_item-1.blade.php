@@ -94,9 +94,7 @@
                 <div class="min-w-175px">
                     <span class="badge badge-light text-muted">CRM System Development</span>
                 </div>
-                <!--end::Label-->
 
-                <!--begin::Users-->
                 <div class="symbol-group symbol-hover flex-nowrap flex-grow-1 min-w-100px">
                     <!--begin::User-->
                     <div class="symbol symbol-circle symbol-25px">

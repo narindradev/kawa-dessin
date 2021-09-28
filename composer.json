@@ -46,7 +46,8 @@
     "autoload": {
         "files": [
             "app/Helpers/General.php",
-            "app/Helpers/Menus.php"
+            "app/Helpers/Menus.php",
+            "app/Core/Bootstraps/BootstrapDemo1.php"
         ],
         "psr-4": {
             "App\\": "app/",

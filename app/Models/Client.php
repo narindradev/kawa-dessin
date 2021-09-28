@@ -11,7 +11,7 @@ class Client extends Model
 
     protected $table = "clients";
     protected $guarded = [];
-    protected $with = ["user","company"];
+    protected $with = ["company"];
 
     public function user()
     {

@@ -1,0 +1,1 @@
+<span class="bullet bullet-vertical h-60px bg-{{$project->status->class}}"></span>

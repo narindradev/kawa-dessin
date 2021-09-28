@@ -65,6 +65,7 @@ class Theme {
      *
     */
     public static function init($theme, $demo = '') {
+      
         global $_COMMON_PATH, $_THEME_PATH;
 
         if (self::$initialized) {
@@ -221,6 +222,7 @@ class Theme {
      * @param string $value the theme's mode(preview, release).
     */
     public static function setViewMode($value) {
+        
         // force preview mode on server
         if (isset($_SERVER['SERVER_NAME']) && strpos($_SERVER['SERVER_NAME'], 'keenthemes.com') !== false) {
             self::$viewMode = 'preview';
@@ -574,6 +576,7 @@ class Theme {
     }
 
     public static function rtlCssFilename($path) {
+       
         if (isset($_REQUEST['rtl']) && $_REQUEST['rtl'] == 1) {
             if (strpos($path, 'fullcalendar') !== false) {
             } else {
@@ -633,6 +636,7 @@ class Theme {
      * @return mixed|string
      */
     public static function getCurrentMode() {
+        
         if (self::isDarkModeEnabled() && isset($_REQUEST['mode']) && $_REQUEST['mode']) {
             return $_REQUEST['mode'];
         }
@@ -646,6 +650,7 @@ class Theme {
      * @return mixed|string
      */
     public static function isDarkMode() {
+       
         return self::getCurrentMode() === 'dark';
     }
 
@@ -654,7 +659,7 @@ class Theme {
         if (self::isFreeVersion() === true && self::isProPage($path) === true) {
             return "#";
         }
-
+        
         $baseUrl = self::getBaseUrlPath();
 
         $params = '';

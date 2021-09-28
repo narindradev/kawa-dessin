@@ -495,7 +495,7 @@
                                                 class="form-label required">{{ get_array_value($question, 'question') }}</label>
                                             <!--end::Label-->
                                             <!--begin::Input-->
-                                            <textarea placeholder="..." name="{{ get_array_value($question, 'value') }}"
+                                            <textarea placeholder="..." name="{{ get_array_value($question, 'name') }}"
                                                 class="form-control form-control-lg form-control-solid"
                                                 data-kt-autosize="true"
                                                 rows="{{ get_array_value($question, 'rows') ?? '1' }}">aaa</textarea>

@@ -10,6 +10,7 @@ class Category extends Model
     use HasFactory;
     protected $table = "categories";
     protected $guarded = [];
+    protected $with = ["offer"];
 
     public function offer()
     {
@@ -23,6 +24,16 @@ class Category extends Model
     public function projects()
     {
         return $this->belongsToMany(Project::class);
+    }
+    
+    static function drop()
+    {
+        $list = [];
+        $cats = Category::whereDeleted(0)->get();
+        foreach ($cats as $cat) {
+            $list[] = ["value" => $cat->id , "text" => $cat->name];
+        }
+        return $list;
     }
     
 }

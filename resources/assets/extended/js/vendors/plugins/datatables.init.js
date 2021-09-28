@@ -3,9 +3,7 @@
 //
 // Datatables.net Initialization
 //
-
 // Set Defaults
-
 var defaults = {
     "language": {
         "info": "Showing _START_ to _END_ of _TOTAL_ records",
