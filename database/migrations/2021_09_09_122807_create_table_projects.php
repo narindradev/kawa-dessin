@@ -19,6 +19,7 @@ class CreateTableProjects extends Migration
             $table->foreignId("priority_id")->default(1);
             $table->foreignId("status_id")->default(1);
             $table->decimal("price")->default(0.00);
+            $table->enum("estimate" ,['accepted', 'refused'])->nullable();
             $table->integer("validation")->nullable();
             $table->integer("version")->nullable();
             $table->boolean("deleted")->nullable();

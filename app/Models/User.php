@@ -50,7 +50,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
 
-    protected $with = ["client" ,"type"];
+    protected $with = ["client", "type"];
     /**
      * Get a fullname combination of first_name and last_name
      *
@@ -77,15 +77,8 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(Project::class, "project_member");
     }
-    
-    public function is_member($user_id = null)
-    {
-        return in_array($user_id ?? Auth::user()->id , cache("project_members_$this->id" , $this->projects()->pluck("user_id")->toArray())  ) || Auth::user()->admin ;
-    }
-    public function own_project()
-    {
-        return $this->client_id ===  Auth::user()->id ;
-    }
+
+   
     public function client()
     {
         return $this->hasOne(Client::class);
@@ -94,15 +87,36 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->client->id;
     }
-    
+
     public function type()
     {
-       return $this->belongsTo(UserType::class ,"user_type_id");
+        return $this->belongsTo(UserType::class, "user_type_id");
     }
     public function is_client($user = null)
     {
-       return $user ? $user->user_type_id === 5 :  Auth::user()->user_type_id === 5;
+        return $user ? $user->user_type_id === 5 :  Auth::user()->user_type_id === 5;
     }
-    
+    public function not_client()
+    {
+        return !$this->is_client();
+    }
 
+   
+
+    public static function get_client_dropdown($for_user = 0)
+    {
+        $client_dropdown = [];
+        if ($for_user) {
+            $projects = User::find($for_user)->projects->groupby("client_id");
+            foreach ($projects as $id => $project) {
+                $client_dropdown[] = ["value" => $id, "text" => $project[0]->client->user->name];
+            }
+        } else {
+            $users = User::with("client")->whereDeleted(0)->where("user_type_id", 5)->get();
+            foreach ($users as $user) {
+                $client_dropdown[] = ["value" => $user->client->id, "text" => $user->name];
+            }
+        }
+        return $client_dropdown;
+    }
 }

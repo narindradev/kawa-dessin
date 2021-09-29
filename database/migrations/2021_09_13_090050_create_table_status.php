@@ -22,7 +22,6 @@ class CreateTableStatus extends Migration
         });
         $this->seed();
     }
-
     private function seed(){
         DB::table($this->table)->insert([
                 ['name' => 'new', 'color' =>"" ,"class" => "danger"],

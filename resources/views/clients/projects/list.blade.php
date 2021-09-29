@@ -27,10 +27,11 @@
                         {data: 'badge',"title" :"","class":"text-left","orderable":false,"searchable":false},
                         {data: 'offer',"title" :"Project","class":"text-left","orderable":false,"searchable":false},
                         {data: 'categories',"title" :"Type de projet","class":"text-left","orderable":false,"searchable":false},
-                        {data: 'end_date',"title" :"Date de livraison","orderable":true,"searchable":false,"class":"text-center"},
                         {data: 'status',"title" :"Statut","orderable":true,"searchable":false,"class":"text-center"},
-                        {data: 'version',"title" :"version","orderable":true,"searchable":false,"class":"text-center w-2"},
                         {data: 'messenger',"title" :"","orderable":true,"searchable":false,"class":"text-center w-2"},
+                        {data: 'estimate',"title" :"Devis","orderable":true,"searchable":false,"class":"text-center"},
+                        {data: 'version',"title" :"version","orderable":true,"searchable":false,"class":"text-center w-2"},
+                        {data: 'end_date',"title" :"Date de livraison","orderable":true,"searchable":false,"class":"text-center"},
                     ],
                     ajax: {
                         url: url("/client/project/list"),

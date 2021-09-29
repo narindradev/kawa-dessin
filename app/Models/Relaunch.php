@@ -12,10 +12,7 @@ class Relaunch extends Model
     protected $table = "relaunchs";
     protected $guarded = [];
 
-    public function relaunchs()
-    {
-       return $this->belongsToMany(Project::class,"project_relaunch") ;
-    }
+  
 
     static function drop()
     {

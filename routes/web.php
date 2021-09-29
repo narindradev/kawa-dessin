@@ -105,12 +105,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/project/file/download/{file}', [ProjectController::class, 'download']);
     Route::get('/project/tab/description/{project}', [ProjectController::class, 'tab_description']);
     Route::get('/project/download/file/{file}', [ProjectController::class, 'download_file']);
+    
+    /** Relaunch project */
     Route::post('/project/relaunch/summary/{project}', [ProjectController::class, 'relaunch']);
-    Route::post('/project/relaunch/add', [ProjectController::class, 'add_relaunch']);
+    Route::post('/project/relaunch/add/{project}', [ProjectController::class, 'add_relaunch']);
+    Route::get('/project/relaunch/list/{project}', [ProjectController::class, 'relaunch_list']);
+   
+    /** Add  estimate for project */
     Route::post('/project/estimate/form/{project}', [ProjectController::class, 'estimat_form']);
     Route::post('/project/estimate/add/{project}', [ProjectController::class, 'add_estimate']);
     
-    // users
+    /** Users */ 
     Route::get('/users/list', [UsersController::class, 'index']);
     Route::get('/users/data_list', [UsersController::class, 'data_list']);
     Route::post('/users/form/user', [UsersController::class, 'form']);
@@ -118,11 +123,14 @@ Route::middleware('auth')->group(function () {
     
     
     // Client projects
-
+    
     Route::get('/client/project/index', [ClientController::class, 'projects']);
     Route::get('/client/project/list', [ClientController::class, 'data_list']);
-    
-    
+    /** Estimate */
+    Route::post('/estimate/validation/{project}', [ClientController::class, 'estimate_validation']);
+    Route::post('/project/accept/estimate/{project}', [ClientController::class, 'accept_estimate']);
+    Route::post('/project/refuse/estimate/{project}', [ClientController::class, 'refuse_estimate']);
+    Route::post('/project/estimate/save_refuse/{project}', [ClientController::class, 'save_refuse_estimate']);
     //Dashboard
     Route::get('dashboard/index', [DashboardController::class, 'index']);
 

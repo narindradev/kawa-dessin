@@ -114,4 +114,9 @@ return [
     'email_address' => 'Adress e-mail',    
     'function' => 'Fonction',    
     'my_project' => 'Mes projets',    
+    'estimate_etude' => 'Etude de devis du projet',      
+    'accepted' => 'Accepté',    
+    'refused' => 'Refusé',    
+    'error_accept_estimate' => 'Un erreur! veuillez ressayer svp!',    
+    'reason' => 'Motif',    
 ];

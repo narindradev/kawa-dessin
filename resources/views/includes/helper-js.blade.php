@@ -35,18 +35,7 @@
 
 
     function dataTableaddRowIntheTop(tableInstance, data) {
-        tableInstance.order([]).draw();
-        tableInstance.row.add(data).draw(false);
-        // tableInstance.page('last').draw(false);
-        /*
         var table = tableInstance
-        var settings = table.settings()[0];
-        settings.ordering = false
-        table.destroy();
-      
-        var id = table.table().node().id
-        $("#"+id).DataTable(settings);
-        
         var currentPage = table.page();
         table.row.add(data).draw()
         var index = table.row(0).index(),
@@ -59,8 +48,7 @@
             table.row(i - 1).data(insertedRow);
         }
         table.page(currentPage).draw(false);
-        */
-        
+    
     }
 
     function dataTableUpdateRow(tableInstance,row, data) {

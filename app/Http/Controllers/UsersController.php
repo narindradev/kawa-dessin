@@ -48,7 +48,7 @@ class UsersController extends Controller
 
     public function form()
     {
-        return view("users.form",["user_type" => UserType::dropdown(UserType::where("name","=","client")->get())]);
+        return view("users.form",["user_type" => UserType::dropdown(UserType::where("name","<>","client")->get())]);
     }
 
     /**

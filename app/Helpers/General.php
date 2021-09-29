@@ -213,6 +213,9 @@ if (!function_exists('get_array_value')) {
         if (!$value && $default) {
             return $default;
         }
+        if (!$value && $default == []) {
+            return $default;
+        }
     }
 }
 

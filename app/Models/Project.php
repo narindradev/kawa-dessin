@@ -26,43 +26,61 @@ class Project extends Model
 
     public function members()
     {
-        return $this->belongsToMany(User::class,"project_member");
+        return $this->belongsToMany(User::class, "project_member");
     }
-    public function status(){
+    public function status()
+    {
         return $this->belongsTo(Status::class);
     }
-    public function descriptions(){
+    public function descriptions()
+    {
         return $this->hasMany(ProjectDescription::class);
     }
-    public function files(){
+    public function files()
+    {
         return $this->hasMany(ProjectFiles::class);
     }
-    public function is_member($user_id = null)
-    {
-       return in_array($user_id ?? Auth::user()->id , cache("project_members_$this->id" , $this->members()->pluck("user_id")->toArray())  ) || Auth::user()->admin ;
-    }
+   
     public function is_client()
     {
-       return $this->client_id ===  Auth::user()->id;
+        return $this->client_id ===  Auth::user()->id;
     }
     public function relaunchs()
     {
-       return $this->belongsToMany(Relaunch::class,"project_relaunch");
-    }  
+        return $this->hasMany(ProjectRelaunch::class);
+    }
+
+    public function is_member($user_id = null)
+    {
+        return in_array($user_id ?? Auth::user()->id, cache("project_members_$this->id", $this->members()->pluck("user_id")->toArray())) || Auth::user()->admin;
+    }
+    public function own_project()
+    {
+        return $this->client_id == Auth::user()->client_id();
+    }
+
     public function scopeGetDetails($query, $options = [])
     {
         $user_id = get_array_value($options, "user_id");
-        if(Auth::user()->admin){
-            /** All project  */
+        $client = get_array_value($options, "client");
+        if (Auth::user()->admin) {
+            /** load all project  */
             $projects = Project::query();
-        }elseif($user_id){
-           /** load user's projects */
+        } elseif ($user_id) {
+            /** load the user's projects assigned */
             $projects = User::find($user_id)->projects();
-        }else{
-            /** load this Auth projects */
+        } elseif ($client) {
+            /** load client's projects  */
+            $projects = Project::where("client_id", $client);
+        } else {
+            /** load Auth user's projects assigned */
             $projects = Auth::user()->projects();
         }
-        $projects->with("categories","client","status");
+        $projects->with("categories", "client", "status");
+        $client_id = get_array_value($options, "client_id");
+        if ($client_id) {
+            $projects->where("client_id", $client_id);
+        }
         $status_id = get_array_value($options, "status_id");
         if ($status_id) {
             $projects->where("status_id", $status_id);
@@ -90,9 +108,9 @@ class Project extends Model
             });
         }
         $date = get_array_value($options, "date");
-        if($date){
-            $dates = explode("-",$date);
-            $projects->whereBetween("start_date",[to_date($dates[0]),to_date($dates[1])]);  
+        if ($date) {
+            $dates = explode("-", $date);
+            $projects->whereBetween("start_date", [to_date($dates[0]), to_date($dates[1])]);
         }
         return $projects->whereDeleted(0)->orderBy('status_id', 'ASC')->latest('created_at');
     }
