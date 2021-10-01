@@ -17,8 +17,8 @@
             </div>
             <div class="form-group">
                 <div class="mb-3">
-                    <label class="form-label">@lang('lang.note')</label>
-                    <textarea id="note" data-kt-autosize="true" name="note" placeholder="@lang('lang.note')"
+                    <label class="form-label">@lang('lang.comment')</label>
+                    <textarea id="comment" data-kt-autosize="true" name="comment" placeholder="@lang('lang.comment')"
                         class="form-control  form-control-solid" rows="2"></textarea>
                 </div>
             </div>

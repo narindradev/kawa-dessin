@@ -6,9 +6,11 @@
             </h3>
         </div>
     </div>
-    <div class="card card-flush mb-3 ">
+
+    {{-- <div class="card card-flush mb-3 ">
         @include('project.filters.users-tag' ,["users" => $users])
-    </div>
+    </div> --}}
+
     <div class="card card-flush ">
 
         <div class="card-header mt-5">
@@ -18,7 +20,7 @@
             </div>
             <div class="card-toolbar my-1" data-select2-id="select2-data-159-jg33">
                 <div class="me-4 my-1">
-                    @include('project.filters.filters-advanced' ,["inputs" => $advance_filter])
+                    {{-- @include('project.filters.filters-advanced' ,["inputs" => $advance_filter]) --}}
                 </div>
                 <div class="filter-datatable">
                     @include('project..filters.filters-basic', ["inputs" => $basic_filter ,"filter_for" => "offerTable"])

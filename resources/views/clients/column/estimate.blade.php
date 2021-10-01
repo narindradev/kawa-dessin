@@ -1,13 +1,36 @@
 @php
-    $price = "$" . $project->price ?? '0.00';
+$price = "$" . $project->price ?? '0.00';
 @endphp
-@if($project->price && $project->status_id == 3)
-    @php
-        // echo modal_anchor(url("/estimate/validation/$project->id"), "$price ??", ['class' => 'text-primary fw-bolder text-hover-primary d-block mb-1 fs-6', 'data-drawer' => true, 'title' => trans('lang.estimate_etude')]);
-    @endphp
-    <a href="{{ url("/project/detail/$project->id") }}"class="text-primary fw-bolder text-hover-primary d-block mb-1 fs-6"> {{ $price }} </a>
-   
+@if ($project->price && $project->status_id == 3)
+    <a href="{{ url("/project/detail/$project->id") }}"
+        class="text-primary fw-bolder text-hover-primary d-block mb-1 fs-6"> {{ $price }}
+        {{ $project->estimate == 'refused' ? '?' : '' }} </a>
 @else
     <a href="#" class="text-primary fw-bolder text-hover-primary d-block mb-1 fs-6"> {{ $price }} </a>
 @endif
-    <span class="text-muted fw-bold text-muted d-block fs-7">Non payé</span>
+@if ($project->estimate)
+    @php
+        $class = 'success';
+        if ($project->estimate == 'refused') {
+            $class = 'danger';
+        }
+        $project_last_relaunch = '';
+        if ($project->estimate == 'refused') {
+            $project_last_relaunch = $relaunch->description;
+            if ($last_relaunch->note) {
+                $project_last_relaunch .= ' : ' . $last_relaunch->note;
+            }
+        }
+    @endphp
+    <span href="#" class="badge badge-light-{{ $class }} fw-bolder fs-8 px-2  py-1 ms-2" @if ($project->estimate == 'refused')
+        title="{{ $project_last_relaunch }}"
+        data-bs-toggle="tooltip"
+        data-bs-placement="bottom"
+        data-bs-trigger="hover"
+@endif>{{ trans("lang.$project->estimate") }}</span>
+@endif
+<script>
+    $(document).ready(function() {
+        KTApp.initBootstrapTooltips();
+    })
+</script>

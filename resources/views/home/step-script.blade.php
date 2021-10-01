@@ -98,7 +98,7 @@
                                     confirmButton: "btn btn-light"
                                 }
                             }).then(function() {
-                                KTUtil.scrollTop();
+                                // KTUtil.scrollTop();
                             });
                         }
                     });
@@ -215,7 +215,7 @@
                         message: "{{ trans('lang.required_input_type_email') }}"
                     }
                     inputValidation.validators.remote = {
-                        message: "{{ trans('lang.email_already_taked') }}",
+                        message: "{{ trans('lang.email_already_taked') }}" + "<a href='{{ url('/login') }}'> <u> ou {{ trans('lang.log_you') }}</u></a>" ,
                         method: 'POST',
                         url: url('/user/email/exist'),
                     }

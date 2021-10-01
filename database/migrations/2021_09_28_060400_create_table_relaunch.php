@@ -18,6 +18,8 @@ class CreateTableRelaunch extends Migration
         Schema::create($this->table, function (Blueprint $table) {
             $table->id();
             $table->text("description");
+            $table->bigInteger("project_id")->nullable();
+            $table->bigInteger("created_by")->nullable();
             $table->timestamps();
         });
         $this->seed();

@@ -1,6 +1,6 @@
 <div class="card card-custom ">
     <form class="form" id="question-form" method="POST" action="{{ "/questionnaire/preliminary_info/store" }}">
-        <div class="card-footer">
+        <div class="card-body ">
             @csrf
             <div class="form-group">
                 <div class="mb-10">
@@ -10,11 +10,13 @@
                 </div>
             </div>
         </div>
-        <div class="d-flex justify-content-end">
-            <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-light-light btn-sm mr-2 "> @lang('lang.cancel')</button>
-            <button type="submit" id="submit" class=" btn btn-sm btn-light-primary  mr-2">
-                @include('partials.general._button-indicator', ['label' => trans('lang.save') , "message" => trans("lang.sending")])
-            </button>
+        <div class="card-footer">
+            <div class="d-flex justify-content-end">
+                <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-light-light btn-sm mr-2 "> @lang('lang.cancel')</button>
+                <button type="submit" id="submit" class=" btn btn-sm btn-light-primary  mr-2">
+                    @include('partials.general._button-indicator', ['label' => trans('lang.save') , "message" => trans("lang.sending")])
+                </button>
+            </div>
         </div>
     </form>
 </div>

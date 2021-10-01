@@ -119,4 +119,8 @@ return [
     'refused' => 'Refusé',    
     'error_accept_estimate' => 'Un erreur! veuillez ressayer svp!',    
     'reason' => 'Motif',    
+    'signin' => 'Se connecter',    
+    'log_you' => 'connectez-vous',    
+    'comment' => 'Commentaire',    
+    'response' => 'Response',    
 ];

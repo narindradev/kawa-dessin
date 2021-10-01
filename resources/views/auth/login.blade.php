@@ -1,15 +1,14 @@
 <x-auth-layout>
-
     <form method="POST" action="{{ theme()->getPageUrl('login') }}" class="form w-100" novalidate="novalidate" id="kt_sign_in_form">
     @csrf
         <div class="text-center mb-10">
             <h1 class="text-dark mb-3">
-                {{ __('Sign In to Metronic') }}
+                {{-- {{ __('Sign In to Metronic') }} --}}
             </h1>
             <div class="text-gray-400 fw-bold fs-4">
-                {{ __('New Here?') }}
+                {{-- {{ __('New Here?') }} --}}
                 <a href="{{ theme()->getPageUrl('register') }}" class="link-primary fw-bolder">
-                    {{ __('Create an Account') }}
+                    {{-- {{ __('Create an Account') }} --}}
                 </a>
             </div>
         </div>
@@ -21,9 +20,9 @@
             <div class="d-flex flex-stack mb-2">
                 <label class="form-label fw-bolder text-dark fs-6 mb-0">{{ __('Password') }}</label>
                 @if (Route::has('password.request'))
-                    <a href="{{ theme()->getPageUrl('password.request') }}" class="link-primary fs-6 fw-bolder">
+                    {{-- <a href="{{ theme()->getPageUrl('password.request') }}" class="link-primary fs-6 fw-bolder">
                         {{ __('Forgot Password ?') }}
-                    </a>
+                    </a> --}}
             @endif
             </div>
             <input class="form-control form-control-lg form-control-solid" type="password" name="password" autocomplete="off" value="demo" required/>

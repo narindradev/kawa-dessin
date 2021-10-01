@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PriceProjectRequest;
+use Auth;
 use App\Models\User;
 use App\Models\Status;
 use App\Models\Project;
 use App\Models\Category;
 use App\Models\Priority;
-use App\Models\ProjectFiles;
-use App\Models\ProjectRelaunch;
 use App\Models\Relaunch;
-use Auth;
+use App\Models\UserType;
+use App\Models\ProjectFiles;
 use Illuminate\Http\Request;
+use App\Models\ProjectRelaunch;
+use App\Models\Project_assignment;
+use App\Http\Requests\PriceProjectRequest;
+use App\Models\InfoGround;
 
 class ProjectController extends Controller
 {
@@ -35,19 +38,20 @@ class ProjectController extends Controller
     private function _make_row(Project $project)
     {
         $client = $project->client;
+        $last_relauch = ProjectRelaunch::where("project_id",$project->id)->where("created_by",$client->user->id)->latest('created_at')->first();
+        $relaunch = Relaunch::where("project_id",$project->id)->where("created_by",$client->user->id)->latest('created_at')->first();
         $actions = [];
         return [
             "DT_RowId" => row_id("project", $project->id),
             "badge" => view("project.column.badge", ["project" => $project])->render(),
             "client_info" => view("project.column.info-client", ["client" => $client, "project" => $project])->render(),
             "messenger" => view("project.column.messenger", ["client" => $client, "project" => $project])->render(),
-            "categories" => $project->categories->pluck("name"),
+            "categories" => $project->categories->pluck("name")->implode(" , ", "name"),
             "client_type" => view("project.column.client-type", ["client" => $client])->render(),
             "status" => view("project.column.status", ["project" => $project])->render(),
-            "estimate" => view("project.column.estimate", ["project" => $project])->render(),
+            "estimate" => view("project.column.estimate", ["project" => $project ,"last_relaunch" => $last_relauch ,"relaunch" =>  $relaunch])->render(),
             "version" => $project->version,
             "date" => $project->created_at->format("d-M-Y"),
-            // $project->created_at->diffForHumans(null,true),
             "actions" => view("project.column.actions", ["actions" => $actions, "project" => $project])->render(),
         ];
     }
@@ -70,7 +74,9 @@ class ProjectController extends Controller
         $data = $relaunchs = [];
         $project->load("relaunchs");
         $relaunchs = $project->relaunchs;
+        
         foreach ($relaunchs as $relaunch) {
+            $relaunch->load("subject");
             $data[] = $this->_make_relaunch_row($relaunch);
         }
         return ["data" => $data];
@@ -79,9 +85,9 @@ class ProjectController extends Controller
     private function _make_relaunch_row($relaunch)
     {
         return [
-            "subjet" => $relaunch->subject->description,
+            "subjet" => $relaunch->subject ? $relaunch->subject->description :"",
             "note" => $relaunch->note ?? "-",
-            "date" => $relaunch->created_at->diffForHumans(),
+            "date" => "<span class ='text-muted me-2 fs-7'> <i>" .$relaunch->created_at->diffForHumans()."</i></span>",
             "created_by" => $relaunch->createBy->name,
             "status" => '<i class="fas fa-check text-success"></i>',
         ];
@@ -114,7 +120,7 @@ class ProjectController extends Controller
     }
     private function basic_filter()
     {
-        
+
         $filters = [];
 
         $filters[] = [
@@ -123,11 +129,13 @@ class ProjectController extends Controller
             "type" => "select",
             "options" =>  User::get_client_dropdown(Auth::user()->id),
         ];
+        /*
         $filters[] = [
             "label" => trans("lang.date"),
             "name" => "date",
             "type" => "date-range",
         ];
+        */
         $filters[] = [
             "label" => trans("lang.priority"),
             "name" => "priority_id",
@@ -146,16 +154,16 @@ class ProjectController extends Controller
             "type" => "select",
             "options" =>  Category::drop(),
         ];
-       
+
         return $filters;
     }
     public function dessignators_list()
     {
-      
+
         $list = [];
-        $dessignators = User::where("user_type_id" , 4)->get();
+        $dessignators = User::where("user_type_id", 4)->get();
         foreach ($dessignators as $user) {
-            $int = random_int(1,50);
+            $int = random_int(1, 50);
             $list[] =  [
                 "value" => $user->id,
                 "name" => $user->first_name . ' ' . $user->last_name,
@@ -168,8 +176,35 @@ class ProjectController extends Controller
 
     public function detail(Project $project)
     {
+        $project->load("categories");
+        $project->load("infoGround");
+        foreach ($project->categories as $categorie) {
+            $categorie->load("questionnaires"); // load categorie questionnaires
+            $categorie->offer->load("questionnaires"); // load categorie offer questionnaires
+        }
         return view("project.detail.index", compact("project"));
     }
+    public function save_info_ground(Request $request, Project $project)
+    {
+        if ($request->ground_info_id) {
+            InfoGround::find($request->ground_info_id)->update($request->except("_token", "ground_info_id"));
+        } else {
+            $info_ground = new InfoGround($request->except("_token", "ground_info_id"));
+            $project->infoGround()->save($info_ground);
+        }
+        return ["success" => true, "message" => trans("lang.success_record")];
+    }
+    public function save_info_exist_building(Request $request, Project $project)
+    {
+
+        return ["success" => true, "message" => trans("lang.success_record")];
+    }
+    public function save_resp_questionaires_categories(Request $request, Project $project)
+    {
+        return ["success" => true, "message" => trans("lang.success_record")];
+    }
+
+
 
     public function tab_description(Project $project)
     {

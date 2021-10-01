@@ -13,25 +13,33 @@
                                 <a href="#"
                                     class="text-gray-800 text-hover-primary fs-2 fw-bolder me-3">{{ $project->client->user->name }}</a>
                                 <span
-                                    class="badge badge-light-{{ $project->status->class }} me-auto">{{ trans("lang.{$project->status->name}") }}</span>
+                                    class="badge badge-light-{{ $project->status->class }} me-auto"> 
+                                    @if ($project->estimate == "accepted" && $project->status->id == 3 && auth()->user()->is_client())
+                                        Completion de dessies
+                                    @else
+                                        {{ trans("lang.{$project->status->name}") }}
+                                    @endif    
+                                </span>
                             </div>
                             <div class="d-flex flex-wrap fw-bold mb-4 fs-5 text-gray-400">
                                 {{ $project->categories->pluck('name')->implode(',') }}</div>
                         </div>
                         <div class="d-flex mb-4">
-                            <a class="btn btn-sm  btn-light-primary me-3" data-project-id ={{ $project->id }}  id="accept_estimate">
-                                <span class="indicator-label" id="accpeted">
-                                    J'accepte le devis.
-                                </span>
-                                <span class="indicator-progress">
-                                    Un instant...
-                                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                                </span>
-                            </a>
-
-                            @php
-                                echo modal_anchor(url("/project/refuse/estimate/$project->id"), 'Non, J\'accepte pas le devis', ['class' => 'btn btn-sm  btn-light me-3', 'title' => " "]);
-                            @endphp
+                            @if (!$project->estimate || $project->estimate =="refused")
+                                
+                                <a class="btn btn-sm  btn-light-primary me-3" data-project-id ={{ $project->id }}  id="accept_estimate">
+                                    <span class="indicator-label" id="accpeted">
+                                        J'accepte le devis.
+                                    </span>
+                                    <span class="indicator-progress">
+                                        Un instant...
+                                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                    </span>
+                                </a>
+                                @php
+                                    echo modal_anchor(url("/project/refuse/estimate/$project->id"), 'Non, J\'accepte pas le devis', ['class' => 'btn btn-sm  btn-light me-3', 'title' => " "]);
+                                @endphp
+                            @endif
 
                             {{-- <div class="me-0">
                                 <button class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-kt-menu-flip="top-end">

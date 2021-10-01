@@ -9,6 +9,7 @@ use App\Models\Questionnaire;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreRequestClient;
 use App\Models\Project;
+use App\Models\Project_assignment;
 use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
@@ -27,7 +28,7 @@ class HomeController extends Controller
         $descriptions = $this->validate_question($request);
         $client_type = $request->input("client_type");
 
-        $user = User::create($request->only("first_name", "last_name", "email", "phone") + ['password' => Hash::make("123456789")]);
+        $user = User::create($request->only("first_name", "last_name", "email", "phone") + ["user_type_id" => 5,'password' => Hash::make("123456789")]);
         // Create client of this user
         $client = $user->client()->create(['type' => $client_type]);
         // Save client info
@@ -52,8 +53,11 @@ class HomeController extends Controller
             $project->files()->createMany($this->attachements($request, $user->id, $project->id));
         }
         // Assination project to commerciale
-        $project->members()->attach([$this->to()]);
-
+        $toCommercial = Project_assignment::getAssignTo('commercial');
+        $project->members()->attach([1]);
+       
+        // $project->status = 3;
+        // $project->save();
         die(json_encode(["success" => true, "message" => trans("lang.success_client_request")]));
     }
 
@@ -86,11 +90,5 @@ class HomeController extends Controller
             }
         }
         return $attachements;
-    }
-
-    private function to()
-    {
-        $user_id = 1;
-        return $user_id;
     }
 }

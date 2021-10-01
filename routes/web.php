@@ -105,6 +105,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/project/file/download/{file}', [ProjectController::class, 'download']);
     Route::get('/project/tab/description/{project}', [ProjectController::class, 'tab_description']);
     Route::get('/project/download/file/{file}', [ProjectController::class, 'download_file']);
+    Route::post('/project/save_step2/info_ground/{project}', [ProjectController::class, 'save_info_ground']);
     
     /** Relaunch project */
     Route::post('/project/relaunch/summary/{project}', [ProjectController::class, 'relaunch']);

@@ -40,14 +40,17 @@ class Project extends Model
     {
         return $this->hasMany(ProjectFiles::class);
     }
-   
+    public function infoGround()
+    {
+        return $this->hasOne(InfoGround::class);
+    }
     public function is_client()
     {
         return $this->client_id ===  Auth::user()->id;
     }
     public function relaunchs()
     {
-        return $this->hasMany(ProjectRelaunch::class);
+        return $this->hasMany(ProjectRelaunch::class)->latest();
     }
 
     public function is_member($user_id = null)

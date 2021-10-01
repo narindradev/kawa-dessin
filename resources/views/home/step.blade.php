@@ -2,10 +2,17 @@
 
 @section('content')
     <div class="post d-flex flex-column-fluid p-20" id="kt_post">
-        <!--begin::Container-->
         <div id="kt_content_container" class="container-xxl">
-            <!--begin::Card-->
+            <div class="card card-flush shadow-sm mb-5">
+                <div class="card-header">
+                    <h3 class="card-title"></h3>
+                    <div class="card-toolbar">
+                        <a href="{{ url("/login")}}" class="btn btn-light-primary">@lang('lang.signin') <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
             <div class="card">
+              
                 <!--begin::Card body-->
                 <div class="card-body">
                     <!--begin::Stepper-->
@@ -52,9 +59,9 @@
                                     <div class="pb-5 pb-lg-1">
                                         <!--begin::Title-->
                                         <h2 class="fw-bolder d-flex align-items-center text-dark">Type du client
-                                            <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title=""
+                                            {{-- <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title=""
                                                 data-bs-original-title="Billing is issued based on your selected account type"
-                                                aria-label="Billing is issued based on your selected account type"></i>
+                                                aria-label="Billing is issued based on your selected account type"></i> --}}
                                         </h2>
                                         <!--end::Title-->
                                         <!--begin::Notice-->
@@ -139,9 +146,7 @@
                                     <div class="pb-10 pb-lg-1">
                                         <!--begin::Title-->
                                         <h2 class="fw-bolder d-flex align-items-center text-dark">Information du client
-                                            <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title=""
-                                                data-bs-original-title="Billing is issued based on your selected account type"
-                                                aria-label="Billing is issued based on your selected account type"></i>
+                                            
                                         </h2>
 
                                     </div>
@@ -150,7 +155,7 @@
                                         {{-- <div
                                             class=" col-lg-6 pb-lg-1 fv-row mb-4  fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
                                             <label class="form-label required">Non</label>
-                                            <input name="first_name" autocomplete="off" value="aaa"
+                                            <input name="first_name" autocomplete="off" value=""
                                                 class="form-control form-control-lg form-control-solid">
                                             <div class="fv-plugins-message-container invalid-feedback"></div>
                                         </div>
@@ -188,7 +193,7 @@
                                         <div
                                         class=" col-lg-6 pb-lg-1 fv-row mb-4  fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
                                         <label class="form-label required">Name</label>
-                                        <input name="first_name" autocomplete="off" value="aaa"
+                                        <input name="first_name" autocomplete="off" value=""
                                             class="form-control form-control-lg form-control-solid">
                                         <div class="fv-plugins-message-container invalid-feedback"></div>
                                     </div>
@@ -198,7 +203,7 @@
 
                                         <div class=" col-lg-6 pb-lg-1 fv-row mb-4  fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
                                             <label class="form-label required">Prénom</label>
-                                            <input name="last_name" autocomplete="off" value="aaa"
+                                            <input name="last_name" autocomplete="off" value=""
                                                 class="form-control form-control-lg form-control-solid">
                                             <div class="fv-plugins-message-container invalid-feedback"></div>
                                         </div>
@@ -215,14 +220,14 @@
                                         <div
                                             class=" col-lg-5 pb-lg-0 fv-row mb-4  fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
                                             <label class="form-label required">Téléphone</label>
-                                            <input name="phone" autocomplete="off" value="aa"
+                                            <input name="phone" autocomplete="off" value=""
                                                 class="form-control form-control-lg form-control-solid" placeholder="+33 ">
                                             <div class="fv-plugins-message-container invalid-feedback"></div>
                                         </div>
                                         <div
                                             class=" col-lg-4 pb-lg-1 fv-row mb-4  fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
                                             <label class="form-label required">Address</label>
-                                            <input name="address" autocomplete="off" value="aa"
+                                            <input name="address" autocomplete="off" value=""
                                                 class="form-control form-control-lg form-control-solid"
                                                 placeholder="Address">
                                             <div class="fv-plugins-message-container invalid-feedback"></div>
@@ -230,7 +235,7 @@
                                         <div
                                             class="col-lg-4 pb-lg-1 fv-row mb-4 fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
                                             <label class="form-label required">Ville</label>
-                                            <input name="city" autocomplete="off" value="aa"
+                                            <input name="city" autocomplete="off" value=""
                                                 class="form-control form-control-lg form-control-solid"
                                                 placeholder=" Ville">
                                             <div class="fv-plugins-message-container invalid-feedback"></div>
@@ -238,31 +243,25 @@
                                         <div
                                             class=" pb-lg-1 col-lg-4 fv-row mb-4 fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
                                             <label class="form-label required">Code postal</label>
-                                            <input name="zip" autocomplete="off" value="aa"
+                                            <input name="zip" autocomplete="off" value=""
                                                 class="form-control form-control-lg form-control-solid"
                                                 placeholder="Code postal ">
                                             <div class="fv-plugins-message-container invalid-feedback"></div>
                                         </div>
-
-
-
-
                                         <!--end::Col-->
                                     </div>
-
                                     <div id="corport_info" style="display: none">
 
                                         <div class="pb-10 pb-lg-1">
                                             <!--begin::Title-->
                                             <h2 class="fw-bolder d-flex align-items-center text-dark">Information de
                                                 l'entreprise
-                                                <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip"
+                                                {{-- <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip"
                                                     title=""
                                                     data-bs-original-title="Billing is issued based on your selected account type"
-                                                    aria-label="Billing is issued based on your selected account type"></i>
+                                                    aria-label="Billing is issued based on your selected account type"></i> --}}
                                             </h2>
                                         </div>
-
                                         <div class="row gx-5 mb-4">
 
                                             <div
@@ -310,10 +309,6 @@
                                 </div>
                                 <!--end::Wrapper-->
                             </div>
-                            <!--end::Step 1-->
-
-
-                            <!--begin::Step 2-->
                             <div data-kt-stepper-element="content">
                                 <!--begin::Wrapper-->
                                 <div class="w-100">
@@ -323,9 +318,9 @@
                                         <h2 class="fw-bolder text-dark">Choissez de votre porjet</h2>
                                         <!--end::Title-->
                                         <!--begin::Notice-->
-                                        <div class="text-muted fw-bold fs-6">If you need more info, please check out
+                                        {{-- <div class="text-muted fw-bold fs-6">If you need more info, please check out
                                             <a href="#" class="link-primary fw-bolder">Help Page</a>.
-                                        </div>
+                                        </div> --}}
                                         <!--end::Notice-->
                                     </div>
                                     <!--end::Heading-->
@@ -480,9 +475,9 @@
                                         <h2 class="fw-bolder text-dark">Information requis</h2>
                                         <!--end::Title-->
                                         <!--begin::Notice-->
-                                        <div class="text-muted fw-bold fs-6">If you need more info, please check out
+                                        {{-- <div class="text-muted fw-bold fs-6">If you need more info, please check out
                                             <a href="#" class="link-primary fw-bolder">Help Page</a>.
-                                        </div>
+                                        </div> --}}
                                         <!--end::Notice-->
                                     </div>
                                     <!--end::Heading-->
@@ -498,7 +493,7 @@
                                             <textarea placeholder="..." name="{{ get_array_value($question, 'name') }}"
                                                 class="form-control form-control-lg form-control-solid"
                                                 data-kt-autosize="true"
-                                                rows="{{ get_array_value($question, 'rows') ?? '1' }}">aaa</textarea>
+                                                rows="{{ get_array_value($question, 'rows') ?? '1' }}"></textarea>
                                             <!--end::Input-->
                                             <div class="fv-plugins-message-container invalid-feedback"></div>
                                         </div>
@@ -522,8 +517,8 @@
                                         <!--end::Title-->
                                         <!--begin::Notice-->
 
-                                        <div class="text-muted fw-bold fs-6">Docs: Esquisse, plan, photo, courrier de la
-                                            mairie</div>
+                                        {{-- <div class="text-muted fw-bold fs-6">Docs: Esquisse, plan, photo, courrier de la
+                                            mairie</div> --}}
                                         <!--end::Notice-->
                                     </div>
                                     <!--end::Heading-->

@@ -22,15 +22,17 @@
         <div class="menu-item px-3">
             @php
                 echo modal_anchor(url("/project/relaunch/summary/$project->id"), 'Relance', ['class' => 'menu-link px-3', 'data-drawer' => true, 'title' => trans('lang.relaunch')]);
-            @endphp
+                @endphp
         </div>
-        <div class="menu-item px-3">
-            @php
-                echo modal_anchor(url("/project/estimate/form/$project->id"), 'Assingné dévis', ['class' => 'menu-link px-3', 'title' => trans('lang.estimate')]);
-            @endphp
-        </div>
+        @if ( !$project->estimate || $project->estimate =="refused")
+            <div class="menu-item px-3">
+                @php
+                    echo modal_anchor(url("/project/estimate/form/$project->id"), 'Assingné dévis', ['class' => 'menu-link px-3', 'title' => trans('lang.estimate')]);
+                @endphp
+            </div>
+        @endif
         <div class="menu-item px-3 my-1">
-            <a href="#" class="menu-link px-3">Réjeter le project</a>
+            <a href="#" class="menu-link px-3">Annuler  le project</a>
         </div>
     </div>
 </div>

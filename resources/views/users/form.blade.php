@@ -20,7 +20,7 @@
             </div>
             <div class="form-group">
                 <div class="mb-10">
-                    <label for="email" class="form-label">@lang('lang.email')</label>
+                    <label for="email" class="required form-label">@lang('lang.email')</label>
                     <input type="text" value="{{ "" }}" autocomplete="off" name="email"
                         class="form-control form-control-solid" placeholder="@lang('lang.email')"  data-rule-required="true"
                         data-msg-required="@lang('lang.required_input')" data-rule-email="true" data-msg-email="@lang('lang.required_input_type_email')" />
@@ -28,7 +28,7 @@
             </div>
             <div class="form-group">
                 <div class="mb-10">
-                    <label for="function" class="form-label">@lang('lang.function')</label>
+                    <label for="function" class="required form-label">@lang('lang.function')</label>
                     <div class="input-group">
                         <select name="user_type_id" data-dropdown-parent="#ajax-modal" data-rule-required="true" data-hide-search="true" data-msg-required="@lang('lang.required_input')" class="form-select  form-select-solid" data-control="select2" data-placeholder="@lang('lang.function')">
                             <option value="0" disabled selected>-- @lang('lang.function') --</option>

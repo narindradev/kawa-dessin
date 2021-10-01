@@ -29,7 +29,7 @@ class UsersController extends Controller
 
     public function data_list(){
         $data = [];
-        $users = User::all();
+        $users = User::where("user_type_id","<>",5)->get();
       
         foreach ($users as $user) {
           $data[] = $this->_make_row($user);

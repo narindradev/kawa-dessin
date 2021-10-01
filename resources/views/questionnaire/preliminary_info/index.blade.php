@@ -2,7 +2,7 @@
     <div class="card card-xxl-stretch  mb-xl-8">
     <div class="card-header border-1 pt-2">
         <div class="me-2 card-title align-items-start flex-column">
-            <span class="card-label  fs-3 mb-1">  @lang('lang.list_question')  </span>
+            <span class="card-label  fs-3 mb-1">  @lang('lang.list_question') préliminaire  </span>
 
         </div>
         <div class="card-toolbar" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover"
@@ -24,7 +24,7 @@
             processing: true,
             columns: [
                 {title: 'Questions',"class": "text-left","orderable": false},
-                {title: '-',"orderable": false,"searchable": false,"class": "dt-body-right"},
+                {title: '',"orderable": false,"searchable": false,"class": "dt-body-right"},
             ],
             ajax: {
                 url: url("/questionnaire/preliminary_info/data_list"),

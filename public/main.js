@@ -10,6 +10,7 @@ $(document).ready(function () {
         $.fn.appForm = function (options) {
             var defaults = {
                 ajaxSubmit: true,
+                submitBtn: "#submit",
                 isModal: true,
                 showProgress: true,
                 dataType: "json",
@@ -44,7 +45,7 @@ $(document).ready(function () {
             this.each(function (e) {
                 if (settings.ajaxSubmit) {
                     validateForm($(this), function (form) {
-                        var submitButton = $("#" + form.id + ' button[type=submit]')
+                        var submitButton = $("#" + form.id + ' button[type=submit]') //?? $(settings.submitBtn)
                         settings.onSubmit();
                         $(form).ajaxSubmit({
                             dataType: settings.dataType,
@@ -152,7 +153,7 @@ $(document).ready(function () {
                         $(element).closest('.form-group').removeClass('has-error');
                     },
                     errorElement: 'span',
-                    errorClass: 'help-block mt-2',
+                    errorClass: 'fv-plugins-message-container invalid-feedback help-block mt-2',
                     ignore: ":hidden:not(.validate-hidden)",
                     errorPlacement: function (error, element) {
                         if (element.parent('.input-group').length) {
