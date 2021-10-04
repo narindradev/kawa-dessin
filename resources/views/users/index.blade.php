@@ -47,7 +47,7 @@
             $(document).ready(function() {
                 dataTableInstance.usersTable = $("#usersTable").DataTable({
                     dom : "tirp",
-                    ordering: true,
+                    ordering: false,
                     processing: true,
                     columns: [
                         {data: 'name',"title" :"Name","class":"text-left","orderable":true},

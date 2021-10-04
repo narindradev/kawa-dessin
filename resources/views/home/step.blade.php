@@ -212,7 +212,7 @@
                                         <div
                                             class=" col-lg-7 pb-lg-1 fv-row mb-4  fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
                                             <label class="form-label required">E-mail</label>
-                                            <input name="email" autocomplete="off" value="example@gmail.com"
+                                            <input name="email" autocomplete="off" value=""
                                                 class="form-control form-control-lg form-control-solid"
                                                 placeholder="example@gmail.com">
                                             <div class="fv-plugins-message-container invalid-feedback"></div>
@@ -328,7 +328,7 @@
                                     <div class="row form-group" data-kt-buttons="true">
                                         <div class=" mb-5  fv-row fv-plugins-icon-container">
                                             @foreach ($offers as $offer)
-                                                <h4 class="fw-bolder text-dark">{{ $offer->name }}
+                                                <h4 class="fw-bolder text-primary">{{ $offer->name }}
                                                     @if ($offer->description)
 
                                                         <i class="fas fa-exclamation-circle ms-2 fs-7"
@@ -741,7 +741,7 @@
     
 @endsection
 @section('scripts')
-    @include('home.step-script',["questions" => count($questions)])
+    @include('home.step-script',["questions" => json_encode($questions) ])
 <script>
     $(document).ready(function () {
    

@@ -8,7 +8,7 @@ if (!function_exists('get_menus_list')) {
         /** Verical menu */
         $menu_vertical  = $menu_horizontal = [];
         $menu_vertical[] = ["title" => "Dashboard", 'path'  => 'dashboard/index',  'icon'  => theme()->getSvgIcon("demo1/media/icons/duotune/art/art002.svg", "svg-icon-2")];
-        // $menu_vertical[] = ["classes" => ['content' => 'pt-8 pb-2'], 'content' => '<span class="menu-section text-muted text-uppercase fs-8 ls-1">Modules</span>',];
+        $menu_vertical[] = ["classes" => ['content' => 'pt-8 pb-2'], 'content' => '<span class="menu-section text-muted text-uppercase fs-8 ls-1">Modules</span>',];
         if (!$auth_user->is_client()) {
             $account_sub_items = [];
             /*
@@ -24,14 +24,18 @@ if (!function_exists('get_menus_list')) {
 
             $menu_vertical[] = ["title" => "System", "sub" => ["class" => "menu-sub-accordion menu-active-bg", "items" => $system_sub_items],  'attributes' => array("data-kt-menu-trigger" => "click"), 'classes'    => array('item' => 'menu-accordion'),  'icon' => ['svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/general/gen025.svg", "svg-icon-2"), 'font' => '<i class="bi bi-layers fs-3"></i>']];
             */
-            $menu_vertical[] = ["classes" => ['content' => 'pt-8 pb-2'], 'content' => '<span class="menu-section text-muted text-uppercase fs-8 ls-1">Gerée</span>',];
-            $menu_vertical[] = ["title" => __("lang.offers"), 'path'  => 'offer/index',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
-
             $menu_vertical[] = ["title" => __("lang.projects"), 'path'  => 'project',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
-            $menu_vertical[] = ["title" => __("lang.questionnaire"), 'path'  => 'questionnaire/preliminary_info',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
+            
+            if ($auth_user->user_type_id == 1) {
+                # code...
+                $menu_vertical[] = ["classes" => ['content' => 'pt-8 pb-2'], 'content' => '<span class="menu-section text-muted text-uppercase fs-8 ls-1">Gerée</span>',];
+                $menu_vertical[] = ["title" => __("lang.offers"), 'path'  => 'offer/index',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
+    
+                $menu_vertical[] = ["title" => __("lang.questionnaire"), 'path'  => 'questionnaire/preliminary_info',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
+                $menu_vertical[] = ["classes" => ['content' => 'pt-8 pb-2'], 'content' => '<span class="menu-section text-muted text-uppercase fs-8 ls-1">Utilisateurs</span>',];
+                $menu_vertical[] = ["title" => __("lang.collaborator"), 'path'  => 'users/list',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
+            }
 
-            $menu_vertical[] = ["classes" => ['content' => 'pt-8 pb-2'], 'content' => '<span class="menu-section text-muted text-uppercase fs-8 ls-1">Utilisateurs</span>',];
-            $menu_vertical[] = ["title" => __("lang.collaborator"), 'path'  => 'users/list',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
             // $menu_vertical[] = ["title" => __("lang.clients"), 'path'  => 'questionnaire/preliminary_info',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
 
             $menu_vertical[] =  ['content' => '<div class="separator mx-1 my-4"></div>'];

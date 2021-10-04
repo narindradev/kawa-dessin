@@ -66,13 +66,15 @@ class Project extends Model
     {
         $user_id = get_array_value($options, "user_id");
         $client = get_array_value($options, "client");
-        if (Auth::user()->admin) {
+        if (Auth::user()->user_type_id == 1) {
             /** load all project  */
             $projects = Project::query();
         } elseif ($user_id) {
+           
             /** load the user's projects assigned */
             $projects = User::find($user_id)->projects();
         } elseif ($client) {
+  
             /** load client's projects  */
             $projects = Project::where("client_id", $client);
         } else {
@@ -116,5 +118,23 @@ class Project extends Model
             $projects->whereBetween("start_date", [to_date($dates[0]), to_date($dates[1])]);
         }
         return $projects->whereDeleted(0)->orderBy('status_id', 'ASC')->latest('created_at');
+    }
+
+    public static function get_client_dropdown($for_user = 0)
+    {
+        $client_dropdown = [];
+        if ($for_user && !Auth::user()->is_admin() ) // user not admin
+        { 
+            $projects = User::find($for_user)->projects->groupby("client_id");
+            foreach ($projects as $id => $project) {
+                $client_dropdown[] = ["value" => $id, "text" => $project[0]->client->user->name];
+            }
+        } else {
+            $users = User::with("client")->whereDeleted(0)->where("user_type_id", 5)->get();
+            foreach ($users as $user) {
+                $client_dropdown[] = ["value" => $user->client->id, "text" => $user->name];
+            }
+        }
+        return $client_dropdown;
     }
 }

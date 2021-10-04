@@ -45,7 +45,7 @@ class ClientController extends Controller
             "badge" => view("project.column.badge", ["project" => $project])->render(),
             "offer" => $project->categories[0]->offer->name,
             "categories" => $project->categories->pluck("name")->implode(","),
-            "status" => view("project.column.status", ["project" => $project])->render(),
+            "status" => view("clients.column.status", ["project" => $project])->render(),
             "messenger" => view("project.column.messenger", ["project" => $project])->render(),
             "estimate" => view("clients.column.estimate", ["project" => $project ,"relaunch" => $relaunch ,"last_relaunch" => $last_relaunch])->render(),
             "version" => $project->version,

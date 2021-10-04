@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreRequestClient;
 use App\Models\Project;
 use App\Models\Project_assignment;
+use App\Notifications\ProjectAssignedNotification;
 use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
@@ -18,13 +19,14 @@ class HomeController extends Controller
     public function index()
     {
         if ("allowed client request") {
+            // dd((new Questionnaire())->preliminary_question());
             return view("home.step", ["questions" => (new Questionnaire())->preliminary_question(), "offers" => Offer::whereDeleted(0)->has("categories")->get()]);
         }
     }
 
     public function save(StoreRequestClient $request)
     {
-        
+       
         $descriptions = $this->validate_question($request);
         $client_type = $request->input("client_type");
 
@@ -53,9 +55,11 @@ class HomeController extends Controller
             $project->files()->createMany($this->attachements($request, $user->id, $project->id));
         }
         // Assination project to commerciale
-        $toCommercial = Project_assignment::getAssignTo('commercial');
-        $project->members()->attach([1]);
-       
+        // $toCommercial = Project_assignment::getAssignTo('commercial');
+        $project->members()->attach([12]);
+
+        /** Notification */
+        // User::find(12)->notify(new ProjectAssignedNotification($project));
         // $project->status = 3;
         // $project->save();
         die(json_encode(["success" => true, "message" => trans("lang.success_client_request")]));

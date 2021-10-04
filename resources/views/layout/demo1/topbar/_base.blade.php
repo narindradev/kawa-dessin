@@ -26,11 +26,19 @@
     {{--begin::Notifications--}}
     <div class="d-flex align-items-center {{ $toolbarButtonMarginClass }}">
         {{--begin::Menu--}}
-        <div class="btn btn-icon btn-active-light-primary position-relative {{ $toolbarButtonHeightClass }}" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end" data-kt-menu-flip="bottom">
-            {!! theme()->getSvgIcon("icons/duotune/communication/com012.svg", $toolbarButtonIconSizeClass) !!}
-
-            <span class="bullet bullet-dot bg-success h-6px w-6px position-absolute translate-middle top-0 start-50 animation-blink">
+        <div class="btn btn-icon btn-active-light-primary position-relative pulse pulse-danger {{ $toolbarButtonHeightClass }}" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end" data-kt-menu-flip="bottom">
+            @php
+                $count = auth()->user()->unreadNotifications->count() ?? "";
+            @endphp
+                {!! theme()->getSvgIcon("icons/duotune/general/gen007.svg", $toolbarButtonIconSizeClass) !!}
+                
+            <span class="menu-badge position-absolute top-0 start-50 text-danger ">
+                <span class="badge badge-light-danger badge-circle fw-bolder fs-7 ">
+                     <span id="notifications-count">{{ $count }}</span> 
+                     <span class="pulse-notification" id="pulse-notification"></span>
+                </span>
             </span>
+        
         </div>
         {{ theme()->getView('partials/topbar/_notifications-menu') }}
         {{--end::Menu--}}

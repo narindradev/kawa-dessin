@@ -20,8 +20,12 @@
         data-bs-trigger="hover"
 @endif>{{ trans("lang.$project->estimate") }}</span>
 @endif
+
+@section('scripts')
 <script>
     $(document).ready(function() {
         KTApp.initBootstrapTooltips();
     })
 </script>
+@endsection
+

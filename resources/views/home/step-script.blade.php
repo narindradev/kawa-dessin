@@ -158,12 +158,10 @@
                                     }
                                 }).then(function(result) {
                                     if (result.isConfirmed) {
-
+                                        window.location.replace("/login");
                                     }
                                 });
                             })
-
-
                             .catch(function(error) {
                                 let dataMessage = error.response.data.message;
                                 let dataErrors = error.response.data.errors;
@@ -264,9 +262,10 @@
             ));
 
             // Step 3
-            var fields_question = {}
-            var count_questions = "{{ $questions }}"
-            for (let i = 1; i <= parseInt(count_questions); i++) {
+            var fields_question = {};
+            var questions = @json($questions);
+            questions = JSON.parse(questions);
+            questions.forEach(function(question) {
                 var inputValidation = {
                     validators: {
                         notEmpty: {
@@ -274,9 +273,8 @@
                         }
                     }
                 }
-                fields_question["question" + i] = inputValidation
-
-            }
+                fields_question[question.name] = inputValidation
+                })
             validations.push(FormValidation.formValidation(
                 form, {
                     fields: fields_question,

@@ -1,5 +1,5 @@
 @php
-$price = "$" . $project->price ?? '0.00';
+$price = "$" . ($project->price ?? '0.00');
 @endphp
 @if ($project->price && $project->status_id == 3)
     <a href="{{ url("/project/detail/$project->id") }}"
@@ -22,15 +22,18 @@ $price = "$" . $project->price ?? '0.00';
             }
         }
     @endphp
-    <span href="#" class="badge badge-light-{{ $class }} fw-bolder fs-8 px-2  py-1 ms-2" @if ($project->estimate == 'refused')
+    <span class="badge badge-light-{{ $class }} fw-bolder fs-8 px-2  py-1 ms-2" @if ($project->estimate == 'refused')
         title="{{ $project_last_relaunch }}"
         data-bs-toggle="tooltip"
         data-bs-placement="bottom"
         data-bs-trigger="hover"
-@endif>{{ trans("lang.$project->estimate") }}</span>
 @endif
-<script>
-    $(document).ready(function() {
-        KTApp.initBootstrapTooltips();
-    })
-</script>
+>{{ trans("lang.$project->estimate") }}</span>
+@endif
+@section('scripts')
+    <script>
+        $(document).ready(function() {
+            KTApp.initBootstrapTooltips();
+        })
+    </script>
+@endsection

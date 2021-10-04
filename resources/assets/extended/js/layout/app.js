@@ -1,21 +1,23 @@
 "use strict";
 
+
+import Echo from 'laravel-echo';
 require('select2');
 require('../../../core/js/vendors/plugins/select2.init.js');
 
 var getCsrfToken = function () {
-    return  $('meta[name=csrf-token]').attr('content')
+    return $('meta[name=csrf-token]').attr('content')
 }
 // Class definition
-var KTApp = function() {
-    var initPageLoader =  function() {
+var KTApp = function () {
+    var initPageLoader = function () {
         // CSS3 Transitions only after page load(.page-loading class added to body tag and remove with JS on page load)
         KTUtil.removeClass(document.body, 'page-loading');
     }
-    
-  
 
-    var initBootstrapTooltip = function(el, options) {
+
+
+    var initBootstrapTooltip = function (el, options) {
         var delay = {};
         // Handle delay options
         if (el.hasAttribute('data-bs-delay-hide')) {
@@ -41,7 +43,7 @@ var KTApp = function() {
         // Handle dismiss
         if (options['dismiss'] && options['dismiss'] === 'click') {
             // Hide popover on element click
-            el.addEventListener("click", function(e) {
+            el.addEventListener("click", function (e) {
                 tp.hide();
             });
         }
@@ -49,7 +51,7 @@ var KTApp = function() {
         return tp;
     }
 
-    var initBootstrapTooltips = function(el, options) {
+    var initBootstrapTooltips = function (el, options) {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
 
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -57,7 +59,7 @@ var KTApp = function() {
         });
     }
 
-    var initBootstrapPopover = function(el, options) {
+    var initBootstrapPopover = function (el, options) {
         var delay = {};
 
         // Handle delay options
@@ -91,12 +93,12 @@ var KTApp = function() {
                 popover.hide();
             }
 
-            el.addEventListener('shown.bs.popover', function() {
+            el.addEventListener('shown.bs.popover', function () {
                 var dismissEl = document.getElementById(el.getAttribute('aria-describedby'));
                 dismissEl.addEventListener('click', dismissHandler);
             });
 
-            el.addEventListener('hide.bs.popover', function() {
+            el.addEventListener('hide.bs.popover', function () {
                 var dismissEl = document.getElementById(el.getAttribute('aria-describedby'));
                 dismissEl.removeEventListener('click', dismissHandler);
             });
@@ -105,7 +107,7 @@ var KTApp = function() {
         return popover;
     }
 
-    var initBootstrapPopovers = function() {
+    var initBootstrapPopovers = function () {
         var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
 
         var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
@@ -113,7 +115,7 @@ var KTApp = function() {
         });
     }
 
-    var initScrollSpy = function() {
+    var initScrollSpy = function () {
         var elements = [].slice.call(document.querySelectorAll('[data-bs-spy="scroll"]'));
 
         elements.map(function (element) {
@@ -126,14 +128,14 @@ var KTApp = function() {
         });
     }
 
-    var initButtons = function() {
+    var initButtons = function () {
         var buttonsGroup = [].slice.call(document.querySelectorAll('[data-kt-buttons="true"]'));
 
         buttonsGroup.map(function (group) {
             var selector = group.hasAttribute('data-kt-buttons-target') ? group.getAttribute('data-kt-buttons-target') : '.btn';
 
             // Toggle Handler
-            KTUtil.on(group, selector, 'click', function(e) {
+            KTUtil.on(group, selector, 'click', function (e) {
                 var buttons = [].slice.call(group.querySelectorAll(selector + '.active'));
 
                 buttons.map(function (button) {
@@ -145,9 +147,9 @@ var KTApp = function() {
         });
     }
 
-    var initCheck = function() {
+    var initCheck = function () {
         // Toggle Handler
-        KTUtil.on(document.body,  '[data-kt-check="true"]', 'change', function(e) {
+        KTUtil.on(document.body, '[data-kt-check="true"]', 'change', function (e) {
             var check = this;
             var targets = document.querySelectorAll(check.getAttribute('data-kt-check-target'));
 
@@ -161,7 +163,7 @@ var KTApp = function() {
         });
     }
 
-    var initSelect2 = function() {
+    var initSelect2 = function () {
         var elements = [].slice.call(document.querySelectorAll('[data-control="select2"], [data-kt-select2="true"]'));
 
         elements.map(function (element) {
@@ -169,7 +171,7 @@ var KTApp = function() {
                 dir: document.body.getAttribute('direction')
             };
 
-            if ( element.getAttribute('data-hide-search') == 'true') {
+            if (element.getAttribute('data-hide-search') == 'true') {
                 options.minimumResultsForSearch = Infinity;
             }
 
@@ -177,23 +179,23 @@ var KTApp = function() {
         });
     }
 
-    var initAutosize = function() {
+    var initAutosize = function () {
         var inputs = [].slice.call(document.querySelectorAll('[data-kt-autosize="true"]'));
 
         inputs.map(function (input) {
             autosize(input);
         });
     }
-    
-    var initCountUp = function() {
+
+    var initCountUp = function () {
         var elements = [].slice.call(document.querySelectorAll('[data-kt-countup="true"]:not(.counted)'));
-        
+
         elements.map(function (element) {
-            if (KTUtil.isInViewport(element) && KTUtil.visible(element) ) {
+            if (KTUtil.isInViewport(element) && KTUtil.visible(element)) {
                 var options = {};
 
                 var value = element.getAttribute('data-kt-countup-value');
-                value = parseFloat(value.replace(/,/,''));
+                value = parseFloat(value.replace(/,/, ''));
 
                 if (element.hasAttribute('data-kt-countup-start-val')) {
                     options.startVal = parseFloat(element.getAttribute('data-kt-countup-start-val'));
@@ -224,7 +226,7 @@ var KTApp = function() {
         });
     }
 
-    var initCountUpTabs = function() {
+    var initCountUpTabs = function () {
         // Initial call
         initCountUp();
 
@@ -238,9 +240,9 @@ var KTApp = function() {
         });
     }
 
-    var initTinySliders = function() {
+    var initTinySliders = function () {
         // Init Slider
-        var initSlider = function(el) {
+        var initSlider = function (el) {
             if (!el) {
                 return;
             }
@@ -248,7 +250,7 @@ var KTApp = function() {
             const tnsOptions = {};
 
             // Convert string boolean
-            const checkBool = function(val) {
+            const checkBool = function (val) {
                 if (val === 'true') {
                     return true;
                 }
@@ -259,16 +261,16 @@ var KTApp = function() {
             };
 
             // get extra options via data attributes
-            el.getAttributeNames().forEach(function(attrName) {
+            el.getAttributeNames().forEach(function (attrName) {
                 // more options; https://github.com/ganlanyuan/tiny-slider#options
                 if ((/^data-tns-.*/g).test(attrName)) {
-                    let optionName = attrName.replace('data-tns-', '').toLowerCase().replace(/(?:[\s-])\w/g, function(match) {
+                    let optionName = attrName.replace('data-tns-', '').toLowerCase().replace(/(?:[\s-])\w/g, function (match) {
                         return match.replace('-', '').toUpperCase();
                     });
 
                     if (attrName === 'data-tns-responsive') {
                         // fix string with a valid json
-                        const jsonStr = el.getAttribute(attrName).replace(/(\w+:)|(\w+ :)/g, function(matched) {
+                        const jsonStr = el.getAttribute(attrName).replace(/(\w+:)|(\w+ :)/g, function (matched) {
                             return '"' + matched.substring(0, matched.length - 1) + '":';
                         });
                         try {
@@ -305,12 +307,12 @@ var KTApp = function() {
             return;
         }
 
-        elements.forEach(function(el) {
+        elements.forEach(function (el) {
             initSlider(el);
         });
     }
 
-    var initSmoothScroll = function() {
+    var initSmoothScroll = function () {
         if (SmoothScroll) {
             new SmoothScroll('a[data-kt-scroll-toggle][href*="#"]', {
                 offset: function (anchor, toggle) {
@@ -329,87 +331,103 @@ var KTApp = function() {
             });
         }
     }
-    var initDebug = function(e){
-        $('.dropdown-menu').on('click', function(e) {
+    var initDebug = function (e) {
+        $('.dropdown-menu').on('click', function (e) {
             e.stopPropagation();
-          });
-        $('.table-responsive').on('show.bs.dropdown', function() {
+        });
+        $('.table-responsive').on('show.bs.dropdown', function () {
             $('.table-responsive').css("overflow", "inherit");
         });
-        $('.table-responsive').on('hide.bs.dropdown', function() {
+        $('.table-responsive').on('hide.bs.dropdown', function () {
             $('.table-responsive').css("overflow", "auto");
         })
     }
 
-    var initAjaxModal = function(){
+   
+    var initAjaxModal = function () {
         // Ajax modal 
-    $('body').on('click', '[data-act=ajax-modal]', function () {
-        var data = { ajaxModal: 1, "_token": getCsrfToken() },
-            url = $(this).attr('data-action-url'),
-            // crud = $(this).attr('data-crud'),
-            isLargeModal = $(this).attr('data-modal-lg'),
-            title = $(this).attr('data-title'),
-            $this =  $("#ajax-modal");
-        if (!url) {
-            console.log('Ajax Modal: Set data-action-url!');
-            return false;
-        }
-        if (title) {
-            $("#ajax-modal-title").html(title);
-        } else {
-            $("#ajax-modal-title").text($("#ajax-modal-title").attr('title'));
-        }
+        $('body').on('click', '[data-act=ajax-modal]', function () {
+            var data = { ajaxModal: 1, "_token": getCsrfToken() },
+                url = $(this).attr('data-action-url'),
+                // crud = $(this).attr('data-crud'),
+                isLargeModal = $(this).attr('data-modal-lg'),
+                title = $(this).attr('data-title'),
+                $this = $("#ajax-modal");
+            if (!url) {
+                console.log('Ajax Modal: Set data-action-url!');
+                return false;
+            }
+            if (title) {
+                $("#ajax-modal-title").html(title);
+            } else {
+                $("#ajax-modal-title").text($("#ajax-modal-title").attr('title'));
+            }
 
-        $("#ajax-modal-content").html($("#ajax-modal-original-content").html());
-        $("#ajax-modal-original-content").css("display", "none");
-        $("#ajax-modal-content").find(".original-modal-body").removeClass("original-modal-body").addClass("modal-body");
+            $("#ajax-modal-content").html($("#ajax-modal-original-content").html());
+            $("#ajax-modal-original-content").css("display", "none");
+            $("#ajax-modal-content").find(".original-modal-body").removeClass("original-modal-body").addClass("modal-body");
 
-        $(this).each(function () {
-            $.each(this.attributes, function () {
-                if (this.specified && this.name.match("^data-post-")) {
-                    var dataName = this.name.replace("data-post-", "");
-                    data[dataName] = this.value;
+            $(this).each(function () {
+                $.each(this.attributes, function () {
+                    if (this.specified && this.name.match("^data-post-")) {
+                        var dataName = this.name.replace("data-post-", "");
+                        data[dataName] = this.value;
+                    }
+                });
+            });
+            $("#trigger-ajax-modal").trigger("click")
+            $.ajax({
+                url: url,
+                data: data,
+                cache: false,
+                type: 'POST',
+                success: function (response) {
+
+                    $this.find('.modal-dialog').removeClass("modal-sm");
+                    if (isLargeModal) {
+                        $this.find('.modal-dialog').addClass("modal-lg")
+                    }
+                    $("#ajax-modal-content").html(response);
+
+                    // $("#ajax-modal-content").addClass("scroll h-"+600+"px px-5")
+                },
+                statusCode: {
+                    404: function () {
+                        $("#ajax-modal-content").find('.modal-body modal-body-content').html("");
+                        // appAlert.error("404:  Page or url action not found.", { container: '.modal-body', animate: false });
+                    }
+                },
+                error: function () {
+                    $("#ajax-modal-content").find('.modal-body modal-body-content').html("");
+                    // appAlert.error("500: Internal Server Error.", { container: '.modal-body', animate: false });
                 }
             });
+            return false;
         });
-        $("#trigger-ajax-modal").trigger("click")
-         $.ajax({
-            url: url,
-            data: data,
-            cache: false,
-            type: 'POST',
-            success: function (response) {
 
-                $this.find('.modal-dialog').removeClass("modal-sm");
-                if(isLargeModal){
-                    $this.find('.modal-dialog').addClass("modal-lg")
-                }
-                $("#ajax-modal-content").html(response);
-            
-                // $("#ajax-modal-content").addClass("scroll h-"+600+"px px-5")
-            },
-            statusCode: {
-                404: function () {
-                    $("#ajax-modal-content").find('.modal-body modal-body-content').html("");
-                    // appAlert.error("404:  Page or url action not found.", { container: '.modal-body', animate: false });
-                }
-            },
-            error: function () {
-                $("#ajax-modal-content").find('.modal-body modal-body-content').html("");
-                // appAlert.error("500: Internal Server Error.", { container: '.modal-body', animate: false });
-            }
+
+
+    }
+
+    var initLaravelEcho = function () {
+        window.Pusher = require('pusher-js');
+        window.Echo = new Echo({
+            broadcaster: 'pusher',
+            key: process.env.MIX_PUSHER_APP_KEY,
+            cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+            forceTLS: true
         });
-        return false;
-    });
-
-  
-
-}
-
-    
+    }
+    var listingLaravelEcho = function () {
+        console.log("listLaravelEcho")
+        window.Echo.private('App.Models.User.' + authUser.id)
+            .notification((notification) => {
+                hadleNotification(notification)
+            });
+    }
 
     return {
-        init: function() {
+        init: function () {
             this.initPageLoader();
 
             this.initBootstrapTooltips();
@@ -417,8 +435,8 @@ var KTApp = function() {
             this.initBootstrapPopovers();
 
             this.initScrollSpy();
-           
-           
+
+
             this.initButtons();
 
             this.initCheck();
@@ -436,92 +454,104 @@ var KTApp = function() {
             this.initSmoothScroll();
 
             this.initAjaxModal();
+
+            this.initLaravelEcho();
+           
+            this.listingLaravelEcho();
+
             this.initDebug();
 
-            
-           
+
+
         },
         initAjaxModal: function () {
             initAjaxModal()
         },
-        initPageLoader: function() {
+        initPageLoader: function () {
             initPageLoader();
         },
 
-        initBootstrapTooltip: function(el, options) {
+        initBootstrapTooltip: function (el, options) {
             return initBootstrapTooltip(el, options);
         },
 
-        initBootstrapTooltips: function() {
+        initBootstrapTooltips: function () {
             initBootstrapTooltips();
         },
 
-        initBootstrapPopovers: function() {
+        initBootstrapPopovers: function () {
             initBootstrapPopovers();
         },
 
-        initBootstrapPopover: function(el, options) {
+        initBootstrapPopover: function (el, options) {
             return initBootstrapPopover(el, options);
         },
 
-        initScrollSpy: function() {
+        initScrollSpy: function () {
             initScrollSpy();
         },
 
-        initButtons: function() {
+        initButtons: function () {
             initButtons();
         },
 
-        initCheck: function() {
+        initCheck: function () {
             initCheck();
         },
 
-        initSelect2: function() {
+        initSelect2: function () {
             initSelect2();
         },
 
-        initCountUp: function() {
+        initCountUp: function () {
             initCountUp();
         },
 
-        initCountUpTabs: function() {
+        initCountUpTabs: function () {
             initCountUpTabs();
         },
 
-        initAutosize: function() {
+        initAutosize: function () {
             initAutosize();
         },
 
-        initTinySliders: function() {
+        initTinySliders: function () {
             initTinySliders();
         },
 
-        initSmoothScroll: function() {
+        initSmoothScroll: function () {
             initSmoothScroll();
         },
 
-        isDarkMode: function() {
+        isDarkMode: function () {
             return document.body.classList.contains('dark-mode');
         },
-        
+
         initAjaxModal: function () {
             initAjaxModal()
         },
+
         initDebug: function () {
             initDebug()
         },
-      
+        initLaravelEcho: function () {
+            initLaravelEcho()
+        },
+        listingLaravelEcho: function () {
+            listingLaravelEcho()
+        },
+
     };
 }();
 
 // On document ready
-KTUtil.onDOMContentLoaded(function() {
+KTUtil.onDOMContentLoaded(function () {
     KTApp.init();
 });
 
 // On window load
-window.addEventListener("load", function() {
-	KTApp.initPageLoader();
+window.addEventListener("load", function () {
+    KTApp.initPageLoader();
 });
 
 // Webpack support

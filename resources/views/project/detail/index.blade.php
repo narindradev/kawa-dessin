@@ -2,10 +2,10 @@
     <div class="card mb-6 mb-xl-9">
         <div class="card-body pt-9 pb-0">
             <div class="d-flex flex-wrap flex-sm-nowrap mb-6">
-                <div
+                {{-- <div
                     class="d-flex flex-center flex-shrink-0 bg-light rounded w-100px h-100px w-lg-150px h-lg-150px me-7 mb-4">
                     <img class="mw-50px mw-lg-75px" src="assets/media/svg/brand-logos/volicity-9.svg" alt="image">
-                </div>
+                </div> --}}
                 <div class="flex-grow-1">
                     <div class="d-flex justify-content-between align-items-start flex-wrap mb-2">
                         <div class="d-flex flex-column">
@@ -25,20 +25,22 @@
                                 {{ $project->categories->pluck('name')->implode(',') }}</div>
                         </div>
                         <div class="d-flex mb-4">
-                            @if (!$project->estimate || $project->estimate =="refused")
-                                
-                                <a class="btn btn-sm  btn-light-primary me-3" data-project-id ={{ $project->id }}  id="accept_estimate">
-                                    <span class="indicator-label" id="accpeted">
-                                        J'accepte le devis.
-                                    </span>
-                                    <span class="indicator-progress">
-                                        Un instant...
-                                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                                    </span>
-                                </a>
-                                @php
-                                    echo modal_anchor(url("/project/refuse/estimate/$project->id"), 'Non, J\'accepte pas le devis', ['class' => 'btn btn-sm  btn-light me-3', 'title' => " "]);
-                                @endphp
+                            @if (auth()->user()->is_client())
+                                @if (!$project->estimate || $project->estimate =="refused")
+                                    
+                                    <a class="btn btn-sm  btn-light-primary me-3" data-project-id ={{ $project->id }}  id="accept_estimate">
+                                        <span class="indicator-label" id="accpeted">
+                                            J'accepte le devis.
+                                        </span>
+                                        <span class="indicator-progress">
+                                            Un instant...
+                                            <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                        </span>
+                                    </a>
+                                    @php
+                                        echo modal_anchor(url("/project/refuse/estimate/$project->id"), 'Non, J\'accepte pas le devis', ['class' => 'btn btn-sm  btn-light me-3', 'title' => " "]);
+                                    @endphp
+                                @endif
                             @endif
 
                             {{-- <div class="me-0">
@@ -163,18 +165,22 @@
                             <div class="symbol-group symbol-hover mb-3">
                                 <div class="symbol symbol-35px symbol-circle" data-bs-toggle="tooltip" title=""
                                     data-bs-original-title="Alan Warden">
-                                    <span class="symbol-label bg-warning text-inverse-warning fw-bolder">A</span>
+                                    <span class="symbol-label bg-primary text-inverse-primary fw-bolder">A</span>
                                 </div>
                                 <div class="symbol symbol-35px symbol-circle" data-bs-toggle="tooltip" title=""
                                     data-bs-original-title="Michael Eberon">
-                                    <img alt="Pic" src="assets/media/avatars/150-12.jpg">
+                                    <span class="symbol-label bg-primary text-inverse-primary fw-bolder">M</span>
                                 </div>
-                                <a href="#" class="symbol symbol-35px symbol-circle" data-bs-toggle="modal"
+                                <div class="symbol symbol-35px symbol-circle" data-bs-toggle="tooltip" title=""
+                                    data-bs-original-title="Jon Doe">
+                                    <span class="symbol-label bg-primary text-inverse-primary fw-bolder">J</span>
+                                </div>
+                                {{-- <a href="#" class="symbol symbol-35px symbol-circle" data-bs-toggle="modal"
                                     data-bs-target="#kt_modal_view_users">
                                     <span class="symbol-label bg-dark text-inverse-dark fs-8 fw-bolder"
                                         data-bs-toggle="tooltip" data-bs-trigger="hover" title=""
                                         data-bs-original-title="View more users">+42</span>
-                                </a>
+                                </a> --}}
                             </div>
                         @endif
                     </div>

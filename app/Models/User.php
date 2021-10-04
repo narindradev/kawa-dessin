@@ -96,27 +96,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $user ? $user->user_type_id === 5 :  Auth::user()->user_type_id === 5;
     }
+    public function is_admin()
+    {
+        return $this->user_type_id == 1 ;
+    }
     public function not_client()
     {
         return !$this->is_client();
-    }
-
-   
-
-    public static function get_client_dropdown($for_user = 0)
-    {
-        $client_dropdown = [];
-        if ($for_user) {
-            $projects = User::find($for_user)->projects->groupby("client_id");
-            foreach ($projects as $id => $project) {
-                $client_dropdown[] = ["value" => $id, "text" => $project[0]->client->user->name];
-            }
-        } else {
-            $users = User::with("client")->whereDeleted(0)->where("user_type_id", 5)->get();
-            foreach ($users as $user) {
-                $client_dropdown[] = ["value" => $user->client->id, "text" => $user->name];
-            }
-        }
-        return $client_dropdown;
     }
 }

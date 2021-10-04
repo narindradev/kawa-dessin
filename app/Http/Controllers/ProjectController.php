@@ -10,12 +10,12 @@ use App\Models\Category;
 use App\Models\Priority;
 use App\Models\Relaunch;
 use App\Models\UserType;
+use App\Models\InfoGround;
 use App\Models\ProjectFiles;
 use Illuminate\Http\Request;
 use App\Models\ProjectRelaunch;
-use App\Models\Project_assignment;
 use App\Http\Requests\PriceProjectRequest;
-use App\Models\InfoGround;
+use App\Notifications\ProjectAssignedNotification;
 
 class ProjectController extends Controller
 {
@@ -35,14 +35,14 @@ class ProjectController extends Controller
         }
         return (["data" => $data]);
     }
-    private function _make_row(Project $project)
+    public function _make_row(Project $project)
     {
         $client = $project->client;
         $last_relauch = ProjectRelaunch::where("project_id",$project->id)->where("created_by",$client->user->id)->latest('created_at')->first();
         $relaunch = Relaunch::where("project_id",$project->id)->where("created_by",$client->user->id)->latest('created_at')->first();
         $actions = [];
         return [
-            "DT_RowId" => row_id("project", $project->id),
+            "DT_RowId" => row_id("projects", $project->id),
             "badge" => view("project.column.badge", ["project" => $project])->render(),
             "client_info" => view("project.column.info-client", ["client" => $client, "project" => $project])->render(),
             "messenger" => view("project.column.messenger", ["client" => $client, "project" => $project])->render(),
@@ -127,7 +127,7 @@ class ProjectController extends Controller
             "label" => trans("lang.clients"),
             "name" => "client_id",
             "type" => "select",
-            "options" =>  User::get_client_dropdown(Auth::user()->id),
+            "options" =>  Project::get_client_dropdown(Auth::user()->id),
         ];
         /*
         $filters[] = [
@@ -176,6 +176,8 @@ class ProjectController extends Controller
 
     public function detail(Project $project)
     {
+        User::find(12)->notify(new ProjectAssignedNotification($project));
+        dd("ok");
         $project->load("categories");
         $project->load("infoGround");
         foreach ($project->categories as $categorie) {

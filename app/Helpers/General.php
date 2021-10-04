@@ -382,7 +382,7 @@ if (!function_exists('upload')) {
         $file->move($real_storage, $name);
         $file_info["success"] = true;
         if ($name) {
-            $file_info["url"]  = $path."/".$name;
+            $file_info["url"]  = !$public ? $path."/".$name :  "storage/".$path."/".$name;
             $file_info["src"]  = $real_storage."\\".$name;
             $file_info["type"] = $file_type;
             $file_info["size"] = $size;

@@ -11,7 +11,7 @@ class Category extends Model
     protected $table = "categories";
     protected $guarded = [];
     protected $with = ["offer"];
-
+    
     public function offer()
     {
         return $this->belongsTo(offer::class);

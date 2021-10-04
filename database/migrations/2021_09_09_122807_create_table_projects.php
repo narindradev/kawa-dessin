@@ -22,7 +22,7 @@ class CreateTableProjects extends Migration
             $table->enum("estimate" ,['accepted', 'refused'])->nullable();
             $table->integer("validation")->nullable();
             $table->integer("version")->nullable();
-            $table->boolean("deleted")->nullable();
+            $table->boolean("deleted")->default(0);
             $table->date("start_date")->nullable();
             $table->date("due_date")->nullable();
             $table->timestamps();

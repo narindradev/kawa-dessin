@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="card-body">
-            <table id="projectTable" class="table table-row-dashed align-middle  table-hover "></table>
+            <table id="projectTable" class="table table-row-dashed align-middle  table-hover"></table>
         </div>
     </div>
    

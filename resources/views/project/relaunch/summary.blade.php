@@ -34,6 +34,7 @@
 <div class="table-responsive">
     <table id="relaunchTable" class="table table-row-dashed"></table>
 </div>
+@section('scripts')
 <script>
     $(document).ready(function() {
         KTApp.initSelect2();
@@ -62,3 +63,5 @@
         })
     })
 </script>
+@endsection
+

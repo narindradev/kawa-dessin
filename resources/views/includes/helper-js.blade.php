@@ -48,7 +48,6 @@
             table.row(i - 1).data(insertedRow);
         }
         table.page(currentPage).draw(false);
-    
     }
 
     function dataTableUpdateRow(tableInstance,row, data) {
