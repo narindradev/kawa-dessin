@@ -21,7 +21,8 @@ class Project_assignment extends Model
             unset($user_list[(count($user_list)-1)]);
             $last_assigned =   $last_assigned ? $last_assigned .','.$to : $to  ;
             self::where('user_type',$user_type)->update( [ "users"=> implode(",", $user_list), "last_assigned" => $last_assigned]);
-            return $to; 
+            
+            return User::find($to);
         }else{
             self::setAssignTo($user_type);
             return self::getAssignTo($user_type);

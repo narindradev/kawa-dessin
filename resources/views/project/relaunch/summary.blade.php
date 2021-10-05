@@ -4,8 +4,8 @@
         <div class="mb-3">
             <div class="input-group">
                 <label class="form-label required ">@lang('lang.subject')</label>
-                <select name="subject" data-rule-required="true" data-hide-search="true"
-                    data-msg-required="@lang('lang.required_input')" class="form-select  form-select-solid"
+                <select name="subject" data-rule-required="true" data-hide-search="true" data-dropdown-parent="#ajax-modal"
+                    data-msg-required="@lang('lang.required_input')" class="form-select form-select-solid"
                     data-control="select2" data-placeholder="@lang('lang.subject')">
                     <option value="0" disabled selected>-- @lang('lang.subject') --</option>
                     @foreach ($subjects as $subject)
@@ -34,7 +34,6 @@
 <div class="table-responsive">
     <table id="relaunchTable" class="table table-row-dashed"></table>
 </div>
-@section('scripts')
 <script>
     $(document).ready(function() {
         KTApp.initSelect2();
@@ -63,5 +62,4 @@
         })
     })
 </script>
-@endsection
 

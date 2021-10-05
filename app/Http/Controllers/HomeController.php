@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\Questionnaire;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreRequestClient;
+use App\Jobs\AssignementProjectJob;
+use App\Jobs\CreateClientProjectJob;
 use App\Models\Project;
 use App\Models\Project_assignment;
 use App\Notifications\ProjectAssignedNotification;
@@ -50,19 +52,20 @@ class HomeController extends Controller
         $project = $client->projects()->create(["status_id" => 1, "priority_id" => 1]);
         // Attach project category
         $project->categories()->attach([$request->input("categorie")]);
-        $project->descriptions()->createMany($descriptions);
+        $attachements = [];
         if ($request->hasFile("files")) {
-            $project->files()->createMany($this->attachements($request, $user->id, $project->id));
+            $attachements = $this->attachements($request, $user->id, $project->id);  
         }
-        // Assination project to commerciale
-        // $toCommercial = Project_assignment::getAssignTo('commercial');
-        $project->members()->attach([12]);
-
+        // Save project descritions and files uploaded jobs
+        // $create_project_jobs = new CreateClientProjectJob($project ,$descriptions , $attachements);
+        $this->dispatch(new CreateClientProjectJob($project ,$descriptions , $attachements));
+        
         /** Notification */
         // User::find(12)->notify(new ProjectAssignedNotification($project));
         // $project->status = 3;
         // $project->save();
-        die(json_encode(["success" => true, "message" => trans("lang.success_client_request")]));
+        
+        return ["success" => true, "message" => trans("lang.success_client_request")];
     }
 
     private function validate_question(StoreRequestClient $request)

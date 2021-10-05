@@ -28,7 +28,7 @@
         $("#estimate-form").appForm({
             onSuccess: function(response) {
                 if (response.project) {
-                    dataTableUpdateRow(dataTableInstance.projectTable, response.row, response.project)
+                    dataTableUpdateRow(dataTableInstance.projectsTable, response.row_id, response.project)
                 }
             },
         })

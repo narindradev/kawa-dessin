@@ -23,7 +23,7 @@
                     {{-- @include('project.filters.filters-advanced' ,["inputs" => $advance_filter]) --}}
                 </div>
                 <div class="filter-datatable">
-                    @include('project..filters.filters-basic', ["inputs" => $basic_filter ,"filter_for" => "offerTable"])
+                    @include('project.filters.filters-basic', ["inputs" => $basic_filter ,"filter_for" => "offerTable"])
                 </div>
                 <div class="me-4 my-2 ">
                     <div class="d-flex align-items-center position-relative my-1">
@@ -39,14 +39,14 @@
             </div>
         </div>
         <div class="card-body">
-            <table id="projectTable" class="table table-row-dashed align-middle  table-hover"></table>
+            <table id="projectsTable" class="table table-row-dashed align-middle  table-hover"></table>
         </div>
     </div>
    
     @section('scripts')
         <script>
             $(document).ready(function() {
-                dataTableInstance.projectTable = $("#projectTable").DataTable({
+                dataTableInstance.projectsTable = $("#projectsTable").DataTable({
                     dom : 'tir',
                     processing: true,
                     columns: [
@@ -64,6 +64,7 @@
                     ajax: {
                         url: url("/project/list"),
                         data: function(data) {
+                            
                             <?php foreach(inputs_filter_datatable($basic_filter) as $input ) { ?>
                                 data.{{ $input }} = $("#{{ $input }}").val();
                             <?php } ?>
@@ -73,11 +74,11 @@
                 });
                 
                 $('#search_project').on('keyup', function() {
-                    dataTableInstance.projectTable.search(this.value).draw();
+                    dataTableInstance.projectsTable.search(this.value).draw();
                 });
                 
                 $('#do-search-project').on('click', function() {
-                    dataTableInstance.projectTable.ajax.reload();
+                    dataTableInstance.projectsTable.ajax.reload();
                 });
             })
         </script>

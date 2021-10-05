@@ -1,7 +1,3 @@
-"use strict";
-
-
-import Echo from 'laravel-echo';
 require('select2');
 require('../../../core/js/vendors/plugins/select2.init.js');
 
@@ -14,9 +10,6 @@ var KTApp = function () {
         // CSS3 Transitions only after page load(.page-loading class added to body tag and remove with JS on page load)
         KTUtil.removeClass(document.body, 'page-loading');
     }
-
-
-
     var initBootstrapTooltip = function (el, options) {
         var delay = {};
         // Handle delay options
@@ -75,7 +68,7 @@ var KTApp = function () {
             options['delay'] = delay;
         }
 
-        // Handle dismiss option
+        // Handle dismiss option.
         if (el.getAttribute('data-bs-dismiss') == 'true') {
             options['dismiss'] = true;
         }
@@ -408,23 +401,7 @@ var KTApp = function () {
 
 
     }
-
-    var initLaravelEcho = function () {
-        window.Pusher = require('pusher-js');
-        window.Echo = new Echo({
-            broadcaster: 'pusher',
-            key: process.env.MIX_PUSHER_APP_KEY,
-            cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-            forceTLS: true
-        });
-    }
-    var listingLaravelEcho = function () {
-        console.log("listLaravelEcho")
-        window.Echo.private('App.Models.User.' + authUser.id)
-            .notification((notification) => {
-                hadleNotification(notification)
-            });
-    }
+    
 
     return {
         init: function () {
@@ -455,9 +432,6 @@ var KTApp = function () {
 
             this.initAjaxModal();
 
-            this.initLaravelEcho();
-           
-            this.listingLaravelEcho();
 
             this.initDebug();
 
@@ -534,27 +508,28 @@ var KTApp = function () {
         initDebug: function () {
             initDebug()
         },
-        initLaravelEcho: function () {
-            initLaravelEcho()
-        },
-        listingLaravelEcho: function () {
-            listingLaravelEcho()
-        },
+      
 
     };
 }();
 
+
 // On document ready
 KTUtil.onDOMContentLoaded(function () {
     KTApp.init();
+    
 });
 
-// On window load
-window.addEventListener("load", function () {
-    KTApp.initPageLoader();
-});
+
 
 // Webpack support
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     module.exports = KTApp;
-}
+};
+
+
+// On window load
+window.addEventListener("load", function () {
+    KTApp.initPageLoader();
+
+});

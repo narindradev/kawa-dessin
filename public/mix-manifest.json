@@ -17,6 +17,7 @@
     "/demo1/js/custom/authentication/sign-in/general.js": "/demo1/js/custom/authentication/sign-in/general.js",
     "/demo1/js/custom/authentication/sign-up/general.js": "/demo1/js/custom/authentication/sign-up/general.js",
     "/demo1/js/custom/modals/two-factor-authentication.js": "/demo1/js/custom/modals/two-factor-authentication.js",
+    "/demo1/js/custom/notification/notification.js": "/demo1/js/custom/notification/notification.js",
     "/demo1/js/layout/app.js": "/demo1/js/layout/app.js",
     "/demo1/js/vendors/plugins/datatables.init.js": "/demo1/js/vendors/plugins/datatables.init.js",
     "/demo1/js/custom/documentation/base/indicator.js": "/demo1/js/custom/documentation/base/indicator.js",

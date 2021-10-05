@@ -86,6 +86,7 @@ class Project extends Model
         if ($client_id) {
             $projects->where("client_id", $client_id);
         }
+       
         $status_id = get_array_value($options, "status_id");
         if ($status_id) {
             $projects->where("status_id", $status_id);
@@ -110,6 +111,12 @@ class Project extends Model
         if ($categorie_id) {
             $projects->whereHas('categories', function ($query) use ($categorie_id) {
                 $query->where('category_id', $categorie_id);
+            });
+        }
+        $type = get_array_value($options, "client_type");
+        if ($type) {
+            $projects->whereHas('client', function ($query) use ($type) {
+                $query->where('type', $type);
             });
         }
         $date = get_array_value($options, "date");

@@ -23,3 +23,24 @@ window.KTLayoutAside = require('./layout/aside.js');
 window.KTLayoutExplore = require('./layout/explore.js');
 window.KTLayoutSearch = require('./layout/search.js');
 window.KTLayoutToolbar = require('./layout/toolbar.js');
+
+
+import Echo from 'laravel-echo';
+var initLaravelEcho = function () {
+    window.Pusher = require('pusher-js');
+    window.Echo = new Echo({
+        broadcaster: 'pusher',
+        key: process.env.MIX_PUSHER_APP_KEY,
+        cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+        forceTLS: true
+    });
+}
+var listingLaravelEcho = function () {
+    console.log("listLaravelEcho")
+    window.Echo.private('App.Models.User.' + authUser.id)
+        .notification((notification) => {
+            hadleNotification(notification)
+        });
+}
+initLaravelEcho()
+listingLaravelEcho()

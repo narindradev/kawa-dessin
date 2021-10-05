@@ -37,7 +37,7 @@
     function dataTableaddRowIntheTop(tableInstance, data) {
         var table = tableInstance
         var currentPage = table.page();
-        table.row.add(data).draw()
+        table.row.add(data).draw(true)
         var index = table.row(0).index(),
             rowCount = table.data().length - 1,
             insertedRow = table.row(rowCount).data(),
@@ -50,7 +50,7 @@
         table.page(currentPage).draw(false);
     }
 
-    function dataTableUpdateRow(tableInstance,row, data) {
-        tableInstance.row("#"+row).data(data).draw();
+    function dataTableUpdateRow(tableInstance,row_id, data) {
+        tableInstance.row("#"+row_id).data(data).draw();
     }
 </script>

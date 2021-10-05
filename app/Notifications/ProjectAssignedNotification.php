@@ -73,7 +73,7 @@ class ProjectAssignedNotification extends Notification
             "project_id" => $this->project->id,
             "extra_data" => [
                 "type" => "dataTable",
-                "table" => "projectTable",
+                "table" => "projectsTable",
                 // "row_id" => row_id("projects",$this->project->id),
                 "row" => $render->_make_row($this->project)
             ]

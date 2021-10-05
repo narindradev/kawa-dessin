@@ -1,6 +1,7 @@
 <div class="card card-custom ">
     <div class="fv-row mb-0 fv-plugins-icon-container">
-        <form id="refuse-form-estimate" method="POST" action="{{ url("/project/estimate/save_refuse/$project->id") }}">
+        <form id="refuse-form-estimate" method="POST"
+            action="{{ url("/project/estimate/save_refuse/$project->id") }}">
             @csrf
             <div class="mb-3">
                 <label class="form-label required ">@lang('lang.reason')</label>
@@ -9,9 +10,10 @@
                         data-msg-required="@lang('lang.required_input')" class="form-select form-select-solid"
                         data-control="select2" data-placeholder="@lang('lang.subject')">
                         <option value="0" disabled selected>-- @lang('lang.reason') --</option>
-                            @foreach ($subjects as $subject)
-                                <option value="{{ get_array_value($subject, 'value') }}"> {{ get_array_value($subject, 'text') }}</option>
-                            @endforeach
+                        @foreach ($subjects as $subject)
+                            <option value="{{ get_array_value($subject, 'value') }}">
+                                {{ get_array_value($subject, 'text') }}</option>
+                        @endforeach
                     </select>
                 </div>
             </div>
@@ -26,7 +28,8 @@
                 <button type="button" data-bs-dismiss="modal" aria-label="Close"
                     class="btn btn-light-light btn-sm mr-2 "> @lang('lang.cancel')</button>
                 <button type="submit" id="submit" class=" btn btn-sm btn-light-primary  mr-2">
-                    @include('partials.general._button-indicator', ['label' => trans('lang.save'),"message" => trans('lang.sending')])
+                    @include('partials.general._button-indicator', ['label' => trans('lang.save'),"message" =>
+                    trans('lang.sending')])
                 </button>
             </div>
         </form>
@@ -34,9 +37,7 @@
 </div>
 <script>
     $(document).ready(function() {
-        KTApp.initSelect2();
-        KTApp.initAutosize();
-        KTApp.initBootstrapTooltips();
+
         $("#refuse-form-estimate").appForm({
             onSuccess: function(response) {
                 if (response.project) {
@@ -44,5 +45,12 @@
                 }
             },
         })
+
+        // KTUtil.onDOMContentLoaded(function() {
+            KTApp.initSelect2();
+            KTApp.initAutosize();
+            KTApp.initBootstrapTooltips();
+        // });
+
     })
 </script>

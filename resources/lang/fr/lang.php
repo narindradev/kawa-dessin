@@ -122,5 +122,5 @@ return [
     'signin' => 'Se connecter',    
     'log_you' => 'connectez-vous',    
     'comment' => 'Commentaire',    
-    'response' => 'Response',    
+    'client_type' => 'Type de client',    
 ];

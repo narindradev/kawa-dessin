@@ -9,7 +9,6 @@ use App\Models\Project;
 use App\Models\Category;
 use App\Models\Priority;
 use App\Models\Relaunch;
-use App\Models\UserType;
 use App\Models\InfoGround;
 use App\Models\ProjectFiles;
 use Illuminate\Http\Request;
@@ -101,7 +100,7 @@ class ProjectController extends Controller
         $project->price = $request->devis;
         $project->status_id = 3; // estimated
         $project->save();
-        die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row" => row_id("project", $project->id), "project" => $this->_make_row($project)]));
+        die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "project" => $this->_make_row($project)]));
     }
     private function advance_filter()
     {
@@ -136,6 +135,16 @@ class ProjectController extends Controller
             "type" => "date-range",
         ];
         */
+        $filters[] = [
+            "label" => trans("lang.client_type"),
+            "name" => "client_type",
+            "type" => "select",
+            "options" => [
+                ["value" => "particular" ,"text" => "Particulier"],
+                ["value" => "corporate" ,"text" => "Entreprise"],
+            ],
+        ];
+        
         $filters[] = [
             "label" => trans("lang.priority"),
             "name" => "priority_id",
@@ -176,8 +185,8 @@ class ProjectController extends Controller
 
     public function detail(Project $project)
     {
-        User::find(12)->notify(new ProjectAssignedNotification($project));
-        dd("ok");
+        // User::find(12)->notify(new ProjectAssignedNotification($project));
+        // dd("ok");
         $project->load("categories");
         $project->load("infoGround");
         foreach ($project->categories as $categorie) {

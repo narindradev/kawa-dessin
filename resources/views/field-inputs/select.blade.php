@@ -15,6 +15,6 @@ if ($attributes) {
     data-placeholder="Select option" {!! $html !!}>
     <option value="0"> -- {{get_array_value($field, 'label') }} --</option>
     @foreach ($options as $option)
-        <option value=" {{ get_array_value($option, 'value') }}" {{ get_array_value($option, 'selected') ? 'selected' : '' }}> {{ get_array_value($option, 'text') }} </option>
+        <option value="{{ get_array_value($option, 'value') }}" {{ get_array_value($option, 'selected') ? 'selected' : '' }}> {{ get_array_value($option, 'text') }} </option>
     @endforeach
 </select>

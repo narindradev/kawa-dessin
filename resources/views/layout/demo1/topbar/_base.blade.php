@@ -26,7 +26,7 @@
     {{--begin::Notifications--}}
     <div class="d-flex align-items-center {{ $toolbarButtonMarginClass }}">
         {{--begin::Menu--}}
-        <div class="btn btn-icon btn-active-light-primary position-relative pulse pulse-danger {{ $toolbarButtonHeightClass }}" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end" data-kt-menu-flip="bottom">
+        <div id="bell-icon" class="btn btn-icon btn-active-light-primary position-relative pulse pulse-danger {{ $toolbarButtonHeightClass }}" data-kt-menu-trigger="click" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end" data-kt-menu-flip="bottom">
             @php
                 $count = auth()->user()->unreadNotifications->count() ?? "";
             @endphp
