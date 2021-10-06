@@ -18,7 +18,7 @@ class Category extends Model
     }
     public function questionnaires()
     {
-        return $this->hasMany(Questionnaire::class,"category_id");
+        return $this->hasMany(Questionnaire::class,"category_id")->whereDeleted(0);
     }
 
     public function projects()

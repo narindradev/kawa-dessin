@@ -27,6 +27,7 @@
                     columns: [
                         {title: 'id',"class":"text-left"},
                         {title: 'name',"class":"text-left"},
+                        {title: 'Affiché au formulaire du client',"class":"text-left"},
                         {title: 'description',"class":"text-left"},
                         {title: '<i class="fas fa-bars" style="font-size:20px"></i>',"orderable":false,"searchable":false,"class":"text-center"},
                     ],

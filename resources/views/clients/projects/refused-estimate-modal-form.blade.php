@@ -37,7 +37,9 @@
 </div>
 <script>
     $(document).ready(function() {
-
+        KTApp.initSelect2();
+        KTApp.initAutosize();
+        KTApp.initBootstrapTooltips();
         $("#refuse-form-estimate").appForm({
             onSuccess: function(response) {
                 if (response.project) {
@@ -45,12 +47,5 @@
                 }
             },
         })
-
-        // KTUtil.onDOMContentLoaded(function() {
-            KTApp.initSelect2();
-            KTApp.initAutosize();
-            KTApp.initBootstrapTooltips();
-        // });
-
     })
 </script>

@@ -13,8 +13,9 @@ use App\Models\InfoGround;
 use App\Models\ProjectFiles;
 use Illuminate\Http\Request;
 use App\Models\ProjectRelaunch;
+use App\Models\ProjectDescription;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\PriceProjectRequest;
-use App\Notifications\ProjectAssignedNotification;
 
 class ProjectController extends Controller
 {
@@ -34,13 +35,13 @@ class ProjectController extends Controller
         }
         return (["data" => $data]);
     }
-    public function _make_row(Project $project)
+    public function _make_row(Project $project, $for_user = null)
     {
         $client = $project->client;
-        $last_relauch = ProjectRelaunch::where("project_id",$project->id)->where("created_by",$client->user->id)->latest('created_at')->first();
-        $relaunch = Relaunch::where("project_id",$project->id)->where("created_by",$client->user->id)->latest('created_at')->first();
+        $last_relauch = ProjectRelaunch::where("project_id", $project->id)->where("created_by", $client->user->id)->latest('created_at')->first();
+        $relaunch = Relaunch::where("project_id", $project->id)->where("created_by", $client->user->id)->latest('created_at')->first();
         $actions = [];
-        return [
+        $column = [
             "DT_RowId" => row_id("projects", $project->id),
             "badge" => view("project.column.badge", ["project" => $project])->render(),
             "client_info" => view("project.column.info-client", ["client" => $client, "project" => $project])->render(),
@@ -48,11 +49,15 @@ class ProjectController extends Controller
             "categories" => $project->categories->pluck("name")->implode(" , ", "name"),
             "client_type" => view("project.column.client-type", ["client" => $client])->render(),
             "status" => view("project.column.status", ["project" => $project])->render(),
-            "estimate" => view("project.column.estimate", ["project" => $project ,"last_relaunch" => $last_relauch ,"relaunch" =>  $relaunch])->render(),
+            "estimate" => view("project.column.estimate", ["project" => $project, "last_relaunch" => $last_relauch, "relaunch" =>  $relaunch])->render(),
             "version" => $project->version,
             "date" => $project->created_at->format("d-M-Y"),
             "actions" => view("project.column.actions", ["actions" => $actions, "project" => $project])->render(),
         ];
+        if($for_user && $for_user->user_type_id == 2){
+            
+        }
+        return  $column; 
     }
     /** Relaunch summary */
     public  function relaunch(Project $project)
@@ -73,7 +78,7 @@ class ProjectController extends Controller
         $data = $relaunchs = [];
         $project->load("relaunchs");
         $relaunchs = $project->relaunchs;
-        
+
         foreach ($relaunchs as $relaunch) {
             $relaunch->load("subject");
             $data[] = $this->_make_relaunch_row($relaunch);
@@ -84,9 +89,9 @@ class ProjectController extends Controller
     private function _make_relaunch_row($relaunch)
     {
         return [
-            "subjet" => $relaunch->subject ? $relaunch->subject->description :"",
+            "subjet" => $relaunch->subject ? $relaunch->subject->description : "",
             "note" => $relaunch->note ?? "-",
-            "date" => "<span class ='text-muted me-2 fs-7'> <i>" .$relaunch->created_at->diffForHumans()."</i></span>",
+            "date" => "<span class ='text-muted me-2 fs-7'> <i>" . $relaunch->created_at->diffForHumans() . "</i></span>",
             "created_by" => $relaunch->createBy->name,
             "status" => '<i class="fas fa-check text-success"></i>',
         ];
@@ -140,11 +145,11 @@ class ProjectController extends Controller
             "name" => "client_type",
             "type" => "select",
             "options" => [
-                ["value" => "particular" ,"text" => "Particulier"],
-                ["value" => "corporate" ,"text" => "Entreprise"],
+                ["value" => "particular", "text" => "Particulier"],
+                ["value" => "corporate", "text" => "Entreprise"],
             ],
         ];
-        
+
         $filters[] = [
             "label" => trans("lang.priority"),
             "name" => "priority_id",
@@ -205,18 +210,24 @@ class ProjectController extends Controller
         }
         return ["success" => true, "message" => trans("lang.success_record")];
     }
-    public function save_info_exist_building(Request $request, Project $project)
-    {
 
+    public function save_responses_of_question(Request $request, Project $project)
+    {
+        $project_id = $project->id;
+        $responses = $request->except("_token");
+        foreach ($responses as $input => $value) {
+            $questionnaire_id = str_replace("questionnaire_id_", "", $input);
+           if($questionnaire_id){
+               ProjectDescription::updateOrCreate(
+                   ["project_id" => $project_id, "questionnaire_id" => $questionnaire_id],
+                   ["answer" => $value]
+               );
+               Cache::forget("response_of_questionnaire_id_" . $questionnaire_id . "project_id_" . $project_id);
+           }
+        }
         return ["success" => true, "message" => trans("lang.success_record")];
     }
-    public function save_resp_questionaires_categories(Request $request, Project $project)
-    {
-        return ["success" => true, "message" => trans("lang.success_record")];
-    }
-
-
-
+   
     public function tab_description(Project $project)
     {
         $project->load("descriptions");

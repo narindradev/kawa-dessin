@@ -17,6 +17,7 @@ class CreateTableOffers extends Migration
             $table->id();
             $table->string("name");
             $table->longText("description")->nullable();
+            $table->boolean("active")->default(1);
             $table->boolean("deleted")->default(0);
             $table->timestamps();
         });

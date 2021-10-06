@@ -26,14 +26,8 @@ class OfferController extends Controller
         Cache::forget('offer_data');
         $offer->name = $request->input("title");
         $offer->description = $request->input("description");
-      
-        
-        if($request->hasFile("image")){
-            ini_set("memory_limit" ,"128M");
-            ini_set("post_max_size" ,"120M");
-            ini_set("upload_max_filesize" ,"120M");
-            upload($request->file("image"));
-        }
+        $offer->active = $request->input("active") ?? 0;
+
         if ($offer->save()) {
             die(json_encode(["success" => true, "message" => trans("lang.success_record") , "data" =>$this->_make_row($offer) ]));
         }
@@ -53,6 +47,8 @@ class OfferController extends Controller
         return [
             "#" . $data->id,
             $data->name,
+            $data->active ? '<span class="badge badge-light-primary fw-bolder fs-8 px-2 py-1 ms-2">Oui</span>' : '<span class="badge badge-light-danger fw-bolder fs-8 px-2 py-1 ms-2">Non</span>',
+
             Str::limit($data->description, 50) ?? '-',
             modal_anchor(url("/questionnaireOffer/form_modal/$data->id"), '<i class="text-hover-primary fas fa-question-circle" style="font-size:15px"></i>', ["class" => "btn btn-sm btn-clean " ,'title' => trans('lang.add_question')]) .
             anchor(url("/offer/detail/$data->id"), '<i class=" text-hover-primary fas fa-eye" style="font-size:15px"></i>', ["class" => "btn btn-sm btn-clean "]) .

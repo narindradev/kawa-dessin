@@ -17,6 +17,7 @@ class CreateCategoriesTable extends Migration
             $table->id();
             $table->string("name");
             $table->string("description")->nullable();
+            $table->boolean("active")->default(1);
             $table->foreignId("offer_id");
             $table->boolean("deleted")->default(0);
             $table->timestamps();

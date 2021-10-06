@@ -17,6 +17,16 @@
                         placeholder="Description de l'offre ...">{{ $offer->description ?? '' }}</textarea>
                 </div>
             </div>
+            <div class="form-group">
+                <div class="mb-10">
+                    <div class="form-check form-switch form-check-custom form-check-solid me-10">
+                        <input class="form-check-input h-20px w-30px" type="checkbox"  @if($offer->active) checked @endif name = "active" value="1" id="active"/>
+                        <label class="form-check-label" for="active">
+                            Affiché l'offre au formulaire du client
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="card-footer d-flex justify-content-end">
             <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn btn-light-light btn-sm mr-2 ">

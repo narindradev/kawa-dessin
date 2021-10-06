@@ -1,12 +1,12 @@
 <?php
+
 use Illuminate\Support\Str;
-
-
+use Illuminate\Support\Facades\Cache;
 if (!function_exists('get_svg_icon')) {
     function get_svg_icon($path, $class = null, $svgClass = null)
     {
         if (strpos($path, 'media') === false) {
-            $path = theme()->getMediaUrlPath().$path;
+            $path = theme()->getMediaUrlPath() . $path;
         }
 
         $file_path = public_path($path);
@@ -98,11 +98,11 @@ if (!function_exists('get_svg_icon')) {
 
         $asd = explode('/media/', $path);
         if (isset($asd[1])) {
-            $path = 'assets/media/'.$asd[1];
+            $path = 'assets/media/' . $asd[1];
         }
 
         $output = "<!--begin::Svg Icon | path: $path-->\n";
-        $output .= '<span class="'.implode(' ', $cls).'">'.$string.'</span>';
+        $output .= '<span class="' . implode(' ', $cls) . '">' . $string . '</span>';
         $output .= "\n<!--end::Svg Icon-->";
 
         return $output;
@@ -146,7 +146,7 @@ if (!function_exists('bootstrap')) {
         $bootstrap = "\App\Core\Bootstraps\Bootstrap$demo";
 
         if (!class_exists($bootstrap)) {
-            abort(404, 'Demo has not been set or '.$bootstrap.' file is not found.');
+            abort(404, 'Demo has not been set or ' . $bootstrap . ' file is not found.');
         }
 
         return app($bootstrap);
@@ -166,19 +166,19 @@ if (!function_exists('assetCustom')) {
     {
         // Include rtl css file
         if (isRTL()) {
-            return asset(theme()->getDemo().'/'.dirname($path).'/'.basename($path, '.css').'.rtl.css');
+            return asset(theme()->getDemo() . '/' . dirname($path) . '/' . basename($path, '.css') . '.rtl.css');
         }
 
         // Include dark style css file
         if (theme()->isDarkModeEnabled() && theme()->getCurrentMode() !== 'default') {
-            $darkPath = str_replace('.bundle', '.'.theme()->getCurrentMode().'.bundle', $path);
-            if (file_exists(public_path(theme()->getDemo().'/'.$darkPath))) {
-                return asset(theme()->getDemo().'/'.$darkPath);
+            $darkPath = str_replace('.bundle', '.' . theme()->getCurrentMode() . '.bundle', $path);
+            if (file_exists(public_path(theme()->getDemo() . '/' . $darkPath))) {
+                return asset(theme()->getDemo() . '/' . $darkPath);
             }
         }
 
         // Include default css file
-        return asset(theme()->getDemo().'/'.$path);
+        return asset(theme()->getDemo() . '/' . $path);
     }
 }
 
@@ -263,16 +263,16 @@ if (!function_exists('file_type')) {
  * @param string
  */
 if (!function_exists('app_check_secure')) {
-    function app_check_secure($string ="" ,$data_encrypted =null , $from_ajax = false)
+    function app_check_secure($string = "", $data_encrypted = null, $from_ajax = false)
     {
         $is_secured = app_secure_encrypt($string) === $data_encrypted;
-        if(!$is_secured){
-            if($from_ajax){
-                die(json_encode(["success" => false  ,"message" =>" Data not secured"]));
-            }else{
+        if (!$is_secured) {
+            if ($from_ajax) {
+                die(json_encode(["success" => false, "message" => " Data not secured"]));
+            } else {
                 return abort(405);
             }
-        return $is_secured ;
+            return $is_secured;
         }
     }
 }
@@ -283,7 +283,7 @@ if (!function_exists('app_check_secure')) {
 if (!function_exists('app_secure_encrypt')) {
     function app_secure_encrypt($string = "")
     {
-            return md5(md5("app-encrypt-".$string));
+        return md5(md5("app-encrypt-" . $string));
     }
 }
 /** 
@@ -291,9 +291,9 @@ if (!function_exists('app_secure_encrypt')) {
  * @param string
  */
 if (!function_exists('app_secure_input')) {
-    function app_secure_input($name = "_data_secure" ,$value = "")
+    function app_secure_input($name = "_data_secure", $value = "")
     {
-            return "<input type ='hidden' name = '$name' value ='$value' />";
+        return "<input type ='hidden' name = '$name' value ='$value' />";
     }
 }
 
@@ -332,7 +332,7 @@ if (!function_exists('format_to_KMG')) {
  * @retrun path
  */
 if (!function_exists('get_file_uri')) {
-    function get_file_uri($file = "", $path = "",$storage = "public")
+    function get_file_uri($file = "", $path = "", $storage = "public")
     {
         if ($storage == "public") {
             return asset($path) . "/" . $file;
@@ -365,25 +365,25 @@ if (!function_exists('get_format_image')) {
  * @return array
  */
 if (!function_exists('upload')) {
-    function upload($file, $path = null ,$public = true)
+    function upload($file, $path = null, $public = true)
     {
-        
+
         $extension = $file->extension();
         $size = $file->getSize();
-        $file_type = get_file_type("." . $extension) ;
+        $file_type = get_file_type("." . $extension);
         $file_info = [];
         $file_info["success"] = false;
         if (!$file) {
             return $file_info;
         }
         $path =  $path ? $path : "uploads";
-        $real_storage = ($public === "public") ? public_path($path) : storage_path("app/public/".$path);
-        $name =  $file_type."-". Str::uuid(). '.' . $extension;
+        $real_storage = ($public === "public") ? public_path($path) : storage_path("app/public/" . $path);
+        $name =  $file_type . "-" . Str::uuid() . '.' . $extension;
         $file->move($real_storage, $name);
         $file_info["success"] = true;
         if ($name) {
-            $file_info["url"]  = !$public ? $path."/".$name :  "storage/".$path."/".$name;
-            $file_info["src"]  = $real_storage."\\".$name;
+            $file_info["url"]  = !$public ? $path . "/" . $name :  "storage/" . $path . "/" . $name;
+            $file_info["src"]  = $real_storage . "\\" . $name;
             $file_info["type"] = $file_type;
             $file_info["size"] = $size;
             $file_info["name"] = $name;
@@ -400,9 +400,9 @@ if (!function_exists('upload')) {
  * @return array
  */
 if (!function_exists('move')) {
-    function move($file, $path = null ,$storage = "public")
+    function move($file, $path = null, $storage = "public")
     {
-        return upload($file,$path,$storage); 
+        return upload($file, $path, $storage);
     }
 }
 
@@ -444,9 +444,9 @@ if (!function_exists('modal_anchor')) {
 
     function modal_anchor($url, $title = '', $attributes = [])
     {
-        if(!get_array_value($attributes, "data-drawer")){
+        if (!get_array_value($attributes, "data-drawer")) {
             $attributes["data-act"] = "ajax-modal";
-        }else{
+        } else {
             $attributes["data-act"] = "ajax-drawer";
         }
 
@@ -495,7 +495,7 @@ if (!function_exists('anchor')) {
         $uri = url($uri);
         $title = (string) $title;
         $html_attributes = "";
-        if(1){
+        if (1) {
             $attributes['data-bs-toggle'] = "tooltip";
             $attributes['data-bs-custom-class'] = "tooltip-dark";
             $attributes['data-bs-placement'] = "left";
@@ -515,38 +515,47 @@ if (!function_exists('anchor')) {
 
 if (!function_exists('inputs_filter_datatable')) {
 
-    function inputs_filter_datatable($filters= [])
+    function inputs_filter_datatable($filters = [])
     {
-        $ids=[];
+        $ids = [];
         foreach ($filters as $filter) {
-            $ids[]= get_array_value($filter,"name");
+            $ids[] = get_array_value($filter, "name");
         }
         return $ids;
     }
 }
 if (!function_exists('to_date')) {
 
-    function to_date($date="")
+    function to_date($date = "")
     {
-       return DateTime::createFromFormat('d/m/Y', str_replace(" ","",$date))->format('Y-m-d');
-        
+        return DateTime::createFromFormat('d/m/Y', str_replace(" ", "", $date))->format('Y-m-d');
     }
 }
 if (!function_exists('file_sisze')) {
 
-    function file_sisze( $size = 0)
+    function file_sisze($size = 0)
     {
-        
-        $units = array( 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
+        $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
         $power = $size > 0 ? floor(log($size, 1024)) : 0;
         return number_format($size / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power];
     }
 }
 
 if (!function_exists('row_id')) {
-    function row_id($table_name = "table" ,$id = 0)
+    function row_id($table_name = "table", $id = 0)
     {
-        return $table_name."_row_".$id;
+        return $table_name . "_row_" . $id;
     }
 }
-
+if (!function_exists('get_response_of_question')) {
+    function get_response_of_question($questionnaire_id = 0, $project_id = 0)
+    {
+        return Cache::get(
+            'response_of_questionnaire_id_' . $questionnaire_id . 'project_id_' . $project_id, 
+            function () use ($questionnaire_id , $project_id ){
+                $response = App\Models\ProjectDescription::where("questionnaire_id", $questionnaire_id)->where("project_id", $project_id)->first();
+                return $response ? $response->answer : "";
+            }
+        );
+    }
+}

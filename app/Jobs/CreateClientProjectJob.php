@@ -39,7 +39,6 @@ class CreateClientProjectJob implements ShouldQueue
     public function handle()
     {
         $user = Project_assignment::getAssignTo('commercial');
-
         // $this->project->members()->attach([$user->id]);
         $this->project->members()->attach([12]);
 

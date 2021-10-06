@@ -4,15 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Offer;
-use Illuminate\Http\Request;
 use App\Models\Questionnaire;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreRequestClient;
-use App\Jobs\AssignementProjectJob;
 use App\Jobs\CreateClientProjectJob;
-use App\Models\Project;
-use App\Models\Project_assignment;
-use App\Notifications\ProjectAssignedNotification;
 use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
@@ -22,7 +17,7 @@ class HomeController extends Controller
     {
         if ("allowed client request") {
             // dd((new Questionnaire())->preliminary_question());
-            return view("home.step", ["questions" => (new Questionnaire())->preliminary_question(), "offers" => Offer::whereDeleted(0)->has("categories")->get()]);
+            return view("home.step", ["questions" => (new Questionnaire())->preliminary_question(), "offers" => Offer::whereDeleted(0)->whereActive(1)->has("categories")->get()]);
         }
     }
 

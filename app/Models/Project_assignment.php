@@ -31,7 +31,7 @@ class Project_assignment extends Model
     public static function setAssignTo($user_type = "")
     {
         $user_type = UserType::where("name",$user_type)->first();
-        $user = User::where('user_type_id',$user_type->id)->get();
+        $user = User::where('user_type_id',$user_type->id)->whereDeleted(0)->get();
         return Project_assignment::where('user_type',$user_type->name)->update(["users" => $user->implode("id",","),"last_assigned" =>null]);
     }
 

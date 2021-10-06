@@ -7,9 +7,9 @@
         </div>
     </div>
 
-    {{-- <div class="card card-flush mb-3 ">
+    <div class="card card-flush mb-3 ">
         @include('project.filters.users-tag' ,["users" => $users])
-    </div> --}}
+    </div>
 
     <div class="card card-flush ">
 

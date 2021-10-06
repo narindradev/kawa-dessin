@@ -14,7 +14,6 @@ class Project extends Model
     protected $table = "projects";
     protected $guarded = [];
     // protected $with = ["categories" ,"client" ,"status"];
-
     public function client()
     {
         return $this->belongsTo(Client::class);
@@ -38,7 +37,7 @@ class Project extends Model
     }
     public function files()
     {
-        return $this->hasMany(ProjectFiles::class);
+        return $this->hasMany(ProjectFiles::class)->whereDeleted(0);
     }
     public function infoGround()
     {
@@ -61,7 +60,7 @@ class Project extends Model
     {
         return $this->client_id == Auth::user()->client_id();
     }
-
+    
     public function scopeGetDetails($query, $options = [])
     {
         $user_id = get_array_value($options, "user_id");

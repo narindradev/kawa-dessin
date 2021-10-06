@@ -123,4 +123,5 @@ return [
     'log_you' => 'connectez-vous',    
     'comment' => 'Commentaire',    
     'client_type' => 'Type de client',    
+    'response' => 'Reponse',    
 ];
