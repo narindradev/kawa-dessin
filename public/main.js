@@ -1,7 +1,7 @@
 
 
 $(document).ready(function () {
- 
+
     //custom app form controller
     var blockLoader = '<div  class="blockui-message"><span class="spinner-border text-primary"></span> ' + app_lang.please_wait + ' <span id ="upload-info"></span></div>'
     var blockToMask = document.querySelector("#ajax-modal-content");
@@ -12,6 +12,7 @@ $(document).ready(function () {
                 ajaxSubmit: true,
                 submitBtn: "#submit",
                 isModal: true,
+                forceBlock: false,
                 showProgress: true,
                 dataType: "json",
                 onModalClose: function () {
@@ -52,9 +53,10 @@ $(document).ready(function () {
                             beforeSubmit: function (data, self, options) {
                                 handleSubmitbutton(submitButton, true)
                                 settings.beforeAjaxSubmit(data, self, options);
-                                if (settings.isModal) {
+                                if (settings.isModal || settings.forceBlock ) {
                                     blockUI.block();
                                 }
+                               
                             },
                             success: function (result) {
                                 handleSubmitbutton(submitButton, !true)
@@ -70,17 +72,24 @@ $(document).ready(function () {
                                         closeAjaxModal(true);
                                         toastr.success(result.message);
                                     } else {
+                                        if (settings.forceBlock) {
+                                            blockUI.release();
+                                        }
                                         toastr.success(result.message);
                                     }
                                 } else {
                                     if (settings.onError(result)) {
                                         if (settings.isModal) {
+                                            
                                             blockUI.release();
                                             unmaskModal();
                                             if (result.message) {
                                                 return appAlert.error(result.message, { container: '#ajax-modal-callback', animate: false });
                                             }
                                         } else if (result.message) {
+                                            if (settings.forceBlock) {
+                                                blockUI.release();
+                                            }
                                             return toastr.error(result.message);
                                         }
                                     }
@@ -204,6 +213,9 @@ $(document).ready(function () {
                     $(".modal-mask").remove();
                     $("#ajax-modal").find('.modal-dialog').removeClass("modal-lg");
                     $("#ajax-modal").find('.modal-dialog').removeClass("modal-sm");
+
+
+
                     $("#ajax-modal").modal('hide');
                     $("#ajax-modal-content").removeClass("blockui").html("").attr("style", "");
                     settings.onModalClose();
@@ -215,7 +227,8 @@ $(document).ready(function () {
 
     // reset ajax modal to defaut
     $('#ajax-modal').on('hidden.bs.modal', function (e) {
-     
+
+        $("#modal-dialog").attr("class", "modal-dialog modal-dialog-centered")
         $(this).find('.modal-dialog').addClass("modal-sm");
         $("#ajax-modal-original-content").css("display", "")
         $("#ajax-modal-callback").html("");
@@ -224,10 +237,10 @@ $(document).ready(function () {
 
     var ajaxDrawerEl = document.querySelector("#ajax-drawer");
     var ajaxDrawer = KTDrawer.getInstance(ajaxDrawerEl);
-    var t  = document.querySelector("#ajax-drawer-body");
+    var t = document.querySelector("#ajax-drawer-body");
     var u = new KTBlockUI(t, { message: blockLoader });
     $('body').on('click', '[data-act="ajax-drawer"]', function (e) {
-        
+
         ajaxDrawer.destroy();
         var data = { "_token": getCsrfToken() },
             url = $(this).attr('data-action-url'),
@@ -243,7 +256,7 @@ $(document).ready(function () {
         } else {
             $("#ajax-drawer-title").text($("#ajax-drawer-title").attr('title'));
         }
-        
+
         $(this).each(function () {
             $.each(this.attributes, function () {
                 if (this.specified && this.name.match("^data-post-")) {
@@ -276,84 +289,160 @@ $(document).ready(function () {
         return false;
 
     });
-    
-    ajaxDrawer.on("kt.drawer.after.hidden", function() {
+
+    ajaxDrawer.on("kt.drawer.after.hidden", function () {
         $("#ajax-drawer-content").html("");
     });
     //bind ajax tab
+    // var blockLoaderTab = '<div  class="blockui-message"><span class="spinner-border text-primary"></span> ' + app_lang.please_wait + ' <span id ="upload-info"></span></div>'
+    // var blockToMaskTab = document.querySelector("#ajax-tab-content");
+    // var blockUITab = new KTBlockUI(blockToMaskTab, { message: blockLoaderTab, });
     $('body').on('click', '[data-toggle="ajax-tab"]', function () {
         var $this = $(this),
-            loadurl = $this.attr('data-loal-url'),
-            target = $this.attr('href');
-
+        loadurl = $this.attr('data-loal-url'),
+        target = $this.attr('href');
+        
         if (!target || !loadurl || loadurl == "#") {
             return false;
         }
+        // blockUITab.block();
         if ($(target).html() == "") {
             $.get(loadurl, function (data) {
                 $(target).html(data);
+                
             });
         }
+        setTimeout(() => {
+        // blockUITab.release();
+            
+        },1000);
         $this.show()
         return false;
     });
 
     $('[data-toggle="ajax-tab"]').first().trigger("click");
 
+        $('body').on('click', '[data-action=delete]', function (e) {
+            var $target = $(e.currentTarget);
+            var tableInstance = $(this).parents('table').attr("id")
+            var tr = $(this).parents('tr')
+            if (e.data && e.data.target) {
+                $target = e.data.target;
+            }
+            var targetHtml = $target.html()
+            $target.html(' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
+            var url = $target.attr('data-action-url'),
+                id = $target.attr('data-id');
+            var data = { "id": id, _token: _token }
+            $(this).each(function () {
+                $.each(this.attributes, function () {
+                    if (this.specified && this.name.match("^data-post-")) {
+                        var dataName = this.name.replace("data-post-", "");
+                        data[dataName] = this.value;
+                    }
+                });
+            });
+            var posts = ""
+            for (key in data) {
+                posts += " data-post-" + key + "=" + data[key];
+            }
+            $.ajax({
+                url: url,
+                type: 'POST',
+                dataType: 'json',
+                data: data,
+                success: function (result) {
+                    // console.log(result)
+                    if (result.success) {
+                        if (typeof result.row_id != "undefined" && typeof result.data != "undefined") {
+                            dataTableUpdateRow(dataTableInstance[tableInstance], result.row_id, result.data);
+                           
+                        } else {
+                            dataTableInstance[tableInstance].row(tr).remove().draw();
+                            tr.fadeOut("slow")
+                        }
+                        if (typeof result.extra_data != "undefined") {
+                            dataTableUpdateRow(dataTableInstance[result.extra_data.table], result.extra_data.row_id, result.extra_data.data);
+                        }
+                        toastr.warning("<span data-table-instance-id-call-back-delete = " + tableInstance + ">" + result.message + "</span> <span title=" + app_lang.undo +
+                            " style='color:black' data-action-url=" + url + " data-id =" + id +
+                            " data-action='cancel-deleted' data-table-instance-id-call-back-delete=" + tableInstance + " " + posts + "  >" + "undo" + "</span>");
 
-    $('body').on('click', '[data-action=delete]', function (e) {
-        var $target = $(e.currentTarget);
-        var tableInstance = $(this).parents('table').attr("id")
-        var tr = $(this).parents('tr')
-        if (e.data && e.data.target) {
-            $target = e.data.target;
-        }
-        var targetHtml = $target.html()
-        $target.html(' <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>')
-        var url = $target.attr('data-action-url'),
-            id = $target.attr('data-id');
-
-        $.ajax({
-            url: url,
-            type: 'POST',
-            dataType: 'json',
-            data: { id: id, _token: _token },
-            success: function (result) {
-                if (result.success) {
-                    tr.fadeOut("slow", function () {
-                        dataTableInstance[tableInstance].row(tr).remove().draw();
-                        toastr.warning("<span data-table-instance-id-call-back-delete = " + tableInstance + ">" + result.message + "</span> <span title=" + app_lang.undo + " style='color:black' data-action-url=" + url + " data-id =" + id + " data-action='cancel-deleted' data-table-instance-id-call-back-delete=" + tableInstance + ">" + "undo" + "</span>");
-                    })
-                } else {
+                    } else {
+                        toastr.options.timeOut = 0;
+                        toastr.error("<span data-table-instance-id-call-back-delete = " + tableInstance + ">" + result.message + "</span>");
+                    }
+                    $target.html(targetHtml)
+                },
+                error: function (request, status, error) {
                     toastr.options.timeOut = 0
-                    toastr.error("<span data-table-instance-id-call-back-delete = " + tableInstance + ">" + result.message + "</span>");
-                }
-                $target.html(targetHtml)
-            },
-            error: function (request, status, error) {
-                toastr.options.timeOut = 0
-                toastr.error("<span> Status : " + request.status + "MessageError : " + request.responseJSON.message ? request.responseJSON.message : error + "File : " + request.responseJSON.file + "Line : " + request.responseJSON.line + " </span>");
+                    toastr.error("<span> Status : " + request.status + "MessageError : " + request.responseJSON.message ? request.responseJSON.message : error + "File : " + request.responseJSON.file + "Line : " + request.responseJSON.line + " </span>");
 
+                }
+            });
+
+
+        });
+        $('body').on('click', '[data-act="data-mail-to"]', function (e) {
+            var title = $(this).attr('data-title');
+            if (title) {
+                $("#data-mail-to").html(title);
+            } else {
+                $("#data-mail-to-title").text($("#data-mail-to-title").attr('title'));
+            }
+            var mail = $(e.target).text();
+            console.log(isMail(mail))
+            if($("#data_mail").is(":visible")){
+                if (isMail(mail)) {
+                    $("#mail_value").val(mail);
+                    setTimeout(function(){ $('#mail_to').trigger("click")}, 100);
+                }else{
+                    $('#mail_to').trigger("click");
+                }
+            }else{
+                $("#mail_value").val(mail);
+                setTimeout(function(){ $('#mail_to').trigger("click")}, 100);
             }
         });
 
-
-    });
+        function isMail(email) {
+            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        }
     // delete row dataTable
     $('body').on('click', '[data-action=cancel-deleted]', function (e) {
         var $target = $(this)
         var url = $target.attr('data-action-url'),
             id = $target.attr('data-id');
+        var data = { "id": id, _token: _token, cancel: true }
+        $(this).each(function () {
+            $.each(this.attributes, function () {
+                if (this.specified && this.name.match("^data-post-")) {
+                    var dataName = this.name.replace("data-post-", "");
+                    data[dataName] = this.value;
+                }
+            });
+        });
         tableInstance = $target.attr("data-table-instance-id-call-back-delete")
         $.ajax({
             url: url,
             type: 'POST',
             dataType: 'json',
-            data: { id: id, cancel: true, _token: _token },
+            data: data,
             success: function (result) {
                 if (result.success) {
+                    if (typeof result.row_id != "undefined" && typeof result.data != "undefined") {
+                        dataTableUpdateRow(dataTableInstance[tableInstance], result.row_id, result.data);
+                        if (typeof result.extra_data != "undefined") {
+                            dataTableUpdateRow(dataTableInstance[result.extra_data.table], result.extra_data.row_id, result.extra_data.data);
+                        }
+                    } else {
+                        // dataTableInstance[tableInstance].row(tr).remove().draw();
+                        // tr.fadeOut("slow")
+                        dataTableInstance[tableInstance].row.add(result.data).draw()
+                    }
+
                     toastr.success(result.message);
-                    dataTableInstance[tableInstance].row.add(result.data).draw()
                 }
 
             },
@@ -363,158 +452,153 @@ $(document).ready(function () {
             }
         });
     })
-    
-        // appAlert
-        
-            
-                
-                    var appAlert = {
-                        info: info,
-                        success: success,
-                        warning: warning,
-                        error: error,
-                        options: {
-                            container: "body", // append alert on the selector
-                            duration: 0, // don't close automatically,
-                            showProgressBar: true, // duration must be set
-                            clearAll: true, //clear all previous alerts
-                            animate: true //show animation
-                        }
-                    };
-
-                    return appAlert;
-
-                    function info(message, options) {
-                        this._settings = _prepear_settings(options);
-                        this._settings.alertType = "info";
-                        _show(message);
-                        return "#" + this._settings.alertId;
-                    }
-
-                    function success(message, options) {
-                        this._settings = _prepear_settings(options);
-                        this._settings.alertType = "success";
-                        _show(message);
-
-                        return "#" + this._settings.alertId;
-                    }
-
-                    function warning(message, options) {
-                        this._settings = _prepear_settings(options);
-                        this._settings.alertType = "warning";
-                        _show(message);
-                        return "#" + this._settings.alertId;
-                    }
-
-                    function error(message, options) {
-                        this._settings = _prepear_settings(options);
-                        this._settings.alertType = "error";
-                        _show(message);
-                        return "#" + this._settings.alertId;
-                    }
-
-                    function _template(message) {
-                        var className = "info";
-                        var icon = '<i class=" fas fa-exclamation"></i>'
-                        if (this._settings.alertType === "error") {
-                            className = "danger";
-                            icon = '<i class=" fas fa-exclamation-triangle"></i>'
-                        } else if (this._settings.alertType === "success") {
-                            className = "success";
-                            icon = '<i class="nav-icon far fa-check-circle"></i>'
-                        } else if (this._settings.alertType === "") {
-                            className = "waring";
-                            icon = '<i class=" nav-icon fas fa-exclamation-circle"></i>'
-                        }
-
-                        if (this._settings.animate) {
-                            className += " animate";
-                        }
-
-                        return '<div class="alert alert-dismissible bg-light-' + className + ' border border-danger border-dashed d-flex flex-column flex-sm-row w-100 p-5 mb-10">'
-                            + '<div class="d-flex flex-column pe-0 pe-sm-10">'
-                            + '<h5 class="mb-1"> Messsage : </h5>'
-                            + '<span> ' + message + ' </span>'
-                            + '</div>'
-
-                            + '<button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">'
-                            + '<i class="bi bi-x fs-1 text-' + className + '"></i>'
-                            + '</button>'
-                            + '</div>'
+    // appAlert
 
 
-                    }
 
-                    function _prepear_settings(options) {
-                        if (!options)
-                            var options = {};
-                        options.alertId = "app-alert-" + _randomId();
-                        return this._settings = $.extend({}, appAlert.options, options);
-                    }
+    var appAlert = {
+        info: info,
+        success: success,
+        warning: warning,
+        error: error,
+        options: {
+            container: "body", // append alert on the selector
+            duration: 0, // don't close automatically,
+            showProgressBar: true, // duration must be set
+            clearAll: true, //clear all previous alerts
+            animate: true //show animation
+        }
+    };
 
-                    function _randomId() {
-                        var id = "";
-                        var keys = "abcdefghijklmnopqrstuvwxyz0123456789";
-                        for (var i = 0; i < 5; i++)
-                            id += keys.charAt(Math.floor(Math.random() * keys.length));
-                        return id;
-                    }
+    return appAlert;
 
-                    function _clear() {
-                        if (this._settings.clearAll) {
-                            $("[role='alert']").remove();
-                        }
-                    }
+    function info(message, options) {
+        this._settings = _prepear_settings(options);
+        this._settings.alertType = "info";
+        _show(message);
+        return "#" + this._settings.alertId;
+    }
 
-                    function _show(message) {
-                        _clear();
-                        var container = $(this._settings.container);
-                        if (container.length) {
-                            if (this._settings.animate) {
-                                //show animation
-                                setTimeout(function () {
-                                    $(".app-alert").animate({
-                                        opacity: 1,
-                                        right: "40px"
-                                    }, 500, function () {
-                                        $(".app-alert").animate({
-                                            right: "15px"
-                                        }, 300);
-                                    });
-                                }, 20);
-                            }
+    function success(message, options) {
+        this._settings = _prepear_settings(options);
+        this._settings.alertType = "success";
+        _show(message);
 
-                            $(this._settings.container).prepend(_template(message));
-                            _progressBarHandler();
-                        } else {
-                            console.log("appAlert: container must be an html selector!");
-                        }
-                    }
+        return "#" + this._settings.alertId;
+    }
 
-                    function _progressBarHandler() {
-                        if (this._settings.duration && this._settings.showProgressBar) {
-                            var alertId = "#" + this._settings.alertId;
-                            var $progressBar = $(alertId).find('.progress-bar');
+    function warning(message, options) {
+        this._settings = _prepear_settings(options);
+        this._settings.alertType = "warning";
+        _show(message);
+        return "#" + this._settings.alertId;
+    }
 
-                            $progressBar.removeClass('hide').width(0);
-                            var css = "width " + this._settings.duration + "ms ease";
-                            $progressBar.css({
-                                WebkitTransition: css,
-                                MozTransition: css,
-                                MsTransition: css,
-                                OTransition: css,
-                                transition: css
-                            });
+    function error(message, options) {
+        this._settings = _prepear_settings(options);
+        this._settings.alertType = "error";
+        _show(message);
+        return "#" + this._settings.alertId;
+    }
 
-                            setTimeout(function () {
-                                if ($(alertId).length > 0) {
-                                    $(alertId).remove();
-                                }
-                            }, this._settings.duration);
-                        }
-                    }
-               
-         
-     
+    function _template(message) {
+        var className = "info";
+        var icon = '<i class=" fas fa-exclamation"></i>'
+        if (this._settings.alertType === "error") {
+            className = "danger";
+            icon = '<i class=" fas fa-exclamation-triangle"></i>'
+        } else if (this._settings.alertType === "success") {
+            className = "success";
+            icon = '<i class="nav-icon far fa-check-circle"></i>'
+        } else if (this._settings.alertType === "") {
+            className = "waring";
+            icon = '<i class=" nav-icon fas fa-exclamation-circle"></i>'
+        }
 
+        if (this._settings.animate) {
+            className += " animate";
+        }
+
+        return '<div class="alert alert-dismissible bg-light-' + className + ' border border-danger border-dashed d-flex flex-column flex-sm-row w-100 p-5 mb-10">'
+            + '<div class="d-flex flex-column pe-0 pe-sm-10">'
+            + '<h5 class="mb-1"> Messsage : </h5>'
+            + '<span> ' + message + ' </span>'
+            + '</div>'
+
+            + '<button type="button" class="position-absolute position-sm-relative m-2 m-sm-0 top-0 end-0 btn btn-icon ms-sm-auto" data-bs-dismiss="alert">'
+            + '<i class="bi bi-x fs-1 text-' + className + '"></i>'
+            + '</button>'
+            + '</div>'
+
+
+    }
+
+    function _prepear_settings(options) {
+        if (!options)
+            var options = {};
+        options.alertId = "app-alert-" + _randomId();
+        return this._settings = $.extend({}, appAlert.options, options);
+    }
+
+    function _randomId() {
+        var id = "";
+        var keys = "abcdefghijklmnopqrstuvwxyz0123456789";
+        for (var i = 0; i < 5; i++)
+            id += keys.charAt(Math.floor(Math.random() * keys.length));
+        return id;
+    }
+
+    function _clear() {
+        if (this._settings.clearAll) {
+            $("[role='alert']").remove();
+        }
+    }
+
+    function _show(message) {
+        _clear();
+        var container = $(this._settings.container);
+        if (container.length) {
+            if (this._settings.animate) {
+                //show animation
+                setTimeout(function () {
+                    $(".app-alert").animate({
+                        opacity: 1,
+                        right: "40px"
+                    }, 500, function () {
+                        $(".app-alert").animate({
+                            right: "15px"
+                        }, 300);
+                    });
+                }, 20);
+            }
+
+            $(this._settings.container).prepend(_template(message));
+            _progressBarHandler();
+        } else {
+            console.log("appAlert: container must be an html selector!");
+        }
+    }
+
+    function _progressBarHandler() {
+        if (this._settings.duration && this._settings.showProgressBar) {
+            var alertId = "#" + this._settings.alertId;
+            var $progressBar = $(alertId).find('.progress-bar');
+
+            $progressBar.removeClass('hide').width(0);
+            var css = "width " + this._settings.duration + "ms ease";
+            $progressBar.css({
+                WebkitTransition: css,
+                MozTransition: css,
+                MsTransition: css,
+                OTransition: css,
+                transition: css
+            });
+
+            setTimeout(function () {
+                if ($(alertId).length > 0) {
+                    $(alertId).remove();
+                }
+            }, this._settings.duration);
+        }
+    }
 });

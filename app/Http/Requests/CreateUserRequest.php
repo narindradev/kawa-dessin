@@ -27,7 +27,7 @@ class CreateUserRequest extends FormRequest
         return [
             'user_type_id' => 'required',
             'first_name' => 'required',
-            'last_name' => 'required',
+            // 'last_name' => 'required',
             'email' => ['required', 'string', 'email', 'max:191',Rule::unique('users')->where(function ($query) {
                 return $query->whereDeleted(0);
             })]

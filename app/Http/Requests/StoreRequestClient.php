@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Requests;
-
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequestClient extends FormRequest
@@ -24,15 +24,20 @@ class StoreRequestClient extends FormRequest
     public function rules()
     {
         $rules = [
-            'email' => 'required|unique:users,email,'.request()->id.'|max:255|email',
+            'email' => ['required', 'string', 'email', 'max:200',Rule::unique('users')->where(function ($query) {
+                return $query->whereDeleted(0);
+            })],
             'first_name' => 'required',
-            'last_name' => 'required',
+            // 'last_name' => 'required',
             'phone' => 'required',
             'address' => 'required',
             'city' => 'required',
             'zip' => 'required',
             "accept" => 'required',
             "categorie" => 'required',
+            "address" => 'required',
+            "city" => 'required',
+            "zip" => 'required',
 
         ];
         if(request("client_type") == "corporate"){
@@ -52,7 +57,8 @@ class StoreRequestClient extends FormRequest
     public function messages()
     {
         return [
-            'email.unique' => 'sdqsdqsdsdqsd',
+            'email.unique' => trans("lang.email_already_taked"),
+            'categorie.required' => trans("lang.choose_one_project_type"),
         ];
     }
 

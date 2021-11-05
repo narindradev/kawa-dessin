@@ -13,7 +13,13 @@ class Project extends Model
 
     protected $table = "projects";
     protected $guarded = [];
-    // protected $with = ["categories" ,"client" ,"status"];
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'start_date' => 'datetime',
+        'due_date' => 'datetime'
+     ];
+    // protected  $with = ["categories", "client", "status"];
     public function client()
     {
         return $this->belongsTo(Client::class);
@@ -22,7 +28,6 @@ class Project extends Model
     {
         return $this->belongsToMany(Category::class);
     }
-
     public function members()
     {
         return $this->belongsToMany(User::class, "project_member");
@@ -51,41 +56,48 @@ class Project extends Model
     {
         return $this->hasMany(ProjectRelaunch::class)->latest();
     }
-
     public function is_member($user_id = null)
     {
-        return in_array($user_id ?? Auth::user()->id, cache("project_members_$this->id", $this->members()->pluck("user_id")->toArray())) || Auth::user()->admin;
+        return in_array($user_id ?? Auth::user()->id, cache("project_members_$this->id", $this->members()->pluck("user_id")->toArray())) || Auth::user()->is_admin();
     }
     public function own_project()
     {
         return $this->client_id == Auth::user()->client_id();
     }
-    
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
+    }
+    public function invoiceItems()
+    {
+        return $this->hasMany(InvoiceItem::class);
+    }
     public function scopeGetDetails($query, $options = [])
     {
         $user_id = get_array_value($options, "user_id");
         $client = get_array_value($options, "client");
-        if (Auth::user()->user_type_id == 1) {
+        if (Auth::user()->is_admin() && !$user_id ) {
             /** load all project  */
             $projects = Project::query();
-        } elseif ($user_id) {
-           
+        } elseif ($user_id ) {
             /** load the user's projects assigned */
             $projects = User::find($user_id)->projects();
         } elseif ($client) {
-  
             /** load client's projects  */
             $projects = Project::where("client_id", $client);
         } else {
             /** load Auth user's projects assigned */
             $projects = Auth::user()->projects();
         }
-        $projects->with("categories", "client", "status");
+        $with = ["categories", "client", "status"];
+        if ($client || Auth::user()->is_admin() ) {
+            $with[] = "invoiceItems"; $with[] = "invoice"; 
+        }
+        $projects->with($with);
         $client_id = get_array_value($options, "client_id");
         if ($client_id) {
             $projects->where("client_id", $client_id);
         }
-       
         $status_id = get_array_value($options, "status_id");
         if ($status_id) {
             $projects->where("status_id", $status_id);
@@ -123,24 +135,40 @@ class Project extends Model
             $dates = explode("-", $date);
             $projects->whereBetween("start_date", [to_date($dates[0]), to_date($dates[1])]);
         }
-        return $projects->whereDeleted(0)->orderBy('status_id', 'ASC')->latest('created_at');
+        $status_invoice = get_array_value($options, "status_invoice");
+        if ($status_invoice) {
+            $projects->whereHas('invoice', function ($query) use ($status_invoice) {
+                $query->where('status', $status_invoice);
+            });
+        }
+        if ($user_id) {
+            if (User::find($user_id)->is_commercial()) {
+                $projects->orderBy('created_at',"ASC");
+            }
+        }
+        if (!Auth::user()->is_admin()) {
+            $projects->orderBy('due_date',"ASC");
+        }
+        return $projects->whereDeleted(0)->orderBy('status_id',"ASC");
     }
 
-    public static function get_client_dropdown($for_user = 0)
+    public static function get_client_dropdown(User $for_user)
     {
         $client_dropdown = [];
         if ($for_user && !Auth::user()->is_admin() ) // user not admin
         { 
-            $projects = User::find($for_user)->projects->groupby("client_id");
-            foreach ($projects as $id => $project) {
-                $client_dropdown[] = ["value" => $id, "text" => $project[0]->client->user->name];
+            $results = $for_user->projects->groupby("client_id");
+            foreach ($results as $client_id => $projects) {
+                $client_dropdown[] = ["value" => $client_id, "text" => $projects[0]->client->user->name];
             }
         } else {
-            $users = User::with("client")->whereDeleted(0)->where("user_type_id", 5)->get();
-            foreach ($users as $user) {
+            $clients = User::with("client")->whereDeleted(0)->where("user_type_id", 5)->get();
+            foreach ($clients as $user) {
                 $client_dropdown[] = ["value" => $user->client->id, "text" => $user->name];
             }
         }
         return $client_dropdown;
     }
+
+    
 }

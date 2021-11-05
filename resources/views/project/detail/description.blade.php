@@ -1,351 +1,341 @@
-<div class="card card-flush mb-xl-3">
-    <div class="card-header mt-5">
-        <!--begin::Card title-->
-        <div class="card-title flex-column">
-            <h3 class="fw-bolder mb-0">Information préliminaire</h3>
+
+<div class="row gy-5 g-xl-8">
+    <div class="col-xxl-4">
+        <div class="card card-xxl-stretch shadow-sm mb-2">
+            <div class="card-header">
+                <h3 class="card-title my-4 text-center fw-bolder text-primary">Information préliminaire</h3>
+            </div>
+            <div class="card-body"  id="files" class="collapse"">
+                @foreach ( (new App\Models\Questionnaire())->preliminary_question() as $question)
+                <div class="d-flex align-items-center mb-3">
+                    <div class="fw-bold">
+                        <span class="fw-bolder text-gray-800 "># <i>{{ $question["question"]}}</i></a>
+                            <p class="text-primary pl-5">>> {{ get_response_of_question($question["id"] , $project->id) }}</p>
+                    </div>
+                </div>
+            @endforeach
+            @if ($count)
+                <div role="button" data-bs-toggle="collapse" data-bs-target="#files-list" aria-expanded="true"
+                    aria-controls="files-list">
+                    <h3 class=" fw-bolder text-dark">Fichier(s) attachés</h3>
+                    <div class="fs-6 text-gray-400">Total {{ $count . ' ' . trans('lang.files') }} </div>
+                </div>
+                <div id="files-list" class="collapse">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="filesTable" class="table table-row-dashed table-row-gray-200  gs-0 gy-3"></table>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            </div>
         </div>
     </div>
-    <div class="card-body d-flex flex-column p-10 pt-1 mb-2" id="files" class="collapse">
-        @foreach ( (new App\Models\Questionnaire())->preliminary_question() as $question)
-            <div class="d-flex align-items-center mb-3">
-                <div class="fw-bold">
-                    <span class="fw-bolder text-gray-800 "># <i>{{ $question["question"]}}</i></a>
-                        <p class="text-primary pl-5">>> {{ get_response_of_question($question["id"] , $project->id) }}</p>
-                </div>
+    @if ($project->estimate == 'accepted')
+     <div class="col-xl-8">
+        <div class="card card-xxl-stretch shadow-sm mb-2">
+            <div class="card-header">
+                <h3 class="card-title my-4 text-center fw-bolder text-primary"> Information terrain</h3>
             </div>
-        @endforeach
-        @if ($count)
-            <div role="button" data-bs-toggle="collapse" data-bs-target="#files-list" aria-expanded="true"
-                aria-controls="files-list">
-                <h3 class=" fw-bolder text-dark">Fichier(s) attachés</h3>
-                <div class="fs-6 text-gray-400">Total {{ $count . ' ' . trans('lang.files') }} </div>
-            </div>
-            <div id="files-list" class="collapse">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="filesTable" class="table table-row-dashed table-row-gray-200  gs-0 gy-3"></table>
+            <form class="form" id="response-ground-form" method="POST" action="{{ url("/project/save_step2/info_ground/save/$project->id") }}">
+            <div class="card-body">
+                <h3 class="fw-bolder text-dark fs-5 my-9 ">Adresse du terrain</h3>
+                    @csrf
+                    <input type="hidden" name="ground_info_id" value="{{ $project->infoGround->id }}">
+                    <input type="hidden" name="project_id" value="{{ $project->id }}">
+                    <div class="row g-9 mb-5">
+                        <div class="col-md-4 fv-row">
+                            <div class="input-group mb-2">
+                                <input type="text" name="street_number" value="{{ $project->infoGround->street_number }}"
+                                    class="form-control form-control-solid" placeholder="Numéro de voie"
+                                    aria-label="Numéro de voie" aria-describedby="basic-addon2">
+                                <span class="input-group-text border border-transparent"><i
+                                        class="fas fa-pen"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 fv-row">
+                            <div class="input-group mb-2">
+                                <input type="text" name="place_said" value="{{ $project->infoGround->place_said }}"
+                                    autocomplete="off" class="form-control form-control-solid" placeholder="Lieu dit"
+                                    aria-label="Lieu dit" aria-describedby="basic-addon2">
+                                <span class="input-group-text border border-transparent"><i
+                                        class="fas fa-pen"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 fv-row">
+                            <div class="input-group mb-2">
+                                <input type="text" name="zip" value="{{ $project->infoGround->zip }}" autocomplete="off"
+                                    class="form-control form-control-solid" placeholder="Code postal"
+                                    aria-label="Code postal" aria-describedby="basic-addon2">
+                                <span class="input-group-text border border-transparent"><i
+                                        class="fas fa-pen"></i></span>
+                            </div>
+                        </div>
+    
                     </div>
-                </div>
-            </div>
-        @endif
-    </div>
-</div>
-@if ($project->estimate == 'accepted')
-    <div class="card card-flush mb-xl-3 ">
-        <h3 class="card-title my-4 text-center fw-bolder text-primary">
-            Information terrain
-        </h3>
-        <div class="card-header border-0">
-            <h3 class="card-title fw-bolder text-dark fs-5">Adresse du terrain</h3>
-        </div>
-        <form class="form" id="response-ground-form" method="POST" action="{{ url("/project/save_step2/info_ground/save/$project->id") }}">
-            @csrf
-            <input type="hidden" name="ground_info_id" value="{{ $project->infoGround->id }}">
-            <input type="hidden" name="project_id" value="{{ $project->id }}">
-            <div class="card-body pt-2">
-                <div class="row g-9 mb-8">
-                    <div class="col-md-4 fv-row">
-                        <div class="input-group mb-3">
-                            <input type="text" name="street_number" value="{{ $project->infoGround->street_number }}"
-                                class="form-control form-control-solid" placeholder="Numéro de voie"
-                                aria-label="Numéro de voie" aria-describedby="basic-addon2">
-                            <span class="input-group-text border border-transparent"><i
-                                    class="fas fa-pen"></i></span>
+                    <div class="row g-9 mb-5">
+                        <div class="col-md-4 fv-row">
+                            <div class="input-group mb-3">
+                                <input type="text" name="community" value="{{ $project->infoGround->community }}"
+                                    autocomplete="off" class="form-control form-control-solid" placeholder="Commune"
+                                    aria-label="commune" aria-describedby="basic-addon2">
+                                <span class="input-group-text border border-transparent"><i
+                                        class="fas fa-pen"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 fv-row">
+                            <div class="input-group mb-3">
+                                <input type="text" name="section" value="{{ $project->infoGround->section }}"
+                                    autocomplete="off" class="form-control form-control-solid" placeholder="Section"
+                                    aria-label="Section" aria-describedby="basic-addon2">
+                                <span class="input-group-text border border-transparent"><i
+                                        class="fas fa-pen"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 fv-row">
+                            <div class="input-group mb-3">
+                                <input type="text" name="parcel" value="{{ $project->infoGround->parcel }}"
+                                    autocomplete="off" class="form-control form-control-solid" placeholder="Parcelle"
+                                    aria-label="Parcelle" aria-describedby="basic-addon2">
+                                <span class="input-group-text border border-transparent"><i
+                                        class="fas fa-pen"></i></span>
+                            </div>
+                        </div>
+    
+                    </div>
+                    <div class="separator mx-1 my-4"></div>
+                <h3 class=" fw-bolder text-dark fs-5 my-9">Nature du terrain</h3>
+                    <div class="row g-9 mb-5">
+                        <div class="col-md-4 fv-row">
+                            <label>Lotissement</label>
+                        </div>
+                        <div class="col-md-4 fv-row">
+                            <label class="radio radio-primary">
+                                <input @if ($project->infoGround->lotissement == '1') checked @endif class="form-check-input" type="radio" name="lotissement"
+                                    value="1">
+                                <span></span>Oui</label>
+                        </div>
+                        <div class="col-md-4 fv-row">
+                            <label class="radio radio-primary">
+                                <input @if ($project->infoGround->lotissement == '0') checked @endif class="form-check-input" type="radio" name="lotissement"
+                                    value="0">
+                                <span></span>Non</label>
                         </div>
                     </div>
-                    <div class="col-md-4 fv-row">
-                        <div class="input-group mb-3">
-                            <input type="text" name="place_said" value="{{ $project->infoGround->place_said }}"
-                                autocomplete="off" class="form-control form-control-solid" placeholder="Lieu dit"
-                                aria-label="Lieu dit" aria-describedby="basic-addon2">
-                            <span class="input-group-text border border-transparent"><i
-                                    class="fas fa-pen"></i></span>
+                    <div class="row g-9 mb-5">
+                        <div class="col-md-4 fv-row">
+                            <label>Copropriété</label>
+                        </div>
+    
+                        <div class="col-md-4 fv-row">
+                            <label class="radio radio-primary">
+                                <input @if ($project->infoGround->copropriete == '1') checked @endif class="form-check-input" type="radio" name="copropriete"
+                                    value="1">
+                                <span></span>Oui</label>
+                        </div>
+                        <div class="col-md-4 fv-row">
+                            <label class="radio radio-primary">
+                                <input @if ($project->infoGround->copropriete == '0') checked @endif class="form-check-input" type="radio" name="copropriete"
+                                    value="0">
+                                <span></span>Non</label>
+                        </div>
+    
+                    </div>
+                    <div class="separator mx-1 my-4"></div>
+                <h3 class=" fw-bolder text-dark fs-5 my-9">Connections aux réseaux publics</h3>
+                    <div class="row g-9 mb-5">
+                        <div class="col-md-4 fv-row">
+                            <label>Eau de pluie</label>
+                        </div>
+                        <div class="col-md-4 fv-row">
+                            <label class="radio radio-primary">
+                                <input @if ($project->infoGround->eau_pluie == '1') checked @endif class="form-check-input" type="radio" name="eau_pluie"
+                                    value="1">
+                                <span></span>Oui</label>
+                        </div>
+                        <div class="col-md-4 fv-row">
+                            <label class="radio radio-primary">
+                                <input @if ($project->infoGround->eau_pluie == '0') checked @endif class="form-check-input" type="radio" name="eau_pluie"
+                                    value="0">
+                                <span></span>Non</label>
                         </div>
                     </div>
-                    <div class="col-md-4 fv-row">
-                        <div class="input-group mb-3">
-                            <input type="text" name="zip" value="{{ $project->infoGround->zip }}" autocomplete="off"
-                                class="form-control form-control-solid" placeholder="Code postal"
-                                aria-label="Code postal" aria-describedby="basic-addon2">
-                            <span class="input-group-text border border-transparent"><i
-                                    class="fas fa-pen"></i></span>
+                    <div class="row g-9 mb-5">
+                        <div class="col-md-4 fv-row">
+                            <label>Eau potable</label>
+                        </div>
+                        <div class="col-md-4 fv-row">
+                            <label class="radio radio-primary">
+                                <input @if ($project->infoGround->eau_potable == '1') checked @endif class="form-check-input" type="radio" name="eau_potable"
+                                    value="1">
+                                <span></span>Oui</label>
+                        </div>
+    
+                        <div class="col-md-4 fv-row">
+                            <label class="radio radio-primary">
+                                <input @if ($project->infoGround->eau_potable == '0') checked @endif class="form-check-input" type="radio" name="eau_potable"
+                                    value="0">
+                                <span></span>Non</label>
                         </div>
                     </div>
-
-                </div>
-                <div class="row g-9 mb-8">
-
-                    <div class="col-md-4 fv-row">
-                        <div class="input-group mb-3">
-                            <input type="text" name="community" value="{{ $project->infoGround->community }}"
-                                autocomplete="off" class="form-control form-control-solid" placeholder="Commune"
-                                aria-label="commune" aria-describedby="basic-addon2">
-                            <span class="input-group-text border border-transparent"><i
-                                    class="fas fa-pen"></i></span>
+                    <div class="row g-9 mb-5">
+                        <div class="col-md-4 fv-row">
+                            <label>Elec</label>
                         </div>
-                    </div>
-                    <div class="col-md-4 fv-row">
-                        <div class="input-group mb-3">
-                            <input type="text" name="section" value="{{ $project->infoGround->section }}"
-                                autocomplete="off" class="form-control form-control-solid" placeholder="Section"
-                                aria-label="Section" aria-describedby="basic-addon2">
-                            <span class="input-group-text border border-transparent"><i
-                                    class="fas fa-pen"></i></span>
+    
+                        <div class="col-md-4 fv-row">
+                            <label class="radio radio-primary">
+                                <input @if ($project->infoGround->elec == '1') checked @endif class="form-check-input" type="radio" name="elec" value="1">
+                                <span></span>Oui</label>
                         </div>
-                    </div>
-                    <div class="col-md-4 fv-row">
-                        <div class="input-group mb-3">
-                            <input type="text" name="parcel" value="{{ $project->infoGround->parcel }}"
-                                autocomplete="off" class="form-control form-control-solid" placeholder="Parcelle"
-                                aria-label="Parcelle" aria-describedby="basic-addon2">
-                            <span class="input-group-text border border-transparent"><i
-                                    class="fas fa-pen"></i></span>
+                        <div class="col-md-4 fv-row">
+                            <label class="radio radio-primary">
+                                <input @if ($project->infoGround->elec == '0') checked @endif class="form-check-input" type="radio" name="elec" value="0">
+                                <span></span>Non</label>
                         </div>
+    
                     </div>
-
-                </div>
-
-
-                <div class="separator mx-1 my-8"></div>
-
-                <h3 class="card-title fw-bolder text-dark fs-5 my-9">Nature du terrain</h3>
-                <div class="row g-9 mb-8">
-                    <div class="col-4 fv-row">
-                        <label>Lotissement</label>
-                    </div>
-
-                    <div class="col-4 fv-row">
-                        <label class="radio radio-primary">
-                            <input @if ($project->infoGround->lotissement == '1') checked @endif class="form-check-input" type="radio" name="lotissement"
-                                value="1">
-                            <span></span>Oui</label>
-                    </div>
-
-                    <div class="col-4 fv-row">
-                        <label class="radio radio-primary">
-                            <input @if ($project->infoGround->lotissement == '0') checked @endif class="form-check-input" type="radio" name="lotissement"
-                                value="0">
-                            <span></span>Non</label>
-                    </div>
-
-                </div>
-                <div class="row g-9 mb-8">
-                    <div class="col-4 fv-row">
-                        <label>Copropriété</label>
-                    </div>
-
-                    <div class="col-4 fv-row">
-                        <label class="radio radio-primary">
-                            <input @if ($project->infoGround->copropriete == '1') checked @endif class="form-check-input" type="radio" name="copropriete"
-                                value="1">
-                            <span></span>Oui</label>
-                    </div>
-
-                    <div class="col-4 fv-row">
-                        <label class="radio radio-primary">
-                            <input @if ($project->infoGround->copropriete == '0') checked @endif class="form-check-input" type="radio" name="copropriete"
-                                value="0">
-                            <span></span>Non</label>
-                    </div>
-
-                </div>
-
-                <div class="separator mx-1 my-8"></div>
-
-                <h3 class="card-title fw-bolder text-dark fs-5 my-9">Connections aux réseaux publics</h3>
-                <div class="row g-9 mb-8">
-                    <div class="col-4 fv-row">
-                        <label>Eau de pluie</label>
-                    </div>
-
-                    <div class="col-4 fv-row">
-                        <label class="radio radio-primary">
-                            <input @if ($project->infoGround->eau_pluie == '1') checked @endif class="form-check-input" type="radio" name="eau_pluie"
-                                value="1">
-                            <span></span>Oui</label>
-                    </div>
-
-                    <div class="col-4 fv-row">
-                        <label class="radio radio-primary">
-                            <input @if ($project->infoGround->eau_pluie == '0') checked @endif class="form-check-input" type="radio" name="eau_pluie"
-                                value="0">
-                            <span></span>Non</label>
-                    </div>
-
-                </div>
-                <div class="row g-9 mb-8">
-                    <div class="col-4 fv-row">
-                        <label>Eau potable</label>
-                    </div>
-
-                    <div class="col-4 fv-row">
-                        <label class="radio radio-primary">
-                            <input @if ($project->infoGround->eau_potable == '1') checked @endif class="form-check-input" type="radio" name="eau_potable"
-                                value="1">
-                            <span></span>Oui</label>
-                    </div>
-
-                    <div class="col-4 fv-row">
-                        <label class="radio radio-primary">
-                            <input @if ($project->infoGround->eau_potable == '0') checked @endif class="form-check-input" type="radio" name="eau_potable"
-                                value="0">
-                            <span></span>Non</label>
-                    </div>
-
-                </div>
-                <div class="row g-9 mb-8">
-                    <div class="col-4 fv-row">
-                        <label>Elec</label>
-                    </div>
-
-                    <div class="col-4 fv-row">
-                        <label class="radio radio-primary">
-                            <input @if ($project->infoGround->elec == '1') checked @endif class="form-check-input" type="radio" name="elec" value="1">
-                            <span></span>Oui</label>
-                    </div>
-
-                    <div class="col-4 fv-row">
-                        <label class="radio radio-primary">
-                            <input @if ($project->infoGround->elec == '0') checked @endif class="form-check-input" type="radio" name="elec" value="0">
-                            <span></span>Non</label>
-                    </div>
-
-                </div>
-                <div class="row g-9 mb-8">
-                    <div class="col-4 fv-row">
-                        <label>Gaz</label>
-                    </div>
-
-                    <div class="col-4 fv-row">
-                        <label class="radio radio-primary">
-                            <input @if ($project->infoGround->gaz == '1') checked @endif class="form-check-input" type="radio" name="gaz"
-                                value="1">
-                            <span></span>Oui</label>
-                    </div>
-
-                    <div class="col-4 fv-row">
-                        <label class="radio radio-primary">
-                            <input @if ($project->infoGround->gaz == '0') checked @endif class="form-check-input" type="radio" name="gaz"
-                                value="0">
-                            <span></span>Non</label>
-                    </div>
-
-                </div>
-                <div class="row g-9 mb-8">
-                    <div class="col-4 fv-row">
-                        <label>Assainissement non collectif</label>
-                    </div>
-
-                    <div class="col-4 fv-row">
-                        <label class="radio radio-primary">
-                            <input @if ($project->infoGround->assainissement == '1') checked @endif class="form-check-input" type="radio"
-                                name="assainissement" value="1">
-                            <span></span>Oui</label>
-                    </div>
-
-                    <div class="col-4 fv-row">
-                        <label class="radio radio-primary">
-                            <input @if ($project->infoGround->assainissement == '0') checked @endif class="form-check-input" type="radio"
-                                name="assainissement" value="0">
-                            <span></span>Non</label>
-                    </div>
-
-                </div>
-
-            </div>
-            <div class="card-footer d-flex justify-content-end">
-                <button type="submit" id="submit"
-                    class=" btn btn-sm btn-light-primary  mr-2">@include('partials.general._button-indicator', ['label'
-                    => trans('lang.save'),"message" =>trans("lang.sending")])</button>
-            </div>
-        </form>
-    </div>
-@endif
-    @php
-        $count_questions_offers = 0;
-        foreach ($project->categories as $categorie) {
-            $count_questions_offers =  $count_questions_offers +  $categorie->offer->questionnaires->count();
-        }
-    @endphp
-@if ($count_questions_offers)
-    <div class="card card-xl-stretch mb-xl-8 ">
-        <h3 class="card-title my-4 text-center fw-bolder text-primary">
-            Information des bâtiments existants
-        </h3>
-        <form class="form" id="response-existing-buiding-form" method="POST" action="{{ url("/project/save_step2/responses_of_question/save/$project->id") }}">
-            @csrf
-            <div class="card-body pt-2">
-            <div class="row">
-                @foreach ($project->categories as $categorie)
-                        <div class="col-md-5">
-                            <p class="text-primary pl-5">{{ $categorie->offer->name }} </p>
-                            @foreach ($categorie->offer->questionnaires as $questionnaire)
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="fw-bold col-10">
-                                        <p class="fw-bolder text-gray-800 "># <i>{{ $questionnaire->question }}</i>
-                                        </p>
-                                        <div class="input-group mb-3">
-                                            <input type="text" class="form-control form-control-solid" name="{{ "questionnaire_id_".$questionnaire->id }}"  value = "{{ get_response_of_question($questionnaire->id,$project->id) }}" placeholder="@lang("lang.response")" >
-                                            <span class="input-group-text border border-transparent"><i class="fas fa-pen"></i></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+                    <div class="row g-9 mb-5">
+                        <div class="col-md-4 fv-row">
+                            <label>Gaz</label>
                         </div>
-                 
-                    @endforeach
-                </div>
-            </div>
-            <div class="card-footer d-flex justify-content-end">
-                <button type="submit"  class=" btn btn-sm btn-light-primary  mr-2">@include('partials.general._button-indicator', ['label'=> trans('lang.save'),"message" =>trans("lang.sending")])</button>
-            </div>
-        </form>
-    </div>
-@endif
-    @php
-        $count_questions_category = 0;
-        foreach ($project->categories as $categorie) {
-            $count_questions_category =  $count_questions_category +  $categorie->questionnaires->count();
-        }
-    @endphp
-    @if ($count_questions_category)
-    <div class="card card-xxl-stretch mb-xl-3">
-        <h3 class="card-title my-4 text-center fw-bolder text-primary">
-            Questionnaires pour chaque type de projet
-        </h3>
-        <form class="form" id="response-per-category-form" method="POST" action="{{ url("/project/save_step2/responses_of_question/save/$project->id") }}">
-            @csrf
-            <div class="card-body d-flex flex-column">
-            <div class="row g-9 mb-8">
-                @foreach ($project->categories as $categorie)
-                        <div class="col-md-5 fv-row">
-                            <h3 class="card-title text-center fw-bolder text-dark fs-5 my-9">{{ $categorie->name }}
-                            </h3>
-                            @foreach ($categorie->questionnaires as $questionnaire)
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="fw-bold col-10">
-                                        <p class="fw-bolder text-gray-800 "># <i>{{ $questionnaire->question }}</i>
-                                        </p>
-                                        <div class="input-group mb-3">
-                                            <input type="text" class="form-control form-control-solid" name="{{ "questionnaire_id_".$questionnaire->id }}"  value = "{{ get_response_of_question($questionnaire->id,$project->id) }}" placeholder="@lang("lang.response")" >
-                                            <span class="input-group-text border border-transparent"><i class="fas fa-pen"></i></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+    
+                        <div class="col-md-4 fv-row">
+                            <label class="radio radio-primary">
+                                <input @if ($project->infoGround->gaz == '1') checked @endif class="form-check-input" type="radio" name="gaz"
+                                    value="1">
+                                <span></span>Oui</label>
                         </div>
-                        @endforeach
+    
+                        <div class="col-md-4 fv-row">
+                            <label class="radio radio-primary">
+                                <input @if ($project->infoGround->gaz == '0') checked @endif class="form-check-input" type="radio" name="gaz"
+                                    value="0">
+                                <span></span>Non</label>
+                        </div>
+    
+                    </div>
+                    <div class="row g-9 mb-5">
+                        <div class="col-md-4 fv-row">
+                            <label>Assainissement non collectif</label>
+                        </div>
+    
+                        <div class="col-md-4 fv-row">
+                            <label class="radio radio-primary">
+                                <input @if ($project->infoGround->assainissement == '1') checked @endif class="form-check-input" type="radio"
+                                    name="assainissement" value="1">
+                                <span></span>Oui</label>
+                        </div>
+    
+                        <div class="col-md-4 fv-row">
+                            <label class="radio radio-primary">
+                                <input @if ($project->infoGround->assainissement == '0') checked @endif class="form-check-input" type="radio"
+                                    name="assainissement" value="0">
+                                <span></span>Non</label>
+                        </div>
+    
                     </div>
                 </div>
                 <div class="card-footer d-flex justify-content-end">
-                    <button type="submit"  class=" btn btn-sm btn-light-primary  mr-2">@include('partials.general._button-indicator', ['label'=> trans('lang.save'),"message" =>trans("lang.sending")])</button>
+                    <button type="submit"  class=" btn btn-sm btn-light-primary ">@include('partials.general._button-indicator', ['label'=> trans('lang.save'),"message" =>trans("lang.sending")])</button>
                 </div>
             </form>
         </div>
     </div>
-@endif
-
-    <style>
+    @endif
+    @if ($project->estimate == 'accepted')
+        @php
+            $count_questions_offers = 0;
+            foreach ($project->categories as $categorie) {
+                $count_questions_offers =  $count_questions_offers +  $categorie->offer->questionnaires->count();
+            }
+        @endphp
+            @if ($count_questions_offers)
+                <div class="col-xl-4">
+                    <div class="card card-xl-stretch mb-xl-8 ">
+                        <h3 class="card-title my-4 text-center fw-bolder text-primary">
+                            Information des bâtiments existants
+                        </h3>
+                        <form class="form" id="response-existing-buiding-form" method="POST" action="{{ url("/project/save_step2/responses_of_question/save/$project->id") }}">
+                            @csrf
+                            <div class="card-body pt-2">
+                            <div class="row">
+                                @foreach ($project->categories as $categorie)
+                                        <div class="col-md-5">
+                                            <p class="text-primary pl-5">{{ $categorie->offer->name }} </p>
+                                            @foreach ($categorie->offer->questionnaires as $questionnaire)
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <div class="fw-bold col-10">
+                                                        <p class="fw-bolder text-gray-800 "># <i>{{ $questionnaire->question }}</i>
+                                                        </p>
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" class="form-control form-control-solid" name="{{ "questionnaire_id_".$questionnaire->id }}"  value = "{{ get_response_of_question($questionnaire->id,$project->id) }}" placeholder="@lang("lang.response")" >
+                                                            <span class="input-group-text border border-transparent"><i class="fas fa-pen"></i></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                
+                                    @endforeach
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex justify-content-end">
+                                <button type="submit"  class=" btn btn-sm btn-light-primary  mr-2">@include('partials.general._button-indicator', ['label'=> trans('lang.save'),"message" =>trans("lang.sending")])</button>
+                            </div>
+                        </form>
+                    </div>
+                
+                </div>
+            @endif
+    @endif
+    @if ($project->estimate == 'accepted')
+        @php
+            $count_questions_category = 0;
+            foreach ($project->categories as $categorie) {
+                $count_questions_category =  $count_questions_category +  $categorie->questionnaires->count();
+            }
+        @endphp
+        @if ($count_questions_category)
+        <div class="col-xl-4">
+            <div class="card card-xl-stretch mb-xl-4">
+                <h3 class="card-title my-4 text-center fw-bolder text-primary">
+                    Questionnaires pour chaque type de projet
+                </h3>
+                <form class="form" id="response-per-category-form" method="POST" action="{{ url("/project/save_step2/responses_of_question/save/$project->id") }}">
+                    @csrf
+                    <div class="card-body d-flex flex-column">
+                    <div class="row g-9 mb-5">
+                        @foreach ($project->categories as $categorie)
+                                <div class="col-md-5 fv-row">
+                                    <h3 class="card-title text-center fw-bolder text-dark fs-5 my-9">{{ $categorie->name }}
+                                    </h3>
+                                    @foreach ($categorie->questionnaires as $questionnaire)
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="fw-bold col-10">
+                                                <p class="fw-bolder text-gray-800 "># <i>{{ $questionnaire->question }}</i>
+                                                </p>
+                                                <div class="input-group mb-3">
+                                                    <input type="text" class="form-control form-control-solid" name="{{ "questionnaire_id_".$questionnaire->id }}"  value = "{{ get_response_of_question($questionnaire->id,$project->id) }}" placeholder="@lang("lang.response")" >
+                                                    <span class="input-group-text border border-transparent"><i class="fas fa-pen"></i></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="submit"  class=" btn btn-sm btn-light-primary  mr-2">@include('partials.general._button-indicator', ['label'=> trans('lang.save'),"message" =>trans("lang.sending")])</button>
+                        </div>
+                    </form>
+                </div>
+        </div>
+        @endif
+    @endif
+</div>
+<style>
     .dataTables_wrapper table thead {
         display: none;
     }
@@ -367,23 +357,22 @@
         })
     </script>
 @endif
-
 <script>
     $(document).ready(function() {
         KTApp.initAutosize();
         $("#response-ground-form").appForm({
             onSuccess: function(response) {
-                console.log(response)
+                return true;
             },
         })
         $("#response-per-category-form").appForm({
             onSuccess: function(response) {
-                console.log(response)
+                return true;
             },
         })
         $("#response-existing-buiding-form").appForm({
             onSuccess: function(response) {
-                console.log(response)
+                return true;
             },
         })
     })

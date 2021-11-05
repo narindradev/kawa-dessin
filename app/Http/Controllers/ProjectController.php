@@ -16,6 +16,8 @@ use App\Models\ProjectRelaunch;
 use App\Models\ProjectDescription;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\PriceProjectRequest;
+use App\Http\Requests\StartProjectRequest;
+use App\Notifications\ProjectAssignedNotification;
 
 class ProjectController extends Controller
 {
@@ -23,41 +25,128 @@ class ProjectController extends Controller
     {
         $advance_filter = $this->advance_filter();
         $basic_filter = $this->basic_filter();
-        $users = $this->dessignators_list();
+        $users = null;
+        if (!Auth::user()->is_dessignator()) {
+            $users = $this->users_list();
+        }
         return view("project.index", compact("advance_filter", "basic_filter", "users"));
     }
     public function data_list(Request $request)
     {
         $data = [];
         $projects = Project::getDetails($request->all())->get();
+        $count = $projects->count();
         foreach ($projects as $project) {
-            $data[] = $this->_make_row($project);
+            $data[] = $this->_make_row($project, Auth::user());
         }
-        return (["data" => $data]);
+        return ["data" => $data,];
     }
     public function _make_row(Project $project, $for_user = null)
     {
         $client = $project->client;
-        $last_relauch = ProjectRelaunch::where("project_id", $project->id)->where("created_by", $client->user->id)->latest('created_at')->first();
-        $relaunch = Relaunch::where("project_id", $project->id)->where("created_by", $client->user->id)->latest('created_at')->first();
         $actions = [];
-        $column = [
+        $columns = [
             "DT_RowId" => row_id("projects", $project->id),
-            "badge" => view("project.column.badge", ["project" => $project])->render(),
-            "client_info" => view("project.column.info-client", ["client" => $client, "project" => $project])->render(),
+            "badge" => view("project.column.badge", ["project" => $project, "for_user" => $for_user])->render(),
+            "client_info" => view("project.column.info-client", ["client" => $client, "project" => $project, "link" => 1, "for_user" => $for_user])->render(),
             "messenger" => view("project.column.messenger", ["client" => $client, "project" => $project])->render(),
             "categories" => $project->categories->pluck("name")->implode(" , ", "name"),
             "client_type" => view("project.column.client-type", ["client" => $client])->render(),
-            "status" => view("project.column.status", ["project" => $project])->render(),
-            "estimate" => view("project.column.estimate", ["project" => $project, "last_relaunch" => $last_relauch, "relaunch" =>  $relaunch])->render(),
+            "status" => view("project.column.status", ["project" => $project, "for_user" => $for_user])->render(),
             "version" => $project->version,
-            "date" => $project->created_at->format("d-M-Y"),
-            "actions" => view("project.column.actions", ["actions" => $actions, "project" => $project])->render(),
+            "start_date" => "<span style='display:inline'>" . ($project->start_date ? $project->start_date->format("d-M-Y") : "-") . "</span>",
+            "due_date" => $this->due_column($project),
         ];
-        if($for_user && $for_user->user_type_id == 2){
-            
+        $add_dessinator =  modal_anchor(url("/project_member/add_member_modal_form"), '<i class="text-hover-primary fas fa-user-plus " style="font-size:15px"></i>', ["data-post-project_id" => $project->id, "data-post-user_type_id" => 4, "class" => "", 'title' => trans('lang.add_dessinator')]);
+        $add_mdp = modal_anchor(url("/project_member/add_member_modal_form"), '<i class="text-hover-primary fas fa-user-plus " style="font-size:15px"></i>', ["data-post-project_id" => $project->id, "data-post-user_type_id" => 2, "class" => "", 'title' => trans('lang.add_mdp')]);
+        $members_list = $this->_make_user_type_column($project);
+        $columns["mdp"]  =  view("project.column.members", ["members" =>  get_array_value($members_list, "mdp"), "add" => $add_mdp, "for_user" => $for_user])->render();
+       
+        if ($for_user && !$for_user->is_dessignator()) {
+            $columns["commercial"] =  view("project.column.members", ["members" =>  get_array_value($members_list, "commercial"), "for_user" => $for_user])->render();
         }
-        return  $column; 
+        $columns["dessignator"] =   view("project.column.members", ["members" =>  get_array_value($members_list, "dessignator"), "add" => $add_dessinator, "for_user" => $for_user])->render();
+        if ($for_user && $for_user->is_admin()) {
+            $columns["invoice"] =  $this->invoice_column($project);
+        }
+        if ($for_user && ($for_user->is_admin() || $for_user->is_commercial())) {
+            $columns["payment"] =  $this->payment_column($project);
+        }
+        if ($for_user && !$for_user->is_dessignator()) {
+            $columns["client_type"] =  view("project.column.client-type", ["client" => $client])->render();
+            $columns["date"] =  $project->created_at->format("d-M-Y");
+        }
+        if ($for_user && ($for_user->is_admin() || $for_user->is_commercial())) {
+            $last_relauch =  ProjectRelaunch::where("project_id", $project->id)->where("created_by", $client->user->id)->latest('created_at')->first();
+            $relaunch = Relaunch::where("project_id", $project->id)->where("created_by", $client->user->id)->latest('created_at')->first();
+            $columns["estimate"] =  view("project.column.estimate", ["project" => $project, "last_relaunch" => $last_relauch, "relaunch" =>  $relaunch, "for_user" => $for_user])->render();
+        }
+        $columns["actions"] = view("project.column.actions", ["actions" => $actions, "project" => $project, "for_user" => $for_user])->render();
+        return $columns;
+    }
+    private function invoice_column(Project $project)
+    {
+        if ($project->invoice && $project->invoice->status->name !== "not_paid") {
+            return view("project.column.invoice_items", ["project" =>  $project])->render();
+        } else {
+            return "-";
+        }
+    }
+    private function payment_column(Project $project)
+    {
+        if ($project->invoice && in_array($project->invoice->status->name, ["not_paid", "part_paid"])) {
+            return anchor(url("project/invoice/preview/{$project->invoice->id}"), trans("lang.{$project->invoice->status->name}"), ["class" => "text-{$project->invoice->status->class} "]);
+        } elseif ($project->invoice && ($project->invoice->status->name === "paid")) {
+            return anchor(url("project/invoice/preview/{$project->invoice->id}"), trans("lang.{$project->invoice->status->name}"), ["class" => "text-{$project->invoice->status->class} "]);
+        } else {
+            return "-";
+        }
+    }
+    private function due_column(Project $project)
+    {
+        $class  = "";
+        $due_date = null;
+        if ($project->due_date && $project->due_date->isToday()) {
+            $class  = "danger";
+            $due_date = "Aujourd'hui";
+        } elseif ($project->due_date && $project->due_date->isTomorrow()) {
+            $class  = "warning";
+            $due_date = "Demain";
+        } elseif ($project->due_date) {
+            $due_date = $project->due_date->format("d-M-Y");
+        }
+        return "<span class ='text-{$class}'>" . ($project->due_date ?  $due_date : "-") . "</span>";
+    }
+    private function _make_user_type_column(Project $project)
+    {
+        $members = get_cache_member($project);
+        $list = ["mdp" => [], "dessignator" => [], "commercial" => []];
+        $int = random_int(1, 50);
+        foreach ($members as $member) {
+            if ($member->is_mdp()) {
+                $int = $int - 1;
+                $list["mdp"][] = [
+                    "id" => $member->id,
+                    "name" => $member->name,
+                    "avatar" => "https://i.pravatar.cc/80?img=$int",
+                ];
+            } elseif ($member->is_commercial()) {
+                $int = $int + 2;
+                $list["commercial"][]  = [
+                    "id" => $member->id,
+                    "name" => $member->name,
+                    "avatar" => "https://i.pravatar.cc/80?img=$int",
+                ];
+            } elseif ($member->is_dessignator()) {
+                $int = $int - 3;
+                $list["dessignator"][] = [
+                    "id" => $member->id,
+                    "name" => $member->name,
+                    "avatar" => "https://i.pravatar.cc/80?img=$int",
+                ];
+            }
+        }
+        return $list;
     }
     /** Relaunch summary */
     public  function relaunch(Project $project)
@@ -74,18 +163,15 @@ class ProjectController extends Controller
     }
     public function relaunch_list(Project $project)
     {
-
         $data = $relaunchs = [];
         $project->load("relaunchs");
         $relaunchs = $project->relaunchs;
-
         foreach ($relaunchs as $relaunch) {
             $relaunch->load("subject");
             $data[] = $this->_make_relaunch_row($relaunch);
         }
         return ["data" => $data];
     }
-
     private function _make_relaunch_row($relaunch)
     {
         return [
@@ -102,10 +188,13 @@ class ProjectController extends Controller
     }
     public function add_estimate(PriceProjectRequest $request, Project $project)
     {
+        if ($project->estimate == "accepted") {
+            die(json_encode(["success" => false, "message" => trans("lang.error_global")]));
+        }
         $project->price = $request->devis;
         $project->status_id = 3; // estimated
         $project->save();
-        die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "project" => $this->_make_row($project)]));
+        die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "project" => $this->_make_row($project, Auth::user())]));
     }
     private function advance_filter()
     {
@@ -124,14 +213,12 @@ class ProjectController extends Controller
     }
     private function basic_filter()
     {
-
         $filters = [];
-
         $filters[] = [
             "label" => trans("lang.clients"),
             "name" => "client_id",
             "type" => "select",
-            "options" =>  Project::get_client_dropdown(Auth::user()->id),
+            "options" =>  Project::get_client_dropdown(Auth::user()),
         ];
         /*
         $filters[] = [
@@ -140,16 +227,29 @@ class ProjectController extends Controller
             "type" => "date-range",
         ];
         */
-        $filters[] = [
-            "label" => trans("lang.client_type"),
-            "name" => "client_type",
-            "type" => "select",
-            "options" => [
-                ["value" => "particular", "text" => "Particulier"],
-                ["value" => "corporate", "text" => "Entreprise"],
-            ],
-        ];
-
+        if (!Auth::user()->is_dessignator()) {
+            $filters[] = [
+                "label" => trans("lang.client_type"),
+                "name" => "client_type",
+                "type" => "select",
+                "options" => [
+                    ["value" => "particular", "text" => "Particulier"],
+                    ["value" => "corporate", "text" => "Entreprise"],
+                ],
+            ];
+        }
+        if (Auth::user()->is_admin()) {
+            $filters[] = [
+                "label" => trans("lang.payment"),
+                "name" => "status_invoice",
+                "type" => "select",
+                "options" => [
+                    ["value" => "paid", "text" => "Payé"],
+                    ["value" => "part_paid", "text" => "Partiellement payé"],
+                    ["value" => "not_paid", "text" => "Non payé"],
+                ],
+            ];
+        }
         $filters[] = [
             "label" => trans("lang.priority"),
             "name" => "priority_id",
@@ -163,20 +263,18 @@ class ProjectController extends Controller
             "options" =>  Status::drop(),
         ];
         $filters[] = [
-            "label" => trans("lang.type"),
+            "label" => trans("lang.type") . " " . trans("lang.project"),
             "name" => "categorie_id",
             "type" => "select",
             "options" =>  Category::drop(),
         ];
-
         return $filters;
     }
-    public function dessignators_list()
+    public function users_list()
     {
-
         $list = [];
-        $dessignators = User::where("user_type_id", 4)->get();
-        foreach ($dessignators as $user) {
+        $users = Auth::user()->is_admin() ?  User::whereIn("user_type_id", [2, 3, 4])->get() : User::where("user_type_id", 4)->get();
+        foreach ($users as $user) {
             $int = random_int(1, 50);
             $list[] =  [
                 "value" => $user->id,
@@ -190,8 +288,6 @@ class ProjectController extends Controller
 
     public function detail(Project $project)
     {
-        // User::find(12)->notify(new ProjectAssignedNotification($project));
-        // dd("ok");
         $project->load("categories");
         $project->load("infoGround");
         foreach ($project->categories as $categorie) {
@@ -210,24 +306,22 @@ class ProjectController extends Controller
         }
         return ["success" => true, "message" => trans("lang.success_record")];
     }
-
     public function save_responses_of_question(Request $request, Project $project)
     {
         $project_id = $project->id;
         $responses = $request->except("_token");
-        foreach ($responses as $input => $value) {
+        foreach ($responses as $input => $answer) {
             $questionnaire_id = str_replace("questionnaire_id_", "", $input);
-           if($questionnaire_id){
-               ProjectDescription::updateOrCreate(
-                   ["project_id" => $project_id, "questionnaire_id" => $questionnaire_id],
-                   ["answer" => $value]
-               );
-               Cache::forget("response_of_questionnaire_id_" . $questionnaire_id . "project_id_" . $project_id);
-           }
+            if ($questionnaire_id) {
+                ProjectDescription::updateOrCreate(
+                    ["project_id" => $project_id, "questionnaire_id" => $questionnaire_id],
+                    ["answer" => $answer]
+                );
+                Cache::forget("response_of_questionnaire_id_{$questionnaire_id}_project_id_{$project_id}");
+            }
         }
         return ["success" => true, "message" => trans("lang.success_record")];
     }
-   
     public function tab_description(Project $project)
     {
         $project->load("descriptions");
@@ -250,7 +344,6 @@ class ProjectController extends Controller
             anchor(url("/project/download/file/$file->id"), '<i class="fas fa-cloud-download-alt"></i>', ["class" => "text-hover-primary", "title" => trans("lang.download")])
         ];
     }
-
     public function download_file(ProjectFiles $file)
     {
         $file->load("project");
@@ -259,5 +352,84 @@ class ProjectController extends Controller
             return response()->download($uri, $file->originale_name);
         }
         abort(403);
+    }
+    public function add_member_modal_form(Request $request)
+    {
+        $project = Project::find($request->project_id);
+        $not_member = User::where('user_type_id', $request->user_type_id)->whereNotIn('id', $project->members()->pluck("user_id")->toArray())->get();
+        return view("project.members.add-member-modal-form", ["user_type_id" => $request->user_type_id, "project_id" => $request->project_id, "not_member" => $not_member]);
+    }
+    public function data_list_member(Request $request)
+    {
+        $data = [];
+        $project = Project::find($request->project_id);
+        $users = User::where('user_type_id', $request->user_type_id)->whereDeleted(0)->get();
+        $member_ids = $project->members()->pluck("user_id")->toArray();
+        foreach ($users as $user) {
+            $data[] = $this->_make_row_member($user, $member_ids, $project);
+        }
+        return (["data" => $data]);
+    }
+    private function _make_row_member($user, $member_ids, $project)
+    {
+        $is_member = in_array($user->id, $member_ids);
+        return [
+            "DT_RowId" => row_id("user", $user->id),
+            "member_info" => view("project.column.member-list", ["user" => $user, "is_member" => $is_member])->render(),
+            "select" => view("project.column.member-selected-list", ["user" => $user, "is_member" => $is_member, "project_id" => $project->id])->render(),
+        ];
+    }
+    public function delete_member(Request $request)
+    {
+        $project = Project::find($request->project_id);
+        $user = User::find($request->user_id);
+        Cache::forget("members_list_$project->id");
+        if ($request->input("cancel")) {
+            $project->members()->attach($request->user_id);
+            $member = $project->members()->pluck("user_id")->toArray();
+            die(json_encode(["success" => true, "message" => trans("lang.success_canceled"), "extra_data" => ["table" => "projectsTable", "row_id" => row_id("projects", $request->project_id), "data" => $this->_make_row($project, Auth::user())], "row_id" => row_id("user", $request->user_id), "data" => $this->_make_row_member($user, $member, $project)]));
+        } else {
+            $project->members()->detach($request->user_id);
+            $member = $project->members()->pluck("user_id")->toArray();
+            die(json_encode(["success" => true, "message" => trans("lang.success_deleted"), "extra_data" => ["table" => "projectsTable", "row_id" => row_id("projects", $request->project_id), "data" => $this->_make_row($project, Auth::user())], "row_id" => row_id("user", $request->user_id), "data" => $this->_make_row_member($user, $member, $project)]));
+        }
+    }
+    public function assign_member(Request $request)
+    {
+        if ($request->user_ids) {
+            $project = Project::find($request->project_id);
+            $project->members()->syncWithoutDetaching($request->user_ids);
+            $users = User::findMany($request->user_ids);
+            /** Send notication */
+            \Notification::send($users, (new ProjectAssignedNotification($project, Auth::user())));
+            Cache::forget("members_list_$project->id");
+            die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "data" => $this->_make_row($project, Auth::user())]));
+        } else {
+            die(json_encode(["success" => true, "message" => "aucune action"]));
+        }
+    }
+
+    public function start_form(Project $project)
+    {
+        $project->load("client");
+        $status = Status::dropProjectStatus();
+        return view("project.start-date.start-modal-form", compact("project", "status"));
+    }
+    public function add_start(StartProjectRequest $request, Project $project)
+    {
+        $project->status_id = 5; // in progress
+        if ($request->status) {
+            $project->status_id = $request->status;
+        }
+        $dates = explode("-", $request->dates);
+        $project->start_date = to_date($dates[0]);
+        $project->due_date = to_date($dates[1]);
+        $project->save();
+        die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "project" => $this->_make_row($project, Auth::user())]));
+    }
+    public function kanban(Request $request)
+    {
+        $item = view("project.column.kanban", [])->render();
+        return view("project.kanban.index", compact("item"));
     }
 }

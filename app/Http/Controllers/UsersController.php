@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\User;
 use App\Models\UserType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\CreateUserRequest;
 
 class UsersController extends Controller
@@ -119,10 +121,25 @@ class UsersController extends Controller
     {
         //
     }
-
-
     public function email_exist(Request $request)
     {
         echo User::whereDeleted(0)->whereEmail($request->input("email"))->first() ? json_encode(['valid' => false]) :  json_encode(['valid' => true]);
+    }
+    public function send_email(Request $request)
+    {
+        try {
+            Mail::send("settings.email-test", [], function ($message) use ($request) {
+                $message->to($request->to)->subject('Test envoi mail');
+                $message->from(app_setting("sender_mail"),app_setting("app_name"));
+            });
+            if( count(Mail::failures()) ) {
+                die(json_encode(["success" => false, "type" => "test" , "message" => "Erreur! verifier bien les email ou le mot de passe ou faire une configuration dans l'email donnée"]));
+                
+            } else {
+                 die(json_encode(["success" => true, "type" => "test" , "message" => " E-mail bien envoyé"]));
+             }
+        } catch (Exception $e) {
+            die(json_encode(["success" => false, "type" => "test"  ,"message" => $e->getMessage()]));
+        }
     }
 }

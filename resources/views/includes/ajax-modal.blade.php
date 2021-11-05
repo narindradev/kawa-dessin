@@ -1,24 +1,21 @@
 <button type="button" id="trigger-ajax-modal" data-bs-toggle="modal" data-bs-target="#ajax-modal"
     style="display: none"></button>
 <div class="modal fade" tabindex="-1" id="ajax-modal">
-    <div class="modal-dialog">
+    <div id="modal-dialog" class="modal-dialog modal-dialog-centered modal-width">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title" id="ajax-modal-title"></h4>
 
-                <!--begin::Close-->
                 <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
                     aria-label="Close">
-                    <span class="svg-icon svg-icon-2x">x</span>
+                    <span class="svg-icon svg-icon-2x"><i class="fas fa-times"></i></span>
                 </div>
-                <!--end::Close-->
             </div>
-
             <div class="modal-body" id="ajax-modal-callback" style="display: none">
-               
+
             </div>
             <div class="modal-body modal-body-content" id="ajax-modal-content">
-                
+
             </div>
             <div id='ajax-modal-original-content' class='center-align'>
                 <div class="original-modal-body ">

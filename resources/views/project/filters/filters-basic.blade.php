@@ -1,6 +1,6 @@
 <div class="card-toolbar my-1">
     @foreach ($inputs as $input)
-        <div class="me-4 my-2">
+        <div class="me-2 my-2  w-150px ">
             @php
                 $class = "form-control form-control-sm form-control-solid w-160px $filter_for";
                 if (get_array_value($input, 'type') == 'select') {

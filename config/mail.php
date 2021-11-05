@@ -35,12 +35,14 @@ return [
 
     'mailers' => [
         'smtp' => [
-            'transport' => 'smtp',
+            'transport' => 'mail',
             'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
             'port' => env('MAIL_PORT', 587),
             'encryption' => env('MAIL_ENCRYPTION', 'tls'),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
+            // 'username' => app_setting("sender_mail"),
+            // 'password' => "kawadessinmailer@2021" ,
             'timeout' => null,
             'auth_mode' => null,
         ],
@@ -70,6 +72,7 @@ return [
         'array' => [
             'transport' => 'array',
         ],
+        
     ],
 
     /*

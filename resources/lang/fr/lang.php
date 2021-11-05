@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Pagination Language Lines
@@ -12,7 +11,6 @@ return [
     | you want to customize your views to better match your application.
     |
     */
-
     'offers' => 'Offres',
     'list' => 'Liste',
     'listes' => 'Listes',
@@ -51,7 +49,7 @@ return [
     'loading' => 'Chargement ...',
     'sending' => 'Envoye ...',
     'send' => 'Envoyé',
-    'processing' => 'Traitement ...',
+    'processing' => 'Traitement',
     'error' => 'Erreur',
     'messg_rgpd' => "En soumettant ce formulaire, J accepte que mes informations sont utilisées dans la cadre de ma demande.",
     'yes' => 'Oui',
@@ -76,7 +74,7 @@ return [
     'new' => 'Nouveau',
     'reiceive' => 'Reçu',
     'estimated' => 'A un devi',
-    'started' => 'Démarer',
+    'started' => 'Démaré',
     'in_progress' => 'En cours',
     'stand_by' => 'Suspendue',
     'to_do' => 'Réfaire',
@@ -122,6 +120,56 @@ return [
     'signin' => 'Se connecter',    
     'log_you' => 'connectez-vous',    
     'comment' => 'Commentaire',    
-    'client_type' => 'Type de client',    
+    'client_type' => 'Type client',    
     'response' => 'Reponse',    
-];
+    'choose_one_project_type' => 'Veuillez choissir un type project svp!',    
+    'paid' => 'Payé',    
+    'part_paid' => 'Part. payé',    
+    'not_paid' => 'Non payé',    
+    'settings' => 'Paramètres',    
+    'paid_it' => 'Payé maitenant',    
+    'choose_a_payment_method' => 'Veulliez choissir votre methode de payment',
+    'success_payment' => 'Votre paiment sur %s est bien effectué!',
+    'add_new_project' => 'Ajouter un autre projet',
+    'create_new_project' => 'Créer un autre projet',
+    'projects_list' => 'Liste des projets',
+    'refresh' => 'Recharger la liste',
+    'list_user_type_2' => 'Liste des chefs de projets',
+    'list_user_type_4' => 'Liste des dessignateurs',
+    'add_dessinator' => 'Assigner un dessignateur',
+    'add_mdp' => 'Assigner un chef de projet',
+    'delete_dessinator' => 'Retirer un dessinateur',
+    'delete_mdp' => 'Retirer un chef de projet',
+    'member_assign' => 'Aucun membre n\'est sélectionné',
+    'stripe_verify' => 'Stripe verification ...',
+    'try_again' => 'Veuillez réessayer svp',
+    'sender_mail' => 'Expéditeur',
+    'sender_name' => 'Nom de l\'expéditeur',
+    'mail_cc' => 'Cc',
+    'mail_password' => 'Mot de passe',
+    'password' => 'Mot de passe',
+    'app_name' => 'Nom de l\'application',
+    'STRIPE_KEY' => 'Clé public',
+    'STRIPE_SECRET' => 'Clé secret',
+    'frist_slice' => '1ére',
+    'second_slice' => '2éme',
+    'currency' => 'Devise',
+    'currency_symbole' => 'Symbole de devise',
+    'separator_decimal' => 'Séparateur decimale',
+    'separtor_thousands' => 'Séparateur de milliers',
+    'payment' => 'Paiment',
+    
+    'email_required' => 'Adresse email requis',
+    'password_required' => 'Mot de passe requis',
+    'detected_error' => 'Désolé, il semble que des erreurs ont été détectées, veuillez réessayer.',
+    'got_it' => 'ok, j\'ai compris',
+    'valid_email' => 'Adresse e-mail invalide',
+    'valid_password' => 'Veuillez saisir un mot de passe valide',
+    'success_login' => 'Vous vous êtes connecté avec succès!',
+    'login_error' => 'Authentification échouée',
+    'close' => 'Fermer',
+
+    'start_project' => 'Démarrer le projet',
+    'start_value' => 'Le champ date est requis',
+    'start_date' => 'Date',
+]; 

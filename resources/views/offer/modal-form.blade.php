@@ -42,6 +42,7 @@
 <script>
     $(document).ready(function() {
         $("#offer-form").appForm({
+            // isModal : false,
             onSuccess: function(response) {
                 dataTableInstance.offerTable.ajax.reload();
             },

@@ -23,8 +23,6 @@ class PagesController extends Controller
         $redirect = request()->redirect;
         if($redirect){
             $redirect =  $redirect;
-        }elseif (Auth::user()->is_client()) {
-            $redirect = "client/project/index";
         }else {
             $redirect = "dashboard/index";
         }

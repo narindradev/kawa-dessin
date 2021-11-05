@@ -20,4 +20,13 @@ class Status extends Model
         }
         return $list;
     }
+    static function dropProjectStatus()
+    {
+        $list = [];
+        $status = Status::orderBy('id', 'DESC')->limit(3)->get();
+        foreach ($status as $s) {
+            $list[] = ["value" => $s->id , "text" => trans("lang.$s->name") ];
+        }
+        return $list;
+    }
 }

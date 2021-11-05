@@ -13,12 +13,12 @@
             </div>
         </div>
         <div class="fv-row mb-10">
-            <label class="form-label fs-6 fw-bolder text-dark">{{ __('Email') }}</label>
+            <label class="form-label fs-6 fw-bolder text-dark">@lang('lang.email')</label>
             <input class="form-control form-control-lg form-control-solid" type="email" name="email" autocomplete="off" value="{{ old('email', '') }}" required autofocus/>
         </div>
         <div class="fv-row mb-10">
             <div class="d-flex flex-stack mb-2">
-                <label class="form-label fw-bolder text-dark fs-6 mb-0">{{ __('Password') }}</label>
+                <label class="form-label fw-bolder text-dark fs-6 mb-0">@lang('lang.password')</label>
                 @if (Route::has('password.request'))
                     {{-- <a href="{{ theme()->getPageUrl('password.request') }}" class="link-primary fs-6 fw-bolder">
                         {{ __('Forgot Password ?') }}

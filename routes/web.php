@@ -7,12 +7,14 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Documentation\ReferencesController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\Logs\AuditLogsController;
 use App\Http\Controllers\Logs\SystemLogsController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\QuestionnaireController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
 
@@ -97,7 +99,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/questionnaire/preliminary_info/store', [QuestionnaireController::class, 'storePreliminary']);
     Route::post('/questionnaire/preliminary/modal_form', [QuestionnaireController::class, 'preliminary_modal']);
     Route::post('/questionnaire/deletePreliminary/{questionnaire}', [QuestionnaireController::class, 'deletePreliminary']);
-
+    /** Projects */
     Route::get('/project', [ProjectController::class, 'index']);
     Route::get('/project/list', [ProjectController::class, 'data_list']);
     Route::get('/project/detail/{project}', [ProjectController::class, 'detail']);
@@ -108,6 +110,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/project/save_step2/info_ground/save/{project}', [ProjectController::class, 'save_info_ground']);
     Route::post('/project/save_step2/responses_of_question/save/{project}', [ProjectController::class, 'save_responses_of_question']);
     
+    Route::get('/project/kanban/index', [ProjectController::class, 'kanban']);
+    
+    /** Projects members */
+    Route::get('/project_member/data_list_member', [ProjectController::class, 'data_list_member']);
+    Route::post('/project_member/add_member_modal_form', [ProjectController::class, 'add_member_modal_form']);
+    Route::post('/project_member/delete/', [ProjectController::class, 'delete_member']);
+    Route::post('/project_member/assign/{project?}', [ProjectController::class, 'assign_member']);
     /** Relaunch project */
     Route::post('/project/relaunch/summary/{project}', [ProjectController::class, 'relaunch']);
     Route::post('/project/relaunch/add/{project}', [ProjectController::class, 'add_relaunch']);
@@ -116,26 +125,48 @@ Route::middleware('auth')->group(function () {
     /** Add  estimate for project */
     Route::post('/project/estimate/form/{project}', [ProjectController::class, 'estimat_form']);
     Route::post('/project/estimate/add/{project}', [ProjectController::class, 'add_estimate']);
-    
+    /* Start a project */
+    Route::post('/project/start/form/{project}', [ProjectController::class, 'start_form']);
+    Route::post('/project/start/add/{project}', [ProjectController::class, 'add_start']);
     /** Users */ 
     Route::get('/users/list', [UsersController::class, 'index']);
     Route::get('/users/data_list', [UsersController::class, 'data_list']);
     Route::post('/users/form/user', [UsersController::class, 'form']);
     Route::post('/users/create/user', [UsersController::class, 'store']);
+    Route::post('/send/email', [UsersController::class, 'send_email']);
     
-    
-    // Client projects
-    
-    Route::get('/client/project/index', [ClientController::class, 'projects']);
-    Route::get('/client/project/list', [ClientController::class, 'data_list']);
-    /** Estimate */
-    Route::post('/estimate/validation/{project}', [ClientController::class, 'estimate_validation']);
-    Route::post('/project/accept/estimate/{project}', [ClientController::class, 'accept_estimate']);
-    Route::post('/project/refuse/estimate/{project}', [ClientController::class, 'refuse_estimate']);
-    Route::post('/project/estimate/save_refuse/{project}', [ClientController::class, 'save_refuse_estimate']);
+    Route::group(['middleware' => ['auth'] ], function() {
+         // Client projects
+        Route::get('/client/project/index', [ClientController::class, 'projects']);
+        Route::get('/client/project/list', [ClientController::class, 'data_list']);
+        /** Estimate */
+        Route::post('/estimate/validation/{project}', [ClientController::class, 'estimate_validation']);
+        Route::post('/project/accept/estimate/{project}', [ClientController::class, 'accept_estimate']);
+        Route::post('/project/refuse/estimate/{project}', [ClientController::class, 'refuse_estimate']);
+        Route::post('/project/estimate/save_refuse/{project}', [ClientController::class, 'save_refuse_estimate']);
+        //Project invoice 
+        Route::get('/project/invoice/preview/{invoice}', [InvoiceController::class, 'preview']);
+        Route::get('/project/invoice/pdf/{invoice}', [InvoiceController::class, 'pdf']);
+        Route::post('/project/invoice/checkout-form/{invoice}', [InvoiceController::class, 'checkout_form']);
+        Route::post('/project/invoice/checkout/{invoice}', [InvoiceController::class, 'checkout']);
+        Route::get('/project/invoice/download/{invoiceItem}', [InvoiceController::class, 'download_invoice']);
+      });
     //Dashboard
     Route::get('dashboard/index', [DashboardController::class, 'index']);
-
+    
+    // settings
+    Route::group(['middleware' => ['admin'] ], function() {
+    Route::get('/app/setting/index', [SettingController::class, 'index']);
+    Route::get('/app/setting/notification', [SettingController::class, 'notification_form']);
+    Route::post('/app/setting/notification/save', [SettingController::class, 'save_sett_notification']);
+    Route::get('/app/setting/general', [SettingController::class, 'general_form']);
+    Route::post('/app/setting/general/save', [SettingController::class, 'save_sett_general']);
+    Route::get('/app/setting/payment_method', [SettingController::class, 'payment_method_form']);
+    Route::post('/app/setting/payment_method/save', [SettingController::class, 'save_sett_payment_method']);
+     });
+   //Dashboard
+   Route::get('dashboard/index', [DashboardController::class, 'index']);
+    
 
 
 });
@@ -145,7 +176,6 @@ Route::get('/home', [HomeController::class, 'index']);
 Route::get('/home/index', [HomeController::class, 'index']);
 Route::post('/home/request/save', [HomeController::class, 'save']);
 Route::post('/user/email/exist', [UsersController::class, 'email_exist']);
-
 
 /**
  * Socialite login using Google service

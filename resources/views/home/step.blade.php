@@ -42,7 +42,7 @@
                             <!--end::Step 4-->
                             <!--begin::Step 5-->
                             <div class="stepper-item" data-kt-stepper-element="nav">
-                                <h3 class="stepper-title">Completed</h3>
+                                <h3 class="stepper-title">Finalisation</h3>
                             </div>
                             <!--end::Step 5-->
                         </div>
@@ -192,7 +192,7 @@
                                         </div> --}}
                                         <div
                                         class=" col-lg-6 pb-lg-1 fv-row mb-4  fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
-                                        <label class="form-label required">Name</label>
+                                        <label class="form-label required">Nom</label>
                                         <input name="first_name" autocomplete="off" value=""
                                             class="form-control form-control-lg form-control-solid">
                                         <div class="fv-plugins-message-container invalid-feedback"></div>
@@ -202,7 +202,7 @@
                                       
 
                                         <div class=" col-lg-6 pb-lg-1 fv-row mb-4  fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
-                                            <label class="form-label required">Prénom</label>
+                                            <label class="form-label ">Prénom</label>
                                             <input name="last_name" autocomplete="off" value=""
                                                 class="form-control form-control-lg form-control-solid">
                                             <div class="fv-plugins-message-container invalid-feedback"></div>

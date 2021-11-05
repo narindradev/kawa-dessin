@@ -40,7 +40,6 @@ var KTApp = function () {
                 tp.hide();
             });
         }
-
         return tp;
     }
 
@@ -76,7 +75,6 @@ var KTApp = function () {
         if (options['dismiss'] === true) {
             options['template'] = '<div class="popover" role="tooltip"><div class="popover-arrow"></div><span class="popover-dismiss btn btn-icon"><i class="bi bi-x fs-2"></i></span><h3 class="popover-header"></h3><div class="popover-body"></div></div>'
         }
-
         // Initialize popover
         var popover = new bootstrap.Popover(el, options);
 
@@ -99,7 +97,6 @@ var KTApp = function () {
 
         return popover;
     }
-
     var initBootstrapPopovers = function () {
         var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
 
@@ -107,7 +104,6 @@ var KTApp = function () {
             initBootstrapPopover(popoverTriggerEl, {});
         });
     }
-
     var initScrollSpy = function () {
         var elements = [].slice.call(document.querySelectorAll('[data-bs-spy="scroll"]'));
 
@@ -120,7 +116,6 @@ var KTApp = function () {
             }
         });
     }
-
     var initButtons = function () {
         var buttonsGroup = [].slice.call(document.querySelectorAll('[data-kt-buttons="true"]'));
 
@@ -139,7 +134,6 @@ var KTApp = function () {
             });
         });
     }
-
     var initCheck = function () {
         // Toggle Handler
         KTUtil.on(document.body, '[data-kt-check="true"]', 'change', function (e) {
@@ -342,8 +336,8 @@ var KTApp = function () {
         $('body').on('click', '[data-act=ajax-modal]', function () {
             var data = { ajaxModal: 1, "_token": getCsrfToken() },
                 url = $(this).attr('data-action-url'),
-                // crud = $(this).attr('data-crud'),
                 isLargeModal = $(this).attr('data-modal-lg'),
+                modalDialogWidth  = $(this).attr('modal-width'),
                 title = $(this).attr('data-title'),
                 $this = $("#ajax-modal");
             if (!url) {
@@ -379,6 +373,9 @@ var KTApp = function () {
                     $this.find('.modal-dialog').removeClass("modal-sm");
                     if (isLargeModal) {
                         $this.find('.modal-dialog').addClass("modal-lg")
+                    }
+                    if (modalDialogWidth) {
+                        $("#modal-dialog").addClass(modalDialogWidth)
                     }
                     $("#ajax-modal-content").html(response);
 

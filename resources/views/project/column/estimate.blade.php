@@ -1,5 +1,9 @@
-<span  class="text-primary fw-bolder text-hover-primary d-block mb-1 fs-6">$ {{ $project->price ?? '0.00' }}</span>
-@if ($project->estimate)
+@php
+    $price = $project->price ?? '0.00';
+@endphp
+<span  class="text-primary fw-bolder text-hover-primary d-block mb-1 fs-6">{{ format_to_currency($price) }}</span>
+
+@if ($project->estimate && ($for_user->is_admin() || $for_user->is_commercial()))
     @php
         $class = 'success';
         if ($project->estimate == 'refused') {

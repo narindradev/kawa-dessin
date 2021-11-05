@@ -17,7 +17,6 @@
     <!--begin::Action-->
     <div class="overlay-layer card-rounded  bg-opacity-25 shadow">
         <i class="bi bi-eye-fill text-hover-primary fs-2x"></i>
-        
     </div>
     <!--end::Action-->
 </a>

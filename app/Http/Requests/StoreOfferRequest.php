@@ -24,9 +24,8 @@ class StoreOfferRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|max:255',
+            'title' => 'required|max:200',
         ];
-
     }
     public function messages()
     {

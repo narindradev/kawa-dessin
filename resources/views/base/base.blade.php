@@ -2,10 +2,9 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" {!! theme()->printHtmlAttributes('html') !!}
     {{ theme()->printHtmlClasses('html') }}>
 {{-- begin::Head --}}
-
 <head>
     <meta charset="utf-8" />
-    <title> {{ config("app_name") }}</title>
+    <title>| {{ app_setting("app_name") }}</title>
     <meta name="description" content="{{ ucfirst(theme()->getOption('meta', 'description')) }}" />
     <meta name="keywords" content="{{ theme()->getOption('meta', 'keywords') }}" />
     <link rel="canonical" href="{{ ucfirst(theme()->getOption('meta', 'canonical')) }}" />
@@ -14,11 +13,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script> 
     <link href="{{ url('demo1/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
-
         {{-- begin::Fonts --}}
         {{ theme()->includeFonts() }}
         {{-- end::Fonts --}}
-        
         @if (theme()->hasOption('page', 'assets/vendors/css'))
         {{-- begin::Page Vendor Stylesheets(used by this page) --}}
         @foreach (theme()->getOption('page', 'assets/vendors/css') as $file)
@@ -34,7 +31,6 @@
         @endforeach
         {{-- end::Page Custom Stylesheets --}}
         @endif
-        
         @if (theme()->hasOption('assets', 'css'))
         {{-- begin::Global Stylesheets Bundle(used by all pages) --}}
         @foreach (theme()->getOption('assets', 'css') as $file)
@@ -42,14 +38,10 @@
         @endforeach
         {{-- end::Global Stylesheets Bundle --}}
         @endif
-        
-        
         @if (theme()->getViewMode() === 'preview')
         {{ theme()->getView('partials/trackers/_ga-general') }}
         {{ theme()->getView('partials/trackers/_ga-tag-manager-for-head') }}
         @endif
-        
-        
         @yield('styles')
         <link src="{{ asset('custom.css') }}" rel="stylesheet" type="text/css" />
         <link src="{{ asset('other.css') }}" rel="stylesheet" type="text/css" />
@@ -101,7 +93,6 @@
 {{-- end::Page Custom Javascript --}}
 @endif
 {{-- end::Javascript --}}
-
 @if (theme()->getViewMode() === 'preview')
 {{ theme()->getView('partials/trackers/_ga-tag-manager-for-body') }}
 @endif
@@ -110,14 +101,14 @@
 @include('includes.notification-js')
     <script src="{{ asset('library/jquery.validate/jquery.validate.js') }}"></script>
     <script src="{{ asset('library/jquery.form/jquery.form.js') }}"></script>
-    <script src="{{ asset('main.js') }} "></script>
-    <script src=" {{ url('demo1/plugins/custom/datatables/datatables.bundle.js') }}"></script>
-    <script src="{{ asset('library/bootstrap-fileinput/js/fileinput.min.js') }}"></script>
+    <script src="{{ asset('main.js') }}"></script>
+    <script src="{{ url('demo1/plugins/custom/datatables/datatables.bundle.js')}}"></script>
+    <link  href="{{ url('library/jkanban/jkanban.bundle.css')}}" rel="stylesheet" type="text/css" />
+    <script src="{{ url('library/jkanban/jkanban.bundle.js')}}"></script> 
+    <script src="{{ asset('library/bootstrap-fileinput/js/fileinput.min.js')}}"></script>
     <script src="{{ asset('library/bootstrap-fileinput/themes/explorer/theme.min.js') }}"></script>
     @yield('scripts')
     @include('includes.ajax-drawer')
     @include('includes.debugs')
 </body>
-{{-- end::Body --}}
-
 </html>

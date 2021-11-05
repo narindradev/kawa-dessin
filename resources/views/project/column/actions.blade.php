@@ -17,23 +17,45 @@
         data-kt-menu="true" style="" data-bind="enable: !noResults()">
 
         <div class="menu-item px-3">
-            <div class="menu-content text-muted pb-2 px-3 fs-7 ">Etude de projet</div>
+            <div class="menu-content text-muted pb-2 px-3 fs-7 "><i class="fas fa-bars"></i></div>
         </div>
-        <div class="menu-item px-3">
-            @php
-                echo modal_anchor(url("/project/relaunch/summary/$project->id"), 'Relance', ['class' => 'menu-link px-3', 'data-drawer' => true, 'title' => trans('lang.relaunch')]);
+        @if ($for_user->is_commercial())
+            <div class="menu-item px-3">
+                @php
+                    echo modal_anchor(url("/project/relaunch/summary/$project->id"), 'Relance', ['class' => 'menu-link px-3', 'data-drawer' => true, 'title' => trans('lang.relaunch')]);
                 @endphp
-        </div>
-        @if ( !$project->estimate || $project->estimate =="refused")
+            </div>
+        @endif
+
+        @if ($for_user->is_commercial() && (!$project->estimate || $project->estimate == 'refused'))
             <div class="menu-item px-3">
                 @php
                     echo modal_anchor(url("/project/estimate/form/$project->id"), 'Assingné dévis', ['class' => 'menu-link px-3', 'title' => trans('lang.estimate')]);
                 @endphp
             </div>
         @endif
+        @if ($for_user->is_commercial())
+            <div class="menu-item px-3 my-1">
+                <a href="#" class="menu-link px-3">Annuler le project</a>
+            </div>
+        @endif
+        @if ($for_user->is_dessignator())
+            <div class="menu-item px-3 my-1">
+                <a href="#" class="menu-link px-3">Dessi action</a>
+            </div>
+        @endif
+        @if ($for_user->is_mdp())
         <div class="menu-item px-3 my-1">
-            <a href="#" class="menu-link px-3">Annuler  le project</a>
+            @php
+                echo modal_anchor(url("/project/start/form/$project->id"), trans("lang.start_project"), ['class' => 'menu-link px-3', 'title' => trans('lang.start_project')]);
+            @endphp
         </div>
+    @endif
+        @if ($for_user->is_admin())
+            <div class="menu-item px-3 my-1">
+                <a href="#" class="menu-link px-3">Admin action</a>
+            </div>
+        @endif
+        
     </div>
 </div>
-

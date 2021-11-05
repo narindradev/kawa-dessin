@@ -13,7 +13,7 @@ class CreateTableProjectDescription extends Migration
      */
     public function up()
     {
-        Schema::create('project_description', function (Blueprint $table) {
+        Schema::create('project_descriptions', function (Blueprint $table) {
             $table->id();
             $table->foreignId("project_id");
             $table->foreignId("questionnaire_id");
@@ -29,6 +29,6 @@ class CreateTableProjectDescription extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('project_description');
+        Schema::dropIfExists('project_descriptions');
     }
 }

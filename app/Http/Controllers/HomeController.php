@@ -20,14 +20,11 @@ class HomeController extends Controller
             return view("home.step", ["questions" => (new Questionnaire())->preliminary_question(), "offers" => Offer::whereDeleted(0)->whereActive(1)->has("categories")->get()]);
         }
     }
-
     public function save(StoreRequestClient $request)
     {
-       
         $descriptions = $this->validate_question($request);
         $client_type = $request->input("client_type");
-
-        $user = User::create($request->only("first_name", "last_name", "email", "phone") + ["user_type_id" => 5,'password' => Hash::make("123456789")]);
+        $user = User::create($request->only("first_name", "last_name", "email","phone", "address","city","zip") + ["user_type_id" => 5,'password' => Hash::make("123456789")]);
         // Create client of this user
         $client = $user->client()->create(['type' => $client_type]);
         // Save client info
@@ -52,14 +49,7 @@ class HomeController extends Controller
             $attachements = $this->attachements($request, $user->id, $project->id);  
         }
         // Save project descritions and files uploaded jobs
-        // $create_project_jobs = new CreateClientProjectJob($project ,$descriptions , $attachements);
-        $this->dispatch(new CreateClientProjectJob($project ,$descriptions , $attachements));
-        
-        /** Notification */
-        // User::find(12)->notify(new ProjectAssignedNotification($project));
-        // $project->status = 3;
-        // $project->save();
-        
+        dispatch(new CreateClientProjectJob($project ,$descriptions , $attachements));
         return ["success" => true, "message" => trans("lang.success_client_request")];
     }
 

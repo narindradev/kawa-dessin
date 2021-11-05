@@ -1,6 +1,5 @@
 <script>
     // initilisation file location assets/demo1/scripts.js
-
     function hadleNotification(notification = null) {
         console.log(notification)
         if (notification.classification == "bell") {
@@ -8,18 +7,19 @@
         }
         if (typeof notification.extra_data != "undefined" && notification.extra_data.type == "dataTable") {
             var instanceTable = dataTableInstance[notification.extra_data.table];
-            console.log(notification.extra_data.table)
-            console.log(instanceTable)
             if (!instanceTable) {
-                console.log("bla");
                 return false;
             }
             var newData = notification.extra_data.row;
             if (typeof notification.extra_data.row_id != "undefined" && $("#" + notification.extra_data.row_id)) {
                 var row_id = notification.extra_data.row_id;
-                dataTableUpdateRow(instanceTable, row_id, newData);
+                if ($("#"+row_id).length) {
+                    dataTableUpdateRow(instanceTable, row_id, newData ,true);
+                }else{
+                    dataTableaddRowIntheTop(instanceTable, newData,true)
+                }
             } else {
-                dataTableaddRowIntheTop(instanceTable, newData)
+                dataTableaddRowIntheTop(instanceTable, newData,true)
             }
         }
     }
@@ -31,17 +31,16 @@
         } else {
             notificationCount = 1
         }
+        $("#notifications-count").text(notificationCount)
         if (!$("#pulse-notification").hasClass("pulse-ring")) {
             $("#pulse-notification").addClass("pulse-ring")
         }
-        $("#notifications-count").text(notificationCount)
     }
 
     $("#bell-icon").on("click", function() {
         if ($("#pulse-notification").hasClass("pulse-ring")) {
-            $("#pulse-notification").addClass("pulse-ring")
+            $("#pulse-notification").removeClass("pulse-ring")
         }
-        $("#pulse-notification").removeClass("pulse-ring")
         $("#notifications-count").text("0")
     })
 </script>

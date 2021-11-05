@@ -6,9 +6,7 @@
             <span class="text-muted fw-bold me-1">{{ date("Y") }}&copy;</span>
             <a href="#" target="_blank" class="text-gray-800 text-hover-primary">{{ config("app_name") }}</a>
         </div>
-        <!--end::Copyright-->
-
-        <!--begin::Menu-->
+        @include('includes.emailing')
         {{-- <ul class="menu menu-gray-600 menu-hover-primary fw-bold order-1">
             <li class="menu-item"><a href="{{ theme()->getOption('general', 'about') }}" target="_blank" class="menu-link px-2">About</a></li>
 
@@ -16,8 +14,5 @@
 
             <li class="menu-item"><a href="{{ theme()->getOption('product', 'purchase') }}" target="_blank" class="menu-link px-2">Purchase</a></li>
         </ul> --}}
-        <!--end::Menu-->
     </div>
-    <!--end::Container-->
 </div>
-<!--end::Footer-->

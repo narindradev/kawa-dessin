@@ -4,7 +4,7 @@
         <div class="mb-3">
             <div class="input-group">
                 <label class="form-label required ">@lang('lang.subject')</label>
-                <select name="subject" data-rule-required="true" data-hide-search="true" data-dropdown-parent="#ajax-modal"
+                <select name="subject" data-rule-required="true" data-hide-search="true" 
                     data-msg-required="@lang('lang.required_input')" class="form-select form-select-solid"
                     data-control="select2" data-placeholder="@lang('lang.subject')">
                     <option value="0" disabled selected>-- @lang('lang.subject') --</option>

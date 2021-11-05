@@ -1,5 +1,6 @@
 @php
-$price = "$" . ($project->price ?? '0.00');
+$price = $project->price ?? '0.00';
+$price = format_to_currency($price);
 @endphp
 @if ($project->price && $project->status_id == 3)
     <a href="{{ url("/project/detail/$project->id") }}"

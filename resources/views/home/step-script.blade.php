@@ -199,7 +199,7 @@
         var initValidation = function() {
             //step 1
             var fields = {}
-            var inputs = ["first_name", "last_name", "email", "tel", "address", "tel", "address", "city", "zip"]
+            var inputs = ["first_name", "email", "phone", "address", "city", "zip"]
             inputs.forEach(function(input) {
                 inputValidation = {
                     validators: {

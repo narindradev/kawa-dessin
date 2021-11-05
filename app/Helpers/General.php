@@ -1,7 +1,14 @@
 <?php
 
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
+use App\Models\Project;
+use App\Models\Setting;
+use App\Models\Status;
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
+
 if (!function_exists('get_svg_icon')) {
     function get_svg_icon($path, $class = null, $svgClass = null)
     {
@@ -365,7 +372,7 @@ if (!function_exists('get_format_image')) {
  * @return array
  */
 if (!function_exists('upload')) {
-    function upload($file, $path = null, $public = true)
+    function upload($file, $path = null, $public = "")
     {
 
         $extension = $file->extension();
@@ -444,10 +451,10 @@ if (!function_exists('modal_anchor')) {
 
     function modal_anchor($url, $title = '', $attributes = [])
     {
-        if (!get_array_value($attributes, "data-drawer")) {
-            $attributes["data-act"] = "ajax-modal";
-        } else {
+        if (get_array_value($attributes, "data-drawer")) {
             $attributes["data-act"] = "ajax-drawer";
+        } else {
+            $attributes["data-act"] = "ajax-modal";
         }
 
         if (get_array_value($attributes, "data-modal-title")) {
@@ -499,8 +506,6 @@ if (!function_exists('anchor')) {
             $attributes['data-bs-toggle'] = "tooltip";
             $attributes['data-bs-custom-class'] = "tooltip-dark";
             $attributes['data-bs-placement'] = "left";
-            // unset($attributes['title']);
-            // $attributes['data-bs-original-title'] = "qsdqsdqsdqsd";
         }
         if (is_array($attributes)) {
             foreach ($attributes as $key => $value) {
@@ -511,7 +516,31 @@ if (!function_exists('anchor')) {
         return "<a href='$uri' $html_attributes>$title</a>";
     }
 }
+if (!function_exists('mailing')) {
+    /**
+     * Anchor Link
+     *
+     * Creates an anchor based on the local URL.
+     *
+     * @param	string	the URL
+     * @param	string	the link title
+     * @param	mixed	any attributes
+     * @return	string
+     */
+    function mailing($email = '', $attributes = [])
+    {
 
+        $html_attributes = "";
+        $attributes["data-act"] = "data-mail-to";
+        if (is_array($attributes)) {
+            foreach ($attributes as $key => $value) {
+                $html_attributes .= ' ' . $key . '="' . $value . '"';
+            }
+        }
+
+        return "<a  href='javascript:void(0)' $html_attributes>{$email}</a>";
+    }
+}
 
 if (!function_exists('inputs_filter_datatable')) {
 
@@ -550,12 +579,134 @@ if (!function_exists('row_id')) {
 if (!function_exists('get_response_of_question')) {
     function get_response_of_question($questionnaire_id = 0, $project_id = 0)
     {
-        return Cache::get(
-            'response_of_questionnaire_id_' . $questionnaire_id . 'project_id_' . $project_id, 
-            function () use ($questionnaire_id , $project_id ){
+        return Cache::rememberForever(
+            "response_of_questionnaire_id_{$questionnaire_id}_project_id_{$project_id}",
+            function () use ($questionnaire_id, $project_id) {
                 $response = App\Models\ProjectDescription::where("questionnaire_id", $questionnaire_id)->where("project_id", $project_id)->first();
                 return $response ? $response->answer : "";
             }
         );
+    }
+}
+
+if (!function_exists('get_cache_member')) {
+    function get_cache_member(Project $project)
+    {
+        return Cache::rememberForever("members_list_$project->id", function () use ($project) {
+            return $project->members()->get();
+        });
+    }
+}
+
+if (!function_exists('format_to_currency')) {
+    function format_to_currency($value = 0.00)
+    {
+        return  app_setting("currency_symbole") . number_format($value, 2,app_setting("separator_decimal"), app_setting("separtor_thousands"));
+    }
+}
+if (!function_exists('invoice_data')) {
+    function invoice_data(Invoice $invoice)
+    {
+        $invoice->load("invoiceItems");
+        $invoiceItem_num =  now()->format('dmY') . "/FC" . $invoice->id;
+
+        $sub_total =  $invoice->total; // project price
+
+        $price_of_taxe = ($sub_total *  $invoice->taxe) / 100;
+
+        $price_with_taxe = $sub_total + $price_of_taxe;
+
+        $payment_per_slice = ($price_with_taxe * 50) / 100; // 50%
+
+        $total_paid = $invoice->invoiceItems->where("status", "paid")->sum('amount');
+        $rest_to_paid = $price_with_taxe -  $total_paid;
+
+        $rest_to_paid = $rest_to_paid > 0 ? $rest_to_paid : 0;
+        $first_slice =  $payment_per_slice;
+        $second_slice = $price_with_taxe - $payment_per_slice; // the rest to paied
+        return [
+            "date" => now()->format('d-M-Y'),
+            "invoice_num" => $invoiceItem_num,
+            "sub_total" => format_to_currency($sub_total),
+            "taxe_percent" => $invoice->taxe,
+            "price_of_taxe" => format_to_currency($price_of_taxe),
+            "price_with_taxe" =>  format_to_currency($price_with_taxe),
+            "50_50" => format_to_currency($payment_per_slice),
+            "total_paid" => $total_paid,
+            "rest_to_paid" => $rest_to_paid,
+            "first_slice" => $first_slice,
+            "second_slice" => $second_slice,
+        ];
+    }
+}
+
+if (!function_exists('app_setting')) {
+    function app_setting($key = "" )
+    {
+        return Cache::rememberForever("app_setting_$key", function () use ($key) {
+            return Setting::_get($key);
+        });
+    }
+}
+if (!function_exists('project_path_file')) {
+    function project_path_file($project_id = "", $file = null)
+    {
+        if ($file) {
+            return storage_path() . "/" . "app/public/project_files/$project_id/$file";
+        }
+        return storage_path() . "/" . "app/public/project_files/$project_id";
+    }
+}
+if (!function_exists('project_file_url')) {
+    function project_file_url($project_id = 0, $file = null)
+    {
+        if ($file) {
+            return asset("storage/project_files/$project_id/$file");
+        }
+        return asset("storage/project_files/$project_id/");
+    }
+}
+if (!function_exists('invoice_item_num')) {
+    function invoice_item_num($invoice_id, $invoice_item_id)
+    {
+        return "invoice-{$invoice_id}-item-{$invoice_item_id}";
+    }
+}
+if (!function_exists('invoice_item_for')) {
+    function invoice_item_for(InvoiceItem $invoice_item , $string = "Tranche")
+    {
+        return ($invoice_item->slice == 1  ?  trans("lang.frist_slice") : trans("lang.second_slice")). " $string" ;
+    }
+}
+if (!function_exists('project_custom_status')) {
+    function project_custom_status(Status  $status , User $user , $project = null)
+    {
+        /** status started is processing for commercial */
+        if ($status->id == 4  && $user->is_commercial()) {
+            $status->name = "processing";
+        }
+        /** status started is new for mdp */
+        if ($status->id == 4  && $user->is_mdp()) {
+            $status->class = "danger";
+            $status->name = "new";
+        }
+         /** status started is new for dessignator */
+        if ($status->id == 5  && $user->is_dessignator()) {
+            $status->class = "danger";
+            $status->name = "new";
+        }
+        if ($status->id >= 4  && $user->is_client()) {
+            $status->class = "success";
+            $status->name = "in_progress";
+        }
+        return $status;
+    }
+}
+
+if (!function_exists('convert_date')) {
+
+    function convert_date($date = "")
+    {
+        return DateTime::createFromFormat('Y-m-d',$date)->format('d/m/Y');
     }
 }

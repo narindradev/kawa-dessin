@@ -30,7 +30,7 @@ class PriceProjectRequest extends FormRequest
     public function messages()
     {
         return [
-            'devis.required' => trans("lang.price_value") ,
+            'devis.required' => trans("lang.price_value"),
         ];
     }
     public function withValidator($validator)

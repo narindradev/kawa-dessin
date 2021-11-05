@@ -1,9 +1,9 @@
 
-<input class="form-control form-control-white" style="font-family: Arial,FontAwesome;" autocomplete="off" name="user" value="" id="user" placeholder="Dessinateur"/>
+@php
+$placeholder = auth()->user()->is_admin() ? "Internes " : "Dessinateur";
+@endphp
+<input class="form-control form-control-white" style="font-family: Arial,FontAwesome;" autocomplete="off" name="user" value="" id="user" placeholder="{{ $placeholder}}"/>
 <input type="hidden" id="user_id" value=""/>
-
-{{-- @section('scripts') --}}
-    
 <script>
     $(document).ready(function() {
         var input = document.querySelector("#user");
@@ -67,4 +67,3 @@
         }
     })
 </script>
-{{-- @endsection --}}
