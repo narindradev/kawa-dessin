@@ -82,7 +82,7 @@
                     // },
                     columns: [
                         {data: 'badge',"title" :"","class":"text-left","orderable":false,"searchable":false},
-                        {data: 'client_info',"title" :"Client","class":"text-left min-w-100px "},
+                        {data: 'client_info',"title" :"Client","class":"text-left min-w-120px "},
                         {data: 'messenger',"title" :"","class":"text-left ","orderable":true,"searchable":false},
                         {data: 'categories',"title" :"Type","class":"text-center min-w-100px "},
                         @if (!auth()->user()->is_dessignator()) 

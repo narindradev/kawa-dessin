@@ -10,13 +10,13 @@
                             @csrf
                             <label for="first_name" class=" form-label">Envoyé E-mail</label>
                             <div class="input-group input-group-sm mb-3">
-                                <input type="text" class="form-control form-control-solid" id="mail_value" name="to" autocomplete="off" placeholder="exemple@gmail.com"  />
+                                <input type="text" class="form-control form-control-solid" id="mail_value"  data-rule-required="true" data-msg-required="@lang('lang.required_input')" data-rule-email="true" data-msg-email="@lang('lang.required_input_type_email')"name="to" autocomplete="off" placeholder="exemple@gmail.com"  />
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <input type="text" class="form-control form-control-solid" autocomplete="off" id="email_object" name="object" placeholder="Objet"/>
                             </div>
                             <div class="input-group mb-3">
-                                <textarea class="form-control form-control-solid" id="email_content" data-kt-autosize="true" rows="3" placeholder="message ..."></textarea>
+                                <textarea class="form-control form-control-solid" data-rule-required="true" data-msg-required="@lang('lang.required_input')"  id="email_content" data-kt-autosize="true" rows="3" placeholder="message ..."></textarea>
                             </div>
                             <div class="align-items-center me-2">
                                 <button class="btn btn-sm btn-icon btn-active-light-primary me-1" type="button" data-bs-toggle="tooltip" title="" data-bs-original-title="Fichier joint">
@@ -38,12 +38,3 @@
         </div>
     </div>
 </div>
-
-@section('scripts')
-    <script>
-        $(document).ready(function(){
-            
-        })
-        
-    </script>
-@endsection

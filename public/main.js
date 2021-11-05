@@ -396,12 +396,14 @@ $(document).ready(function () {
                 if (isMail(mail)) {
                     $("#mail_value").val(mail);
                     setTimeout(function(){ $('#mail_to').trigger("click")}, 100);
+                    setTimeout(function(){ $("#email_content").focus(); window.scrollTo(0,document.body.scrollHeight);}, 100);
                 }else{
                     $('#mail_to').trigger("click");
                 }
             }else{
                 $("#mail_value").val(mail);
                 setTimeout(function(){ $('#mail_to').trigger("click")}, 100);
+                setTimeout(function(){ $("#email_content").focus(); window.scrollTo(0,document.body.scrollHeight); }, 100);
             }
         });
 

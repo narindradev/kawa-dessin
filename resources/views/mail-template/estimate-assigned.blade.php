@@ -1,8 +1,8 @@
 @component('mail::message')
 # {{ $event ?? '' }}
-{{ $causer->name ?? 'on' }} vous a assigné un nouveau projet !
+{{ $causer->name ?? 'on' }} a assigné un devis sur votre projet
 @component('mail::button', ['url' => url("project/detail/$project->id")])
-    Project detail
+Project detail
 @endcomponent
 Thanks,<br>
 {{ app_setting('app_name') }}

@@ -253,10 +253,10 @@ if (!function_exists('file_type')) {
     function file_type($type = "")
     {
         $types  = [
-            "image" =>  ['.jpg', '.jpg', '.png', '.jpeg', '.jpeg', '.webp'],
+            "image" =>  ['.jpg',  '.png', '.jpeg', '.webp'],
             "video" =>  ['.wmv', '.avi', '.mov', '.3gp', '.ts', '.mp4', '.flv', ".mkv"],
             "audio" =>  ['.mp3', '.ogg', '.wav', '.mid', '.midi', ".wma", ".cda", ".wpl"],
-            "doc"   =>  ['.txt', ".doc", ".php", ".xlx", ".pptx", ".pdf", ".odt", ".wpd"],
+            "doc"   =>  ['.txt', ".doc", ".php", ".xlsx", ".pptx", ".pdf", ".odt", ".wpd"],
             "archive"   =>  ['.rar', ".zip", ".iso"],
         ];
         if ($type) {
@@ -264,6 +264,7 @@ if (!function_exists('file_type')) {
         }
         return $types;
     }
+    //png,jpg,jpeg,webp,pdf,avi,mov,3gp,mp4,flv,mkv,mp3,wav,txt,doc,xlsx,pptx,rar,zip,iso
 }
 /** 
  *@param string

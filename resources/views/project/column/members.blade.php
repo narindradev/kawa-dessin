@@ -4,7 +4,7 @@
             <img alt="Pic" src="{{$user['avatar']}}">
         </div>
     @endforeach
-    @if (isset($add) &&  ($for_user->is_mdp() || $for_user->is_admin()) )
+    @if (isset($add) &&  ($for_user->is_mdp()) )
         {!!$add!!}
     @endif
 </div>

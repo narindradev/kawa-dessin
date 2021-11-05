@@ -48,7 +48,8 @@ class StoreRequestClient extends FormRequest
             $rules["company_phone"] = "required";
         }
         if(request()->hasFile("files")){
-            $rules["files"] =  'max:5000';
+            $mimes = app_setting("file_extension");
+            $rules["files.*"] =  "max:5000|mimes:$mimes";
         }
         
         return $rules ;
@@ -56,9 +57,11 @@ class StoreRequestClient extends FormRequest
 
     public function messages()
     {
+        $mimes = app_setting("file_extension");
         return [
             'email.unique' => trans("lang.email_already_taked"),
             'categorie.required' => trans("lang.choose_one_project_type"),
+            'files.mimes' => trans("lang.mimes_files") ." : $mimes ",
         ];
     }
 

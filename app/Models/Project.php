@@ -141,15 +141,20 @@ class Project extends Model
                 $query->where('status', $status_invoice);
             });
         }
+        $projects->orderBy('status_id',"ASC");
         if ($user_id) {
             if (User::find($user_id)->is_commercial()) {
-                $projects->orderBy('created_at',"ASC");
+                $projects->orderBy('created_at',"DESC");
+            }else{
+                $projects->orderBy('due_date',"ASC");
             }
         }
-        if (!Auth::user()->is_admin()) {
+        if (Auth::user()->is_commercial() || Auth::user()->is_admin()) {
+            $projects->orderBy('created_at',"DESC");
+        }else{
             $projects->orderBy('due_date',"ASC");
         }
-        return $projects->whereDeleted(0)->orderBy('status_id',"ASC");
+        return $projects->whereDeleted(0);
     }
 
     public static function get_client_dropdown(User $for_user)
@@ -169,6 +174,4 @@ class Project extends Model
         }
         return $client_dropdown;
     }
-
-    
 }

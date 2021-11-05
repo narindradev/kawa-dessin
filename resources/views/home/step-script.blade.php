@@ -23,22 +23,9 @@
             $("#corport_info").css("display", "")
         });
 
-            // Dropzone.autoDiscover = false;
-            // var filesList = new Dropzone("#files", { 
-            //     autoProcessQueue: false,
-            //     maxFilesize: 1,
-            //     paramName: "files",
-            //     uploadMultiple :true,
-            //     url: url("/home/request/save"),
-            //     params: {
-            //         _token: getCsrfToken()
-            //     },
-            //     acceptedFiles: ".jpeg,.jpg,.png,.gif"
-            // });
         var initStepper = function() {
             // Initialize Stepper
             stepperObj = new KTStepper(stepper);
-
             // Stepper change event
             stepperObj.on('kt.stepper.changed', function(stepper) {
                 if (stepperObj.getCurrentStepIndex() === 5) {
@@ -133,10 +120,8 @@
                 }).then((result) => {
 
                     if (result.isConfirmed) {
-
                         e.preventDefault();
                         // Show loading indication
-                        
                         formSubmitButton.setAttribute('data-kt-indicator', 'on');
                         formSubmitButton.disabled = true;
                         // filesList.processQueue();
@@ -148,6 +133,8 @@
                         axios.post(formSubmitButton.closest('form').getAttribute('action'),new FormData(form))
                             .then(resp => {
                                 var icon = resp.data.success ? "success" : "error"
+                                
+                                
                                 Swal.fire({
                                     text: resp.data.message,
                                     icon: icon,
@@ -157,10 +144,13 @@
                                         confirmButton: "btn btn-primary"
                                     }
                                 }).then(function(result) {
-                                    if (result.isConfirmed) {
+                                    console.log( resp.data.success)
+                                    if (result.isConfirmed && resp.data.success) {
                                         window.location.replace("/login");
                                     }
                                 });
+
+
                             })
                             .catch(function(error) {
                                 let dataMessage = error.response.data.message;

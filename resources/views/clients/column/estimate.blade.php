@@ -2,13 +2,15 @@
 $price = $project->price ?? '0.00';
 $price = format_to_currency($price);
 @endphp
-@if ($project->price && $project->status_id == 3)
+{{-- @if ($project->price && $project->status_id == 3) --}}
+@if (1)
     <a href="{{ url("/project/detail/$project->id") }}"
         class="text-primary fw-bolder text-hover-primary d-block mb-1 fs-6"> {{ $price }}
         {{ $project->estimate == 'refused' ? '?' : '' }} </a>
 @else
     <a href="#" class="text-primary fw-bolder text-hover-primary d-block mb-1 fs-6"> {{ $price }} </a>
 @endif
+
 @if ($project->estimate)
     @php
         $class = 'success';

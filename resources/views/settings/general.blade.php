@@ -8,6 +8,13 @@
                 data-msg-required="@lang('lang.required_input')" />
         </div>
     </div>
+    <div class="form-group">
+        <div class="mb-4">
+            <label for="file_extension" class="form-label">@lang('lang.file_extension')</label>
+            <input type="text" value="{{ app_setting('file_extension') }}" data-rule-required="true"
+                autocomplete="off" name="file_extension" class="form-control form-control-solid" placeholder="png,jpg,jpeg,pdf,mp4"/>
+        </div>
+    </div>
     <div class="row">
         <div class="form-group col-3">
             <div class="mb-4">

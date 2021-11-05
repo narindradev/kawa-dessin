@@ -13,10 +13,12 @@ use App\Models\InfoGround;
 use App\Models\ProjectFiles;
 use Illuminate\Http\Request;
 use App\Models\ProjectRelaunch;
+use App\Jobs\EstimateAssignedJob;
 use App\Models\ProjectDescription;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\PriceProjectRequest;
 use App\Http\Requests\StartProjectRequest;
+use App\Jobs\memberAssignedJob;
 use App\Notifications\ProjectAssignedNotification;
 
 class ProjectController extends Controller
@@ -159,7 +161,7 @@ class ProjectController extends Controller
         $request->validate(['subject' => 'required']);
         $relaunch = new ProjectRelaunch(['note' => $request->note, "relaunch_id" => $request->subject, "created_by" => Auth::user()->id]);
         $project->relaunchs()->save($relaunch);
-        die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row" => row_id("project", $project->id), "project" => $this->_make_row($project), "relaunch" => $this->_make_relaunch_row($relaunch)]));
+        die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row" => row_id("project", $project->id), "project" => $this->_make_row($project,Auth::user()), "relaunch" => $this->_make_relaunch_row($relaunch)]));
     }
     public function relaunch_list(Project $project)
     {
@@ -194,6 +196,7 @@ class ProjectController extends Controller
         $project->price = $request->devis;
         $project->status_id = 3; // estimated
         $project->save();
+        dispatch(new EstimateAssignedJob($project));
         die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "project" => $this->_make_row($project, Auth::user())]));
     }
     private function advance_filter()
@@ -288,6 +291,7 @@ class ProjectController extends Controller
 
     public function detail(Project $project)
     {
+        $users = User::where("user_type_id",5)->get();
         $project->load("categories");
         $project->load("infoGround");
         foreach ($project->categories as $categorie) {
@@ -399,10 +403,9 @@ class ProjectController extends Controller
         if ($request->user_ids) {
             $project = Project::find($request->project_id);
             $project->members()->syncWithoutDetaching($request->user_ids);
-            $users = User::findMany($request->user_ids);
-            /** Send notication */
-            \Notification::send($users, (new ProjectAssignedNotification($project, Auth::user())));
             Cache::forget("members_list_$project->id");
+            /** Send notication */
+            dispatch(new memberAssignedJob($project,$request->user_ids,Auth::user()));
             die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "data" => $this->_make_row($project, Auth::user())]));
         } else {
             die(json_encode(["success" => true, "message" => "aucune action"]));

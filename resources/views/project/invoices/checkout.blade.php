@@ -76,7 +76,7 @@
                 </div>
                 <div class="card-body pt-0 fs-6">
                     <div class="mb-7">
-                        {!! view('project.column.info-client', ['client' => $invoice->project->client, 'project' => $invoice->project])->render() !!}
+                        {!! view('project.column.info-client', ['client' => $invoice->project->client, 'project' => $invoice->project ,"for_user" => auth()->user()])->render() !!}
                     </div>
                     <div class="separator  mb-7"></div>
                     <div class="mb-7">

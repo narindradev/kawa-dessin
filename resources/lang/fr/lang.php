@@ -172,4 +172,7 @@ return [
     'start_project' => 'Démarrer le projet',
     'start_value' => 'Le champ date est requis',
     'start_date' => 'Date',
+    'copied' => 'Copié!',
+    'file_extension' => 'Extension des fichiers',
+    'mimes_files' => 'Les types fichiers doivent être ',
 ]; 

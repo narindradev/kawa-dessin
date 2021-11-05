@@ -56,7 +56,7 @@ class SettingController extends Controller
     }
     public function save_sett_general(Request $request)
     {
-        $settings = ["app_name" ,"currency_symbole","currency" ,"separator_decimal" ,"separtor_thousands" ,"nexmo_sender"];
+        $settings = ["app_name" ,"currency_symbole","currency" ,"separator_decimal" ,"separtor_thousands" ,"nexmo_sender" ,"file_extension"];
         foreach ($settings as $key) {
             Setting::_save($key, $request->input($key));
         }

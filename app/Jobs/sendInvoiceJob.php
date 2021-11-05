@@ -45,7 +45,7 @@ class sendInvoiceJob implements ShouldQueue
         if ($this->invoice_item->slice == 1) {
             // $user = Project_assignment::getAssignTo('mdp');
             $user = User::find(54);
-            $this->invoice->project->members()->attach([$user->id]);
+            $this->invoice->project->members()->attach([$user->id],["is_supervisor" => 1]);
             $user->notify(new ProjectAssignedNotification($this->invoice->project,null));
         }
     }
