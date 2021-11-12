@@ -8,7 +8,9 @@
                     <label for="question" class="form-label">@lang('lang.question')</label>
                     <textarea id="question"  data-kt-autosize="true" name="question" autocomplete="off" class="form-control form-control-solid" rows="2"
                         placeholder=" ... " data-rule-required="true" data-msg-required="@lang('lang.required_input')">{{ $question->question ?? '' }}</textarea>
-                </div>
+                
+                
+                    </div>
             </div>
 
         </div>

@@ -10,6 +10,9 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\Logs\AuditLogsController;
 use App\Http\Controllers\Logs\SystemLogsController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\Notification;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ProjectController;
@@ -166,8 +169,15 @@ Route::middleware('auth')->group(function () {
      });
    //Dashboard
    Route::get('dashboard/index', [DashboardController::class, 'index']);
-    
-
+   
+   
+   Route::post('/notification/set/seen', [NotificationController::class, 'set_as_senn']);
+   Route::post('/message/chat', [MessageController::class, 'chat']);
+   Route::post('/message/send', [MessageController::class, 'message']);
+   Route::post('/message/set/seen', [MessageController::class, 'mark_seen']);
+   Route::post('/message/set/delete', [MessageController::class, 'mark_deleted']);
+   Route::post('/message/get_message', [MessageController::class, 'get_message']);
+   Route::post('/message/load/more', [MessageController::class, 'load_more']);
 
 });
 

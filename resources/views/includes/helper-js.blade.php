@@ -61,5 +61,8 @@
             tableInstance.row("#"+row_id).data(data).draw(draw);
         
     }
+     function scrollBotton(target , vitesse = 2000) {
+        $(target).animate({scrollTop: $(target)[0].scrollHeight}, vitesse);
+    }
   
 </script>

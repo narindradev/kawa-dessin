@@ -3,11 +3,9 @@
 namespace App\Models;
 
 use Laravel\Cashier\Billable;
-use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 use App\Core\Traits\SpatieLogsActivity;
 use Illuminate\Notifications\Notifiable;
-
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -15,8 +13,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable , Billable, SpatieLogsActivity ,HasRoles;
-
-   
     protected $guarded = [];
     /**
      * The attributes that should be hidden for arrays.
@@ -37,11 +33,20 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
     protected $with = ["client", "type"];
     /**
+     * Route notifications for the Nexmo channel.
+     *
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @return string
+     */
+    public function routeNotificationForNexmo($notification)
+    {
+        return $this->phone;
+    }
+    /**
      * Get a fullname combination of first_name and last_name
      *
      * @return string
      */
-
     public function getNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";
@@ -60,6 +65,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function projects()
     {
         return $this->belongsToMany(Project::class, "project_member");
+    }
+    public function messages()
+    {
+        return $this->belongsToMany(Message::class, "message_user");
     }
     public function client()
     {
@@ -103,14 +112,5 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return   $this->user_type_id == 3;
     }
-    /**
-     * Route notifications for the Nexmo channel.
-     *
-     * @param  \Illuminate\Notifications\Notification  $notification
-     * @return string
-     */
-    public function routeNotificationForNexmo($notification)
-    {
-        return $this->phone;
-    }
+    
 }

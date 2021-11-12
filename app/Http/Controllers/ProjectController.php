@@ -19,12 +19,12 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\PriceProjectRequest;
 use App\Http\Requests\StartProjectRequest;
 use App\Jobs\memberAssignedJob;
-use App\Notifications\ProjectAssignedNotification;
 
 class ProjectController extends Controller
 {
     public function index()
     {
+    //    dd(str_word_count("concerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cette concerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cette"));
         $advance_filter = $this->advance_filter();
         $basic_filter = $this->basic_filter();
         $users = null;
@@ -37,13 +37,13 @@ class ProjectController extends Controller
     {
         $data = [];
         $projects = Project::getDetails($request->all())->get();
-        $count = $projects->count();
+        // $count = $projects->count();
         foreach ($projects as $project) {
             $data[] = $this->_make_row($project, Auth::user());
         }
         return ["data" => $data,];
     }
-    public function _make_row(Project $project, $for_user = null)
+    public function _make_row(Project $project, $for_user = null , $from_notification = false)
     {
         $client = $project->client;
         $actions = [];
@@ -51,7 +51,7 @@ class ProjectController extends Controller
             "DT_RowId" => row_id("projects", $project->id),
             "badge" => view("project.column.badge", ["project" => $project, "for_user" => $for_user])->render(),
             "client_info" => view("project.column.info-client", ["client" => $client, "project" => $project, "link" => 1, "for_user" => $for_user])->render(),
-            "messenger" => view("project.column.messenger", ["client" => $client, "project" => $project])->render(),
+            "messenger" => view("project.column.messenger", ["client" => $client, "project" => $project ,"for_user" => $for_user , "from_notification" => $from_notification] )->render(),
             "categories" => $project->categories->pluck("name")->implode(" , ", "name"),
             "client_type" => view("project.column.client-type", ["client" => $client])->render(),
             "status" => view("project.column.status", ["project" => $project, "for_user" => $for_user])->render(),
@@ -110,10 +110,10 @@ class ProjectController extends Controller
         $due_date = null;
         if ($project->due_date && $project->due_date->isToday()) {
             $class  = "danger";
-            $due_date = "Aujourd'hui";
+            $due_date = trans("lang.now");
         } elseif ($project->due_date && $project->due_date->isTomorrow()) {
             $class  = "warning";
-            $due_date = "Demain";
+            $due_date = trans("lang.tomorrow"); "Demain";
         } elseif ($project->due_date) {
             $due_date = $project->due_date->format("d-M-Y");
         }
@@ -263,7 +263,7 @@ class ProjectController extends Controller
             "label" => trans("lang.status"),
             "name" => "status_id",
             "type" => "select",
-            "options" =>  Status::drop(),
+            "options" => Auth::user()->is_dessignator() ? Status::dropProjectStatus() :Status::drop(),
         ];
         $filters[] = [
             "label" => trans("lang.type") . " " . trans("lang.project"),
@@ -391,11 +391,11 @@ class ProjectController extends Controller
         if ($request->input("cancel")) {
             $project->members()->attach($request->user_id);
             $member = $project->members()->pluck("user_id")->toArray();
-            die(json_encode(["success" => true, "message" => trans("lang.success_canceled"), "extra_data" => ["table" => "projectsTable", "row_id" => row_id("projects", $request->project_id), "data" => $this->_make_row($project, Auth::user())], "row_id" => row_id("user", $request->user_id), "data" => $this->_make_row_member($user, $member, $project)]));
-        } else {
+            die(json_encode(["success" => true, "message" => trans("lang.success_canceled"), "extra_data" => ["table" => "projectsTable", "row_id" => row_id("projects", $request->project_id), "data" => $this->_make_row($project, Auth::user(),true)], "row_id" => row_id("user", $request->user_id), "data" => $this->_make_row_member($user, $member, $project)]));
+        }else {
             $project->members()->detach($request->user_id);
             $member = $project->members()->pluck("user_id")->toArray();
-            die(json_encode(["success" => true, "message" => trans("lang.success_deleted"), "extra_data" => ["table" => "projectsTable", "row_id" => row_id("projects", $request->project_id), "data" => $this->_make_row($project, Auth::user())], "row_id" => row_id("user", $request->user_id), "data" => $this->_make_row_member($user, $member, $project)]));
+            die(json_encode(["success" => true, "message" => trans("lang.success_deleted"), "extra_data" => ["table" => "projectsTable", "row_id" => row_id("projects", $request->project_id), "data" => $this->_make_row($project, Auth::user(),true)], "row_id" => row_id("user", $request->user_id), "data" => $this->_make_row_member($user, $member, $project)]));
         }
     }
     public function assign_member(Request $request)
@@ -406,12 +406,11 @@ class ProjectController extends Controller
             Cache::forget("members_list_$project->id");
             /** Send notication */
             dispatch(new memberAssignedJob($project,$request->user_ids,Auth::user()));
-            die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "data" => $this->_make_row($project, Auth::user())]));
+            die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "data" => $this->_make_row($project, Auth::user() ,true)]));
         } else {
             die(json_encode(["success" => true, "message" => "aucune action"]));
         }
     }
-
     public function start_form(Project $project)
     {
         $project->load("client");

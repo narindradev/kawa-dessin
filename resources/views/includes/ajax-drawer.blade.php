@@ -2,7 +2,7 @@
 <div id="ajax-drawer" class="bg-dark" data-kt-drawer="true" data-kt-drawer-name="activities"
     data-kt-drawer-activate="true" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'200px', 'lg': '500px'}"
     data-kt-drawer-direction="end" data-kt-drawer-toggle="#ajax-drawer-button"
-    data-kt-drawer-close="#ajax-drawer-close">
+    data-kt-drawer-close="#ajax-drawer-close" style="width: 700px !important;">
     <div class="card w-100 rounded-0">
         <div class="card-header" id="ajax-drawer-header">
             <h3 class="card-title fw-bolder text-dark" id="ajax-drawer-title"></h3>

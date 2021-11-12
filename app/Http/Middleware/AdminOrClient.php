@@ -18,8 +18,11 @@ class AdminOrClient
     public function handle(Request $request, Closure $next)
     {
         if (Auth::user()->is_admin() ||  Auth::user()->is_client()) {
-            return $next($request);
+            return $next($request); 
+            
         }
+       
+
         abort(401);
     }
 }

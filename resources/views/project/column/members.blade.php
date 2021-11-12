@@ -8,3 +8,8 @@
         {!!$add!!}
     @endif
 </div>
+<script>
+    $(document).ready(function() {
+        KTApp.initBootstrapTooltips();
+    })
+</script>

@@ -1,7 +1,5 @@
 @php
-
 $field = $input;
-
 $options = get_array_value($input, 'options');
 $attributes = get_array_value($input, 'attributes');
 $attr = '';

@@ -1,7 +1,7 @@
 
 
 $(document).ready(function () {
-
+   
     //custom app form controller
     var blockLoader = '<div  class="blockui-message"><span class="spinner-border text-primary"></span> ' + app_lang.please_wait + ' <span id ="upload-info"></span></div>'
     var blockToMask = document.querySelector("#ajax-modal-content");
@@ -454,10 +454,9 @@ $(document).ready(function () {
             }
         });
     })
+  
+    
     // appAlert
-
-
-
     var appAlert = {
         info: info,
         success: success,
@@ -531,8 +530,6 @@ $(document).ready(function () {
             + '<i class="bi bi-x fs-1 text-' + className + '"></i>'
             + '</button>'
             + '</div>'
-
-
     }
 
     function _prepear_settings(options) {
@@ -603,4 +600,5 @@ $(document).ready(function () {
             }, this._settings.duration);
         }
     }
+   
 });

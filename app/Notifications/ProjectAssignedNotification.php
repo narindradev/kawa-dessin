@@ -2,12 +2,16 @@
 
 namespace App\Notifications;
 
-use App\Http\Controllers\ProjectController;
+use stdClass;
 use App\Models\Project;
+use Faker\Provider\Uuid;
+use Illuminate\Support\Str;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Carbon;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\BroadcastMessage;
+use App\Http\Controllers\ProjectController;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class ProjectAssignedNotification extends Notification
 {
@@ -16,6 +20,7 @@ class ProjectAssignedNotification extends Notification
     private $causer;
     private $classification = "bell";
     private $event = "project_assigned";
+    private $fake_id;
     /**
      * Create a new notification instance.
      *
@@ -25,6 +30,7 @@ class ProjectAssignedNotification extends Notification
     {
         $this->project = $project;
         $this->causer = $causer;
+        $this->fake_id = Str::uuid();
         
     }
     /**
@@ -60,7 +66,10 @@ class ProjectAssignedNotification extends Notification
     {
         return [
             "project_id" => $this->project->id,
-        ];
+            "event" => $this->event,
+            "created_by" => $this->causer->id,
+            "fake_id" => $this->fake_id,
+        ]; 
     }
     public function toBroadcast($notifiable)
     {
@@ -68,13 +77,25 @@ class ProjectAssignedNotification extends Notification
         return new BroadcastMessage([
             "classification" => $this->classification,
             "event" => $this->event,
+            "item" => $this->prepare_notification_item($notifiable),
             "project_id" => $this->project->id,
             "extra_data" => [
                 "type" => "dataTable",
                 "table" => "projectsTable",
-                //"row_id" => row_id("projects",$this->project->id),
+                "row_id" => row_id("projects",$this->project->id),
                 "row" => $controller->_make_row($this->project ,$notifiable)
             ]
         ]);
+    }
+    public function prepare_notification_item($notifiable)
+    {
+        $notification = new stdClass();
+        $notification->data["created_by"] =  $this->causer->id;
+        $notification->data["project_id"] =  $this->project->id;
+        $notification->data["event"] = $this->event;
+        $notification->id = $this->fake_id ;
+        $notification->created_at =  Carbon::now();
+        $notification->read_at =  null;
+        return view('notifications.template', ['notification' => $notification])->render();
     }
 }

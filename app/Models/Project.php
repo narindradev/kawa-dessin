@@ -72,6 +72,9 @@ class Project extends Model
     {
         return $this->hasMany(InvoiceItem::class);
     }
+    public function messages(){
+        return $this->hasMany(Message::class,"project_id");
+    }
     public function scopeGetDetails($query, $options = [])
     {
         $user_id = get_array_value($options, "user_id");
@@ -89,11 +92,12 @@ class Project extends Model
             /** load Auth user's projects assigned */
             $projects = Auth::user()->projects();
         }
-        $with = ["categories", "client", "status"];
+        $with = ["categories", "client", "status" ,"messages"];
         if ($client || Auth::user()->is_admin() ) {
             $with[] = "invoiceItems"; $with[] = "invoice"; 
         }
         $projects->with($with);
+
         $client_id = get_array_value($options, "client_id");
         if ($client_id) {
             $projects->where("client_id", $client_id);
@@ -141,6 +145,8 @@ class Project extends Model
                 $query->where('status', $status_invoice);
             });
         }
+      
+
         $projects->orderBy('status_id',"ASC");
         if ($user_id) {
             if (User::find($user_id)->is_commercial()) {
@@ -154,6 +160,11 @@ class Project extends Model
         }else{
             $projects->orderBy('due_date',"ASC");
         }
+        /** Chat project  message not seen*/ 
+        $projects->with(["messages" => function ($query)  {
+            $auth = auth()->id();
+            $query->whereRaw('NOT FIND_IN_SET('.$auth.',seen_by)')->whereRaw('NOT FIND_IN_SET('.$auth.',deleted_by)')->where("sender_id" ,"<>" ,$auth);
+        }]);
         return $projects->whereDeleted(0);
     }
 

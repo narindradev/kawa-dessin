@@ -49,7 +49,8 @@
                 var $target = $(this)
                 var url = $target.attr('data-action-url'),
                     id = $target.attr('data-id');
-                $.ajax({url: url,
+                $.ajax({
+                    url: url,
                     type: 'POST',
                     dataType: 'json',
                     data: {

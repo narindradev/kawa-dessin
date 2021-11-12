@@ -175,4 +175,7 @@ return [
     'copied' => 'Copié!',
     'file_extension' => 'Extension des fichiers',
     'mimes_files' => 'Les types fichiers doivent être ',
-]; 
+    'now' =>  "Aujourd'hui",
+    'tomorrow' => 'Demain',
+    'message_sended' => 'Message envoyé !',
+];

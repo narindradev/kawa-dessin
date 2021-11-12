@@ -7,7 +7,6 @@ use App\Models\Setting;
 use App\Models\Status;
 use App\Models\User;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Cache;
 
 if (!function_exists('get_svg_icon')) {
     function get_svg_icon($path, $class = null, $svgClass = null)
@@ -542,7 +541,6 @@ if (!function_exists('mailing')) {
         return "<a  href='javascript:void(0)' $html_attributes>{$email}</a>";
     }
 }
-
 if (!function_exists('inputs_filter_datatable')) {
 
     function inputs_filter_datatable($filters = [])
@@ -570,39 +568,17 @@ if (!function_exists('file_sisze')) {
         return number_format($size / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power];
     }
 }
-
 if (!function_exists('row_id')) {
     function row_id($table_name = "table", $id = 0)
     {
         return $table_name . "_row_" . $id;
     }
 }
-if (!function_exists('get_response_of_question')) {
-    function get_response_of_question($questionnaire_id = 0, $project_id = 0)
-    {
-        return Cache::rememberForever(
-            "response_of_questionnaire_id_{$questionnaire_id}_project_id_{$project_id}",
-            function () use ($questionnaire_id, $project_id) {
-                $response = App\Models\ProjectDescription::where("questionnaire_id", $questionnaire_id)->where("project_id", $project_id)->first();
-                return $response ? $response->answer : "";
-            }
-        );
-    }
-}
-
-if (!function_exists('get_cache_member')) {
-    function get_cache_member(Project $project)
-    {
-        return Cache::rememberForever("members_list_$project->id", function () use ($project) {
-            return $project->members()->get();
-        });
-    }
-}
 
 if (!function_exists('format_to_currency')) {
     function format_to_currency($value = 0.00)
     {
-        return  app_setting("currency_symbole") . number_format($value, 2,app_setting("separator_decimal"), app_setting("separtor_thousands"));
+        return  app_setting("currency_symbole") . number_format($value, 2, app_setting("separator_decimal"), app_setting("separtor_thousands"));
     }
 }
 if (!function_exists('invoice_data')) {
@@ -641,14 +617,6 @@ if (!function_exists('invoice_data')) {
     }
 }
 
-if (!function_exists('app_setting')) {
-    function app_setting($key = "" )
-    {
-        return Cache::rememberForever("app_setting_$key", function () use ($key) {
-            return Setting::_get($key);
-        });
-    }
-}
 if (!function_exists('project_path_file')) {
     function project_path_file($project_id = "", $file = null)
     {
@@ -674,13 +642,13 @@ if (!function_exists('invoice_item_num')) {
     }
 }
 if (!function_exists('invoice_item_for')) {
-    function invoice_item_for(InvoiceItem $invoice_item , $string = "Tranche")
+    function invoice_item_for(InvoiceItem $invoice_item, $string = "Tranche")
     {
-        return ($invoice_item->slice == 1  ?  trans("lang.frist_slice") : trans("lang.second_slice")). " $string" ;
+        return ($invoice_item->slice == 1  ?  trans("lang.frist_slice") : trans("lang.second_slice")) . " $string";
     }
 }
 if (!function_exists('project_custom_status')) {
-    function project_custom_status(Status  $status , User $user , $project = null)
+    function project_custom_status(Status  $status, User $user, $project = null)
     {
         /** status started is processing for commercial */
         if ($status->id == 4  && $user->is_commercial()) {
@@ -691,10 +659,10 @@ if (!function_exists('project_custom_status')) {
             $status->class = "danger";
             $status->name = "new";
         }
-         /** status started is new for dessignator */
+        /** status started is new for dessignator */
         if ($status->id == 5  && $user->is_dessignator()) {
-            $status->class = "danger";
-            $status->name = "new";
+            $status->class = "primary";
+            $status->name = "in_progress";
         }
         if ($status->id >= 4  && $user->is_client()) {
             $status->class = "success";
@@ -703,11 +671,15 @@ if (!function_exists('project_custom_status')) {
         return $status;
     }
 }
-
 if (!function_exists('convert_date')) {
-
     function convert_date($date = "")
     {
-        return DateTime::createFromFormat('Y-m-d',$date)->format('d/m/Y');
+        return DateTime::createFromFormat('Y-m-d', $date)->format('d/m/Y');
+    }
+}
+if (!function_exists('str_limite')) {
+    function str_limite($string ,$limite = 100, $end = " ...")
+    {
+        return Str::limit($string,$limite,$end);
     }
 }

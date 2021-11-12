@@ -83,10 +83,16 @@ class InvoiceController extends Controller
     }
     private function error_payment(Exception $e)
     {
+        /** Handle it */
+
+        
         die(json_encode(["success" => false, "message" => $e->getMessage()]));
     }
     private function failure_payment()
     {
+        /** Handle it */
+
+
         die(json_encode(["success" => false, "message" => "Failed payment"]));
     }
 
@@ -98,8 +104,7 @@ class InvoiceController extends Controller
         }
         abort(403);
     }
-   
-    public function pdf(Invoice $invoice, $download = 0)
+    public function pdf(Invoice $invoice, $download = 1)
     {
         $invoice->load("project");
         if (!$invoice->project->own_project() && !Auth::user()->is_admin()) {

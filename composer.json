@@ -50,8 +50,10 @@
     },
     "autoload": {
         "files": [
+            "app/Helpers/Cache.php",
             "app/Helpers/General.php",
             "app/Helpers/Menus.php",
+            "app/Helpers/Notification.php",
             "app/Core/Bootstraps/BootstrapDemo1.php"
         ],
         "psr-4": {

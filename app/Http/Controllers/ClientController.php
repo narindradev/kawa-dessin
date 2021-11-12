@@ -33,7 +33,7 @@ class ClientController extends Controller
         }
         return ["data" => $data];
     }
-    public function _make_row($project ,$for_user = null)
+    public function _make_row($project ,$for_user = null ,$from_notification = false)
     {
         $last_relaunch = ProjectRelaunch::where("project_id",$project->id)->where("created_by",$for_user->id)->latest('created_at')->first();
         $relaunch = Relaunch::where("project_id",$project->id)->where("created_by",$for_user->id)->latest('created_at')->first();

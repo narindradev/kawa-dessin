@@ -327,7 +327,6 @@
                 formSubmitButton.disabled = true;
 
                 // Send ajax request
-                console.log("sqdqsd" )
                 
                 axios.post(formSubmitButton.closest('form').getAttribute('action'), data.append("files"))
                     .then(function(response) {
