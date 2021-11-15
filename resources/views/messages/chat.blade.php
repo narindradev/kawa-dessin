@@ -1,39 +1,32 @@
-
-    <div id="messages-list" class="scroll-y " data-kt-element="messages" data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_drawer_chat_messenger_header, #kt_drawer_chat_messenger_footer" data-kt-scroll-wrappers="#kt_drawer_chat_messenger_body" data-kt-scroll-offset="0px" style="height: 765px;">
-        <form class="form" id="form-load-{{"project-id-$project_id"}}" method="POST" action="{{ url("/message/load/more") }} ">
-            <div class="d-flex  flex-wrap flex-center">
-                @csrf
-                <input type="hidden" name="offest" id="offest" value="5">
-                <input type="hidden" name="more" id="offest-more" value="0">
-                <input type="hidden" name="project_id"  value="{{ $project_id }}">
-                <button type="submit" class="btn-sm btn btn-light-primary  h-30px" id="load-more">
-                        Affiche plus
-                    <span class="indicator-progress"> Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                    </span>
-                </button>
-            </div>
-        </form>
-        @foreach ($messages as $message)
-            {!! view("messages.item" ,["message" => $message ,"my_message" => ($message->sender_id == $auth->id) ,"for_user" => $auth ])->render() !!}
-        @endforeach
-    </div>
-    <form class="form" id="chat-form-{{"project-id-$project_id"}}" method="POST" action="{{ url("/message/send") }} ">
+<div id="messages-list" class="scroll-y my-1" data-kt-element="messages" data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_drawer_chat_messenger_header, #kt_drawer_chat_messenger_footer" data-kt-scroll-wrappers="#kt_drawer_chat_messenger_body" data-kt-scroll-offset="0px" style="height: 765px;">
+    <form class="form message-chat" id="form-load-{{"project-id-$project_id"}}" method="POST" action="{{ url("/message/load/more") }} ">
+        <div class="d-flex flex-wrap flex-center ">
+            @csrf
+            <input type="hidden" name="offest" id="offest" value="{{ $per_page}}">
+            <input type="hidden" name="project_id"  value="{{ $project_id }}">
+            <input type="hidden" name="user_id"  value="{{ $user_id }}">
+            <button type="submit" class="btn-sm btn btn-light " id="load-more">
+                @include('partials.general._button-indicator', ['label' => trans('lang.show_more'),"message" => trans('lang.loading')])
+            </button>
+        </div>
+    </form>
+    @foreach ($messages as $message)
+        {!! view("messages.item" ,["message" => $message ,"my_message" => ($message->sender_id == $auth->id) ,"for_user" => $auth ])->render() !!}
+    @endforeach
+</div>
+<form class="form" id="chat-form-{{"project-id-$project_id"}}" method="POST" action="{{ url("/message/send") }} ">
     <div class="card-footer " id="kt_drawer_chat_messenger_footer">
         @csrf
+        <input type="hidden" name="user_id"  value="{{ $user_id }}">
         <input type="hidden" name="project_id" value="{{ $project_id }}">
-        <textarea class="form-control form-control-flush mb-5 message-chat-input" id="message-chat-input" name="message" data-kt-autosize="true" rows="2" placeholder="Ecrivez ..." style="overflow: hidden; overflow-wrap: break-word; height: 50px;"></textarea>
-        <div class="d-flex flex-stack">
-            <div class="d-flex align-items-center me-2">
+        <textarea class="form-control form-control-flush mb-1 message-chat-input" id="message-chat-input" data-rule-required="true" data-msg-required="@lang('lang.required_input')" name="message" data-kt-autosize="true" rows="2" placeholder="Ecrivez ..." style="overflow: hidden; overflow-wrap: break-word; height: 50px;"></textarea>
+        <div class="separator my-1"></div>
+        <div class="d-flex flex-stack  ">
+            <div class="d-flex align-items-center mt-2">
                 <input class="form-control form-control-sm form-control-white message-chat-input" name="files[]" type="file" id="message-file-input" multiple>
-                {{-- <button class="btn btn-sm btn-icon btn-active-light-primary me-1" type="button" data-bs-toggle="tooltip" title="" data-bs-original-title="Coming soon">
-                    <i class="bi bi-paperclip fs-3"></i>
-                </button>
-                <button class="btn btn-sm btn-icon btn-active-light-primary me-1" type="button" data-bs-toggle="tooltip" title="" data-bs-original-title="Coming soon">
-                    <i class="bi bi-upload fs-3"></i>
-                </button> --}}
             </div>
-            <button type="submit" id="submit" class=" btn btn-sm btn-light-primary  mr-2">
-                @include('partials.general._button-indicator', ['label' => trans('lang.send'),"message" => trans('lang.sending')])
+            <button type="submit" id="submit" class=" btn btn-sm btn-light-primary  ">
+                @include('partials.general._button-indicator', ['label' => trans('lang.send'),"message" => "..."])
             </button>
         </div>
     </div>
@@ -49,7 +42,9 @@
 <script>
     $(document).ready(function() {
         var messages = "#messages-list"
-        $("#message-chat-input").focus()
+        setTimeout(() => {
+            $("#message-chat-input").focus()
+        }, 200);
         scrollBotton(messages , 3000)
         $("#chat-form-project-id-{{ $project_id}}").appForm({
             forceBlock: true,
@@ -67,13 +62,19 @@
             },
         })
         $("#form-load-project-id-{{ $project_id}}").appForm({
-            isModal: true,
+            isModal: false,
             onSuccess: function(response) {
+                console.log(response);
                 $("#offest").val(response.offest)
-                console.log(response.more);
+                if (!response.has_more) {
+                    $("#load-more").remove()
+                }
+                if (response.data) {
+                    $(".message-chat:first").after(response.data)
+                }
+                return false;
             },
         })
-        
         $(".delete-message").on("click",function(){
             var target= $(this)
             var id = target.attr("data-message-id")
@@ -97,7 +98,5 @@
                 },
             });
         })
-
-        
     })
 </script>

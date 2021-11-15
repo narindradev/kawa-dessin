@@ -7,6 +7,7 @@
         <div class="card-header" id="ajax-drawer-header">
             <h3 class="card-title fw-bolder text-dark" id="ajax-drawer-title"></h3>
             <div class="card-toolbar">
+                <div  id="ajax-drawer-info"></div>
                 <button type="button" class="btn btn-sm btn-icon btn-active-light-primary me-n5" id="ajax-drawer-close">
                     {!! theme()->getSvgIcon('icons/duotune/arrows/arr061.svg', 'svg-icon-1') !!}
                 </button>

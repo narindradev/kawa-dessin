@@ -56,7 +56,8 @@ class User extends Authenticatable implements MustVerifyEmail
         if ($this->info) {
             return asset($this->info->avatar_url);
         }
-        return asset(theme()->getMediaUrlPath() . 'avatars/blank.png');
+        return "https://i.pravatar.cc/80?img={$this->id}";
+        // return asset(theme()->getMediaUrlPath() . 'avatars/blank.png');
     }
     public function info()
     {

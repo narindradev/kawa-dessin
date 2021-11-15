@@ -6,7 +6,7 @@
                 <div class="mb-10">
                     <label for="name" class="required form-label">@lang('lang.name')</label>
                     <input type="text" value="{{ $category->name }}" autocomplete="off" name="name" class="form-control form-control-solid"
-                        placeholder="Nom du categorie" data-rule-required="false"
+                        placeholder="Nom du categorie" data-rule-required="true"
                         data-msg-required="@lang('lang.required_input')" />
                 </div>
             </div>

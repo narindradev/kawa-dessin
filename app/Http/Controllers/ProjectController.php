@@ -51,7 +51,7 @@ class ProjectController extends Controller
             "DT_RowId" => row_id("projects", $project->id),
             "badge" => view("project.column.badge", ["project" => $project, "for_user" => $for_user])->render(),
             "client_info" => view("project.column.info-client", ["client" => $client, "project" => $project, "link" => 1, "for_user" => $for_user])->render(),
-            "messenger" => view("project.column.messenger", ["client" => $client, "project" => $project ,"for_user" => $for_user , "from_notification" => $from_notification] )->render(),
+          
             "categories" => $project->categories->pluck("name")->implode(" , ", "name"),
             "client_type" => view("project.column.client-type", ["client" => $client])->render(),
             "status" => view("project.column.status", ["project" => $project, "for_user" => $for_user])->render(),
@@ -62,6 +62,8 @@ class ProjectController extends Controller
         $add_dessinator =  modal_anchor(url("/project_member/add_member_modal_form"), '<i class="text-hover-primary fas fa-user-plus " style="font-size:15px"></i>', ["data-post-project_id" => $project->id, "data-post-user_type_id" => 4, "class" => "", 'title' => trans('lang.add_dessinator')]);
         $add_mdp = modal_anchor(url("/project_member/add_member_modal_form"), '<i class="text-hover-primary fas fa-user-plus " style="font-size:15px"></i>', ["data-post-project_id" => $project->id, "data-post-user_type_id" => 2, "class" => "", 'title' => trans('lang.add_mdp')]);
         $members_list = $this->_make_user_type_column($project);
+       
+        $columns["messenger"]  = view("project.column.messenger", ["client" => $client, "project" => $project ,"for_user" => $for_user , "from_notification" => $from_notification ,"members_list" =>$members_list] )->render();
         $columns["mdp"]  =  view("project.column.members", ["members" =>  get_array_value($members_list, "mdp"), "add" => $add_mdp, "for_user" => $for_user])->render();
        
         if ($for_user && !$for_user->is_dessignator()) {
@@ -126,25 +128,22 @@ class ProjectController extends Controller
         $int = random_int(1, 50);
         foreach ($members as $member) {
             if ($member->is_mdp()) {
-                $int = $int - 1;
                 $list["mdp"][] = [
                     "id" => $member->id,
                     "name" => $member->name,
-                    "avatar" => "https://i.pravatar.cc/80?img=$int",
+                    "avatar" => "https://i.pravatar.cc/80?img=$member->id",
                 ];
             } elseif ($member->is_commercial()) {
-                $int = $int + 2;
                 $list["commercial"][]  = [
                     "id" => $member->id,
                     "name" => $member->name,
-                    "avatar" => "https://i.pravatar.cc/80?img=$int",
+                    "avatar" => "https://i.pravatar.cc/80?img=$member->id",
                 ];
             } elseif ($member->is_dessignator()) {
-                $int = $int - 3;
                 $list["dessignator"][] = [
                     "id" => $member->id,
                     "name" => $member->name,
-                    "avatar" => "https://i.pravatar.cc/80?img=$int",
+                    "avatar" => "https://i.pravatar.cc/80?img=$member->id",
                 ];
             }
         }
@@ -154,7 +153,7 @@ class ProjectController extends Controller
     public  function relaunch(Project $project)
     {
         $subjects = Relaunch::drop();
-        return view("project.relaunch.summary", compact("project", "subjects"));
+        return ["view" => view("project.relaunch.summary", compact("project", "subjects"))->render()] ;
     }
     public  function add_relaunch(Request $request, Project $project)
     {

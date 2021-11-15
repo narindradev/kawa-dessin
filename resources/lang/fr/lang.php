@@ -178,4 +178,7 @@ return [
     'now' =>  "Aujourd'hui",
     'tomorrow' => 'Demain',
     'message_sended' => 'Message envoyé !',
+    'show_more' => 'Afficher les messages plus anciens',
+    'chat' => 'Messages',
+    'private_chat' => 'Messages privé',
 ];

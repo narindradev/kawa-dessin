@@ -5,6 +5,7 @@ namespace App\Models;
 use Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use DateTimeInterface;
 
 class Message extends Model
 {
@@ -13,12 +14,25 @@ class Message extends Model
     protected $table = "messages";
     protected $with = ["sender"];
     protected $appends  = ["files_info"];
+
+     /**
+     * Prepare a date for array / JSON serialization.
+     *
+     * @param  \DateTimeInterface  $date
+     * @return string
+     */
     
-    public function project(){
-        return $this->belongsTo(Project::class,"project_id");
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->format('Y-m-d H:i:s');
     }
-    public function sender(){
-        return $this->belongsTo(User::class,"sender_id");
+    public function project()
+    {
+        return $this->belongsTo(Project::class, "project_id");
+    }
+    public function sender()
+    {
+        return $this->belongsTo(User::class, "sender_id");
     }
     public function destignators()
     {
@@ -27,7 +41,7 @@ class Message extends Model
     public function getFilesInfoAttribute()
     {
         if ($this->files) {
-            $ids= explode(",",$this->files);
+            $ids = explode(",", $this->files);
             return ProjectFiles::findMany($ids);
         }
         return null;
@@ -35,22 +49,22 @@ class Message extends Model
     public function scopeGetDetails($query, $options = [])
     {
         $auth = auth()->id();
-        
+
         $project_id = get_array_value($options, "project_id");
         /** Project's messages */
         if ($project_id) {
-            $message = Project::find($project_id)->messages();
+            $project = get_array_value($options, "project");
+            $message =  $project->messages();
         }
         /** Private messages */
         $user_id = get_array_value($options, "user_id");
         if ($user_id) {
-            $message = User::find($user_id)->messages()->wherePivot("user_id" ,Auth::id());
+            $message = User::find($user_id)->messages()->where("sender_id", $auth );
         }
-        $offest = get_array_value($options, "offest");
-        if ($offest) {
-            $message->skip($offest + 1);
+        $group_id = get_array_value($options, "group_id");
+        if ($group_id) {
+            // $message = Group::find($group_id)->messages();
         }
-        $message->whereRaw('NOT FIND_IN_SET('.$auth.',deleted_by)');
-        return $message->whereDeleted(0)->orderBy('created_at',"DESC")->take(6);
+        return $message->whereRaw('NOT FIND_IN_SET(' . $auth . ',deleted_by)')->whereDeleted(0)->orderBy('created_at', "DESC");
     }
 }

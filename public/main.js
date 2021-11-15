@@ -56,7 +56,6 @@ $(document).ready(function () {
                                 if (settings.isModal || settings.forceBlock ) {
                                     blockUI.block();
                                 }
-                               
                             },
                             success: function (result) {
                                 handleSubmitbutton(submitButton, !true)
@@ -277,13 +276,23 @@ $(document).ready(function () {
             type: 'POST',
             success: function (response) {
                 u.release();
-                $("#ajax-drawer-content").html(response);
+                if (!response.view) {
+                    $("#ajax-drawer-content").html(response);
+                    
+                }else{
+                    $("#ajax-drawer-content").html(response.view);
+                }
+                if (response.info) {
+                    $("#ajax-drawer-info").html(response.info);
+                }
             },
             statusCode: {
                 404: function () {
+                    u.release();
                 }
             },
             error: function () {
+                u.release();
             }
         });
         return false;
@@ -292,6 +301,10 @@ $(document).ready(function () {
 
     ajaxDrawer.on("kt.drawer.after.hidden", function () {
         $("#ajax-drawer-content").html("");
+        $("#ajax-drawer-info").html("");
+        if (u.isBlocked()) {
+             u.release();
+        }
     });
     //bind ajax tab
     // var blockLoaderTab = '<div  class="blockui-message"><span class="spinner-border text-primary"></span> ' + app_lang.please_wait + ' <span id ="upload-info"></span></div>'
