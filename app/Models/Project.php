@@ -17,7 +17,8 @@ class Project extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'start_date' => 'datetime',
-        'due_date' => 'datetime'
+        'due_date' => 'datetime',
+        'delivery_date' => 'datetime'
      ];
     // protected  $with = ["categories", "client", "status"];
     public function client()
@@ -42,7 +43,7 @@ class Project extends Model
     }
     public function files()
     {
-        return $this->hasMany(ProjectFiles::class)->whereDeleted(0);
+        return $this->hasMany(File::class)->whereDeleted(0);
     }
     public function infoGround()
     {
@@ -77,9 +78,10 @@ class Project extends Model
     }
     public function scopeGetDetails($query, $options = [])
     {
+        $AUTH = Auth::user();
         $user_id = get_array_value($options, "user_id");
         $client = get_array_value($options, "client");
-        if (Auth::user()->is_admin() && !$user_id ) {
+        if ($AUTH->is_admin() && !$user_id ) {
             /** load all project  */
             $projects = Project::query();
         } elseif ($user_id ) {
@@ -90,14 +92,10 @@ class Project extends Model
             $projects = Project::where("client_id", $client);
         } else {
             /** load Auth user's projects assigned */
-            $projects = Auth::user()->projects();
+            $projects =$AUTH->projects();
         }
-        $with = ["categories", "client", "status" ,"messages"];
-        if ($client || Auth::user()->is_admin() ) {
-            $with[] = "invoiceItems"; $with[] = "invoice"; 
-        }
-        $projects->with($with);
-
+        $projects->whereDeleted(0);
+    
         $client_id = get_array_value($options, "client_id");
         if ($client_id) {
             $projects->where("client_id", $client_id);
@@ -122,12 +120,6 @@ class Project extends Model
         if ($version) {
             $projects->where("version", $version);
         }
-        $categorie_id = get_array_value($options, "categorie_id");
-        if ($categorie_id) {
-            $projects->whereHas('categories', function ($query) use ($categorie_id) {
-                $query->where('category_id', $categorie_id);
-            });
-        }
         $type = get_array_value($options, "client_type");
         if ($type) {
             $projects->whereHas('client', function ($query) use ($type) {
@@ -139,14 +131,33 @@ class Project extends Model
             $dates = explode("-", $date);
             $projects->whereBetween("start_date", [to_date($dates[0]), to_date($dates[1])]);
         }
+
+        $with = ["categories", "client", "status"];
+        if ($client || $AUTH->is_admin() ) {
+            $with[] = "invoiceItems"; $with[] = "invoice"; 
+        }
+        $projects->with($with);
+
+        $categorie_id = get_array_value($options, "categorie_id");
+        if ($categorie_id) {
+            $projects->whereHas('categories', function ($query) use ($categorie_id) {
+                $query->where('category_id', $categorie_id);
+            });
+        }
         $status_invoice = get_array_value($options, "status_invoice");
         if ($status_invoice) {
             $projects->whereHas('invoice', function ($query) use ($status_invoice) {
                 $query->where('status', $status_invoice);
             });
         }
-      
-
+        /** Messages project message auth not seen*/ 
+        $projects->with(["messages" => function ($query)  {
+        $auth = auth()->id();
+        $query->whereRaw('NOT FIND_IN_SET('.$auth.',seen_by)')
+              ->whereRaw('NOT FIND_IN_SET('.$auth.',deleted_by)')
+              ->where("sender_id" ,"<>" ,$auth)
+              ->whereDeleted(0);
+        }]);
         $projects->orderBy('status_id',"ASC");
         if ($user_id) {
             if (User::find($user_id)->is_commercial()) {
@@ -155,17 +166,12 @@ class Project extends Model
                 $projects->orderBy('due_date',"ASC");
             }
         }
-        if (Auth::user()->is_commercial() || Auth::user()->is_admin()) {
+        if ($AUTH->is_commercial() || $AUTH->is_admin()) {
             $projects->orderBy('created_at',"DESC");
         }else{
             $projects->orderBy('due_date',"ASC");
         }
-        /** Chat project  message not seen*/ 
-        $projects->with(["messages" => function ($query)  {
-            $auth = auth()->id();
-            $query->whereRaw('NOT FIND_IN_SET('.$auth.',seen_by)')->whereRaw('NOT FIND_IN_SET('.$auth.',deleted_by)')->where("sender_id" ,"<>" ,$auth);
-        }]);
-        return $projects->whereDeleted(0);
+        return $projects;
     }
 
     public static function get_client_dropdown(User $for_user)

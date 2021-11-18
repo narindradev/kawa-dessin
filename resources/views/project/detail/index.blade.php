@@ -1,11 +1,10 @@
 <x-base-layout>
-    <div class="card mb-6 mb-xl-9">
+    <div class="card mb-6 mb-xl-9 shadow-sm col-md-12">
+        <div class="card-header mt-5 ">
+            @include('project.detail.state' , ["project" => $project ,"states" => $states])
+        </div>
         <div class="card-body pt-9 pb-0">
             <div class="d-flex flex-wrap flex-sm-nowrap mb-6">
-                {{-- <div
-                    class="d-flex flex-center flex-shrink-0 bg-light rounded w-100px h-100px w-lg-150px h-lg-150px me-7 mb-4">
-                    <img class="mw-50px mw-lg-75px" src="assets/media/svg/brand-logos/volicity-9.svg" alt="image">
-                </div> --}}
                 <div class="flex-grow-1">
                     <div class="d-flex justify-content-between align-items-start flex-wrap mb-2">
                         <div class="d-flex flex-column">
@@ -42,71 +41,6 @@
                                     @endphp
                                 @endif
                             @endif
-
-                            {{-- <div class="me-0">
-                                <button class="btn btn-sm btn-icon btn-bg-light btn-active-color-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-kt-menu-flip="top-end">
-                                    <i class="bi bi-three-dots fs-3"></i>
-                                </button>
-                                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-bold w-200px py-3" data-kt-menu="true">
-                                    <div class="menu-item px-3">
-                                        <div class="menu-content text-muted pb-2 px-3 fs-7 text-uppercase">Payments</div>
-                                    </div>
-                                  
-                                    <div class="menu-item px-3">
-                                        <a href="#" class="menu-link px-3">Create Invoice</a>
-                                    </div>
-                                    <div class="menu-item px-3">
-                                        <a href="#" class="menu-link flex-stack px-3">Create Payment
-                                        <i class="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="" data-bs-original-title="Specify a target name for future usage and reference" aria-label="Specify a target name for future usage and reference"></i></a>
-                                    </div>
-                                    <div class="menu-item px-3">
-                                        <a href="#" class="menu-link px-3">Generate Bill</a>
-                                    </div>
-                                    <div class="menu-item px-3" data-kt-menu-trigger="hover" data-kt-menu-placement="right-end" data-kt-menu-flip="bottom, top">
-                                        <a href="#" class="menu-link px-3">
-                                            <span class="menu-title">Subscription</span>
-                                            <span class="menu-arrow"></span>
-                                        </a>
-                                        
-                                        <div class="menu-sub menu-sub-dropdown w-175px py-4">
-                                            <div class="menu-item px-3">
-                                                <a href="#" class="menu-link px-3">Plans</a>
-                                            </div>
-                                            
-                                            <div class="menu-item px-3">
-                                                <a href="#" class="menu-link px-3">Billing</a>
-                                            </div>
-                                           
-                                            <div class="menu-item px-3">
-                                                <a href="#" class="menu-link px-3">Statements</a>
-                                            </div>
-                                           
-                                            <div class="separator my-2"></div>
-                                            
-                                            <div class="menu-item px-3">
-                                                <div class="menu-content px-3">
-                                                    
-                                                    <label class="form-check form-switch form-check-custom form-check-solid">
-                                                        
-                                                        <input class="form-check-input w-30px h-20px" type="checkbox" value="1" checked="checked" name="notifications">
-                                                       
-                                                        <span class="form-check-label text-muted fs-6">Recuring</span>
-                                                        
-                                                    </label>
-                                                    
-                                                </div>
-                                            </div>
-                                            <!--end::Menu item-->
-                                        </div>
-                                        <!--end::Menu sub-->
-                                    </div>
-                                    <div class="menu-item px-3 my-1">
-                                        <a href="#" class="menu-link px-3">Settings</a>
-                                    </div>
-                                    <!--end::Menu item-->
-                                </div>
-                                <!--end::Menu 3-->
-                            </div> --}}
                         </div>
                     </div>
                     <div class="d-flex flex-wrap justify-content-start">
@@ -134,55 +68,46 @@
                             <div class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                                 <div class="d-flex align-items-center">
                                     <i class="fas fa-money-check-alt"></i> &nbsp;
-                                    <div class="fs-4 fw-bolder text-primary" @if ($project->price) data-kt-countup="true" data-kt-countup-value="{{ $project->price }}" data-kt-countup-prefix="$" @endif>
-                                        {{ $project->price ? "$" . $project->price : '0.000' }}</div>
+                                    <div class="fs-4 fw-bolder text-primary" @if ($project->price) data-kt-countup="true" data-kt-countup-value="{{ $project->price }}" data-kt-countup-prefix="{{app_setting("currency_symbole")}}" @endif>
+                                        {{format_to_currency( $project->price ? $project->price  : '0.000' )}}
+                                    </div>
                                 </div>
-                                <div class="fw-bold fs-6  text-gray-400">Price</div>
+                                @if ($project->estimate == 'accepted')
+                                    <div class="fw-bold fs-6  text-gray-400">{{ trans("lang.price") }} ( taxe : {{get_array_value($invoice_data,"taxe_percent")}}% )</div>
+                                @endif
                             </div>
-                            @if ($project->accept_estimate)
+                            @if ($project->estimate == 'accepted')
                                 <div
                                     class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                                     <div class="d-flex align-items-center">
                                         <i class="fas fa-money-check-alt"></i> &nbsp;
-                                        <div class="fs-4 fw-bolder" data-kt-countup="true" data-kt-countup-prefix="$">
-                                            $0.00</div>
+                                        <div class="fs-4 fw-bolder" data-kt-countup="true" data-kt-countup-prefix="{{app_setting("currency_symbole")}}">
+                                            {{format_to_currency(get_array_value($invoice_data,"total_paid"))}}
+                                        </div>
                                     </div>
-                                    <div class="fw-bold fs-6 text-gray-400 ">Total paid</div>
+                                    <div class="fw-bold fs-6 text-gray-400 ">{{ trans("lang.total_paid") }}</div>
                                 </div>
                                 <div
                                     class="border border-gray-300 border-dashed rounded min-w-125px py-3 px-4 me-6 mb-3">
                                     <div class="d-flex align-items-center">
                                         <i class="fas fa-money-check-alt"></i> &nbsp;
-                                        <div class="fs-4 fw-bolder  " data-kt-countup="true" data-kt-countup-prefix="$">
-                                            $0.00</div>
+                                        <div class="fs-4 fw-bolder  " data-kt-countup="true" data-kt-countup-prefix="{{app_setting("currency_symbole")}}">
+                                            {{format_to_currency(get_array_value($invoice_data,"rest_to_paid"))}} 
+                                        </div>
                                     </div>
-                                    <div class="fw-bold fs-6 text-gray-400 ">Total not paid</div>
+                                    <div class="fw-bold fs-6 text-gray-400 ">{{ trans("lang.total_not_paid") }}</div>
                                 </div>
                             @endif
                         </div>
                         @if (auth()->user()->not_client())
-
-                            <div class="symbol-group symbol-hover mb-3">
-                                <div class="symbol symbol-35px symbol-circle" data-bs-toggle="tooltip" title=""
-                                    data-bs-original-title="Alan Warden">
-                                    <span class="symbol-label bg-primary text-inverse-primary fw-bolder">A</span>
+                        <div class="symbol-group symbol-hover mb-3">
+                            @foreach ( get_cache_member($project) as $member)
+                                <div class="symbol symbol-35px symbol-circle" data-bs-toggle="tooltip" title="" data-bs-original-title="{{$member->name}}">
+                                    <img alt="Pic" src="{{ $member->avatar_url }}"> 
                                 </div>
-                                <div class="symbol symbol-35px symbol-circle" data-bs-toggle="tooltip" title=""
-                                    data-bs-original-title="Michael Eberon">
-                                    <span class="symbol-label bg-primary text-inverse-primary fw-bolder">M</span>
-                                </div>
-                                <div class="symbol symbol-35px symbol-circle" data-bs-toggle="tooltip" title=""
-                                    data-bs-original-title="Jon Doe">
-                                    <span class="symbol-label bg-primary text-inverse-primary fw-bolder">J</span>
-                                </div>
-                                {{-- <a href="#" class="symbol symbol-35px symbol-circle" data-bs-toggle="modal"
-                                    data-bs-target="#kt_modal_view_users">
-                                    <span class="symbol-label bg-dark text-inverse-dark fs-8 fw-bolder"
-                                        data-bs-toggle="tooltip" data-bs-trigger="hover" title=""
-                                        data-bs-original-title="View more users">+42</span>
-                                </a> --}}
-                            </div>
-                        @endif
+                            @endforeach
+                        </div>
+                    @endif
                     </div>
                 </div>
             </div>

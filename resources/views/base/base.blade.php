@@ -5,9 +5,6 @@
 <head>
     <meta charset="utf-8" />
     <title>| {{ app_setting("app_name") }}</title>
-    <meta name="description" content="{{ ucfirst(theme()->getOption('meta', 'description')) }}" />
-    <meta name="keywords" content="{{ theme()->getOption('meta', 'keywords') }}" />
-    <link rel="canonical" href="{{ ucfirst(theme()->getOption('meta', 'canonical')) }}" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="shortcut icon" href="{{ asset("app/logo/logo.png") }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -98,7 +95,6 @@
 @endif
 
 @include('includes.helper-js')
-@include('includes.notification-js')
     <script src="{{ asset('library/jquery.validate/jquery.validate.js') }}"></script>
     <script src="{{ asset('library/jquery.form/jquery.form.js') }}"></script>
     <script src="{{ asset('main.js') }}"></script>
@@ -108,7 +104,8 @@
     <script src="{{ asset('library/bootstrap-fileinput/js/fileinput.min.js')}}"></script>
     <script src="{{ asset('library/bootstrap-fileinput/themes/explorer/theme.min.js') }}"></script>
     @yield('scripts')
-    @include('includes.ajax-drawer')
-    @include('includes.debugs')
+@include('includes.ajax-drawer')
+@include('includes.debugs')
+@include('includes.notification-js')
 </body>
 </html>

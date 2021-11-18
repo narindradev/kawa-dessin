@@ -7,13 +7,18 @@
             addItemNotification(notification)
         }
         if (notification.classification === "chat") {
-            if ($("#chat-form-project-id-"+notification.project_id).length) {
+            if ($("#chat-form-" + notification.form + "-id-" + notification.target).length) {
                 if (notification.need_load_more) {
                     load_more(notification.message_id)
-                }else{
+                } else {
                     addItemMessage(notification)
                 }
-                return false; // dont add notification in dataTable row;
+                return false; // Dont add notification in dataTable row;
+            }else{
+                if (notification.form === "private") {
+                    incrementChatPrivate(notification)
+                    return false;
+                }
             }
         }
         if (typeof notification.extra_data != "undefined" && notification.extra_data.type == "dataTable") {
@@ -24,16 +29,17 @@
             var newData = notification.extra_data.row;
             if (typeof notification.extra_data.row_id != "undefined" && $("#" + notification.extra_data.row_id)) {
                 var row_id = notification.extra_data.row_id;
-                if ($("#"+row_id).length) {
-                    dataTableUpdateRow(instanceTable, row_id, newData ,true);
-                }else{
-                    dataTableaddRowIntheTop(instanceTable, newData,true)
+                if ($("#" + row_id).length) {
+                    dataTableUpdateRow(instanceTable, row_id, newData, true);
+                } else {
+                    dataTableaddRowIntheTop(instanceTable, newData, true)
                 }
             } else {
-                dataTableaddRowIntheTop(instanceTable, newData,true)
+                dataTableaddRowIntheTop(instanceTable, newData, true)
             }
         }
     }
+
     function incrementBell() {
         var notificationCount = $("#notifications-count").text();
         notificationCount = parseInt(notificationCount)
@@ -47,41 +53,60 @@
             $("#pulse-notification").addClass("pulse-ring")
         }
     }
+    function incrementChatPrivate(notification) {
+        var target = $("#chat-private-id-notfication-count-"+notification.target)
+        target.css("display","")
+        console.log( $("#chat-private-id-notfication-count-"+notification.target).length);
+        var count = target.text();
+        count = parseInt(count)
+        if (count) {
+            count++;
+        } else {
+            count = 1
+        }
+        target.text(count)
+    }
+
     function addItemNotification(notification = null) {
         if ($(".notification-item").length) {
             $(".notification-item:last").prepend(notification.item)
-        }else{
+        } else {
             $("#notification-item").html(notification.item)
         }
     }
-    function addItemMessage(notification = null) {
-                setTimeout(() => {
-                    scrollBotton("#messages-list",3000)
-                }, 100);
-                if ($("#message-item-"+notification.message_id).length) {
-                    $("#message-item-"+notification.message_id).replaceWith(notification.message)
-                    return false;
-                }
-                
-                if ($(".message-item").length) {
-                    $(".message-item:last").after(notification.message)
-                }else{
-                    $("#messages-list").html(notification.message)
-                }
+
+    function addItemMessage(notification = null ,) {
+        if (0) {
+            toastr.info(" Un nouveau message <a href='#' class='new-item-message-detected' data-message-id = "+notification.message_id+"> <u> Voir</u><a>");
+        }else{
+            setTimeout(() => {
+                scrollBotton("#messages-list", 3000)
+            }, 100);
+        }
+        if ($("#message-item-" + notification.message_id).length) {
+            $("#message-item-" + notification.message_id).replaceWith(notification.message)
+            return false;
+        }
+        if ($(".message-item").length) {
+            $(".message-item:last").after(notification.message)
+        } else {
+            $("#messages-list").html(notification.message)
+        }
     }
+    
+
     function load_more(message_id = 0) {
         $.ajax({
             url: url("/message/get_message"),
             type: 'POST',
             dataType: 'json',
             data: {
-                id: message_id ,
+                id: message_id,
                 _token: _token
             },
             success: function(result) {
                 addItemMessage(result)
             },
-            
         });
     }
     $("#bell-icon").on("click", function() {
@@ -89,5 +114,11 @@
             $("#pulse-notification").removeClass("pulse-ring")
         }
         $("#notifications-count").text("0")
+    })
+    $(document).on("click",'.new-item-message-detected' ,function() {
+        var id = $(this).attr("data-message-id");
+            $('#messages-list').animate({
+                scrollTop: $("#message-item-" + id).offset().top
+            }, 2000);
     })
 </script>

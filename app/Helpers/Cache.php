@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use App\Models\Project;
 use Illuminate\Support\Facades\Cache;
 
@@ -27,7 +28,24 @@ if (!function_exists('app_setting')) {
     function app_setting($key = "")
     {
         return Cache::rememberForever("app_setting_$key", function () use ($key) {
-            return Setting::_get($key);
+            return \App\Models\Setting::_get($key);
         });
+    }
+}
+if (!function_exists('get_cache_chat_user')) {
+    function get_cache_chat_user()
+    {
+        $auth = auth()->user();
+        return User::whereDeleted(0)->where('user_type_id', '<>', 5)->where("id",'<>' ,  $auth->id)->get()->each->setAppends(['message_not_seen']);
+    }
+}
+if (!function_exists('get_cache_chat_user_target')) {
+    function get_cache_chat_user_target(User $user )
+    {
+        $auth = auth()->user();
+        return Cache::rememberForever("get_cache_chat_user_$auth ", function () use ($auth ) {
+            return  User::whereDeleted(0)->where('user_type_id', '<>', 5)->where("id",'<>' ,  $auth->id)->get()->each->setAppends(['message_not_seen']);
+        });
+        
     }
 }

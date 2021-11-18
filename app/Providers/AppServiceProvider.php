@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Carbon\Carbon;
 use App\Core\Adapters\Theme;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\View;
@@ -42,7 +43,8 @@ class AppServiceProvider extends ServiceProvider
         View::share('theme', $theme);
         // Set demo globally
         // $theme->setDemo(request()->input('demo', 'demo1'));
-         $theme->setDemo('demo1');
+        $theme->setDemo('demo1');
+        
         $theme->initConfig();
         bootstrap()->run();
         if (isRTL()) {
@@ -56,6 +58,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $langs = ['en', 'es', 'fr'];
         App::setLocale($lang);
+        Carbon::setLocale($lang);
     }
     private function app_config()
     {

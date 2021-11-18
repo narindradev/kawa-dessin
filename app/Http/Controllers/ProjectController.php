@@ -10,7 +10,7 @@ use App\Models\Category;
 use App\Models\Priority;
 use App\Models\Relaunch;
 use App\Models\InfoGround;
-use App\Models\ProjectFiles;
+use App\Models\File;
 use Illuminate\Http\Request;
 use App\Models\ProjectRelaunch;
 use App\Jobs\EstimateAssignedJob;
@@ -19,12 +19,19 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\PriceProjectRequest;
 use App\Http\Requests\StartProjectRequest;
 use App\Jobs\memberAssignedJob;
+use App\Models\Message;
+use Carbon\Carbon;
 
 class ProjectController extends Controller
 {
     public function index()
     {
-    //    dd(str_word_count("concerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cette concerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cetteconcerne ses compétences. En outre, cette"));
+        // foreach (Message::all() as $ms ) {
+        //    if($ms->deleted){
+        //     $ms->delete();
+        //    }
+        // }
+        // dd("");
         $advance_filter = $this->advance_filter();
         $basic_filter = $this->basic_filter();
         $users = null;
@@ -39,7 +46,7 @@ class ProjectController extends Controller
         $projects = Project::getDetails($request->all())->get();
         // $count = $projects->count();
         foreach ($projects as $project) {
-            $data[] = $this->_make_row($project, Auth::user());
+            $data[] = $this->_make_row($project, Auth::user(),true);
         }
         return ["data" => $data,];
     }
@@ -51,7 +58,6 @@ class ProjectController extends Controller
             "DT_RowId" => row_id("projects", $project->id),
             "badge" => view("project.column.badge", ["project" => $project, "for_user" => $for_user])->render(),
             "client_info" => view("project.column.info-client", ["client" => $client, "project" => $project, "link" => 1, "for_user" => $for_user])->render(),
-          
             "categories" => $project->categories->pluck("name")->implode(" , ", "name"),
             "client_type" => view("project.column.client-type", ["client" => $client])->render(),
             "status" => view("project.column.status", ["project" => $project, "for_user" => $for_user])->render(),
@@ -79,6 +85,7 @@ class ProjectController extends Controller
         if ($for_user && !$for_user->is_dessignator()) {
             $columns["client_type"] =  view("project.column.client-type", ["client" => $client])->render();
             $columns["date"] =  $project->created_at->format("d-M-Y");
+            $columns["delivery_date"] = $this->delivery_date_column($project);
         }
         if ($for_user && ($for_user->is_admin() || $for_user->is_commercial())) {
             $last_relauch =  ProjectRelaunch::where("project_id", $project->id)->where("created_by", $client->user->id)->latest('created_at')->first();
@@ -88,6 +95,7 @@ class ProjectController extends Controller
         $columns["actions"] = view("project.column.actions", ["actions" => $actions, "project" => $project, "for_user" => $for_user])->render();
         return $columns;
     }
+ 
     private function invoice_column(Project $project)
     {
         if ($project->invoice && $project->invoice->status->name !== "not_paid") {
@@ -105,6 +113,22 @@ class ProjectController extends Controller
         } else {
             return "-";
         }
+    }
+
+    private function delivery_date_column(Project $project)
+    {
+        $class  = "";
+        $delivery_date = null;
+        if ($project->delivery_date && $project->delivery_date->isToday()) {
+            $class  = "danger";
+            $delivery_date = trans("lang.now");
+        } elseif ($project->delivery_date && $project->delivery_date->isTomorrow()) {
+            $class  = "warning";
+            $delivery_date = trans("lang.tomorrow"); "Demain";
+        } elseif ($project->delivery_date) {
+            $delivery_date = $project->delivery_date->format("d-M-Y");
+        }
+        return "<span class ='text-{$class}'>" . ($project->delivery_date ?  $delivery_date : "-") . "</span>";
     }
     private function due_column(Project $project)
     {
@@ -125,25 +149,24 @@ class ProjectController extends Controller
     {
         $members = get_cache_member($project);
         $list = ["mdp" => [], "dessignator" => [], "commercial" => []];
-        $int = random_int(1, 50);
         foreach ($members as $member) {
             if ($member->is_mdp()) {
                 $list["mdp"][] = [
                     "id" => $member->id,
                     "name" => $member->name,
-                    "avatar" => "https://i.pravatar.cc/80?img=$member->id",
+                    "avatar" => $member->avatar_url,
                 ];
             } elseif ($member->is_commercial()) {
                 $list["commercial"][]  = [
                     "id" => $member->id,
                     "name" => $member->name,
-                    "avatar" => "https://i.pravatar.cc/80?img=$member->id",
+                    "avatar" => $member->avatar_url,
                 ];
             } elseif ($member->is_dessignator()) {
                 $list["dessignator"][] = [
                     "id" => $member->id,
                     "name" => $member->name,
-                    "avatar" => "https://i.pravatar.cc/80?img=$member->id",
+                    "avatar" => $member->avatar_url,
                 ];
             }
         }
@@ -196,7 +219,7 @@ class ProjectController extends Controller
         $project->status_id = 3; // estimated
         $project->save();
         dispatch(new EstimateAssignedJob($project));
-        die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "project" => $this->_make_row($project, Auth::user())]));
+        die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "project" => $this->_make_row($project, Auth::user(),true)]));
     }
     private function advance_filter()
     {
@@ -290,15 +313,23 @@ class ProjectController extends Controller
 
     public function detail(Project $project)
     {
-        $users = User::where("user_type_id",5)->get();
         $project->load("categories");
         $project->load("infoGround");
         foreach ($project->categories as $categorie) {
             $categorie->load("questionnaires"); // load categorie questionnaires
             $categorie->offer->load("questionnaires"); // load categorie offer questionnaires
         }
-        return view("project.detail.index", compact("project"));
+        $invoice_data = null;
+        if($project->estimate == 'accepted'){
+            $project->load("invoice");
+            $invoice_data = invoice_data($project->invoice);
+        }
+        $states = Status::StepOfStateProject($project);
+        return view("project.detail.index", compact("project" ,"invoice_data" ,"states"));
     }
+    
+    
+
     public function save_info_ground(Request $request, Project $project)
     {
         if ($request->ground_info_id) {
@@ -347,7 +378,7 @@ class ProjectController extends Controller
             anchor(url("/project/download/file/$file->id"), '<i class="fas fa-cloud-download-alt"></i>', ["class" => "text-hover-primary", "title" => trans("lang.download")])
         ];
     }
-    public function download_file(ProjectFiles $file)
+    public function download_file(File $file)
     {
         $file->load("project");
         if ($file->project->is_member() || $file->project->own_project()) {
@@ -416,17 +447,23 @@ class ProjectController extends Controller
         $status = Status::dropProjectStatus();
         return view("project.start-date.start-modal-form", compact("project", "status"));
     }
+    
     public function add_start(StartProjectRequest $request, Project $project)
     {
-        $project->status_id = 5; // in progress
-        if ($request->status) {
-            $project->status_id = $request->status;
+        $project->status_id = $request->status ? $request->status : 5; // in progress
+        if($request->delivery_date){
+            $project->delivery_date = to_date($request->delivery_date);
         }
-        $dates = explode("-", $request->dates);
-        $project->start_date = to_date($dates[0]);
-        $project->due_date = to_date($dates[1]);
+        if ($request->dates) {
+            $dates = explode("-", $request->dates);
+            $project->start_date = to_date($dates[0]);
+            $project->due_date = to_date($dates[1]);
+        }else{
+            $project->start_date = null;
+            $project->due_date = null;
+        }
         $project->save();
-        die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "project" => $this->_make_row($project, Auth::user())]));
+        die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "project" => $this->_make_row($project, Auth::user(),true)]));
     }
     public function kanban(Request $request)
     {

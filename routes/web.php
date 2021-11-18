@@ -178,6 +178,7 @@ Route::middleware('auth')->group(function () {
    Route::post('/message/set/delete', [MessageController::class, 'mark_deleted']);
    Route::post('/message/get_message', [MessageController::class, 'get_message']);
    Route::post('/message/load/more', [MessageController::class, 'load_more']);
+   Route::get('download/file/{file}', [MessageController::class, 'download_file']);
 
 });
 

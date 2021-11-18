@@ -171,7 +171,6 @@ return [
 
     'start_project' => 'Démarrer le projet',
     'start_value' => 'Le champ date est requis',
-    'start_date' => 'Date',
     'copied' => 'Copié!',
     'file_extension' => 'Extension des fichiers',
     'mimes_files' => 'Les types fichiers doivent être ',
@@ -180,5 +179,14 @@ return [
     'message_sended' => 'Message envoyé !',
     'show_more' => 'Afficher les messages plus anciens',
     'chat' => 'Messages',
-    'private_chat' => 'Messages privé',
+    'private_chat' => 'Message privé',
+    'write' => 'Ecrivez ...',
+    'delivery_value' => 'La date de livraison doit être une date postérieure au date fin de projet ',
+    'start_date' => 'Date',
+    'apply' => 'Appliquer',
+    'start_end_date' => 'Date debut - Date Fin',
+    'delivery_date' => 'Date de livraison',
+    'price' => 'Prix',
+    'total_paid' => 'Total déjà payé',
+    'total_not_paid' => 'Total non payé',
 ];

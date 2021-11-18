@@ -15,6 +15,7 @@ $(document).ready(function () {
                 forceBlock: false,
                 showProgress: true,
                 dataType: "json",
+                showAlertSuccess: true,
                 onModalClose: function () {
                 },
                 onSuccess: function () {
@@ -66,20 +67,22 @@ $(document).ready(function () {
                                         blockUI.release();
                                         if (settings.showProgress) {
                                             $("#upload-info").html('<span class="text-primary">' + "ok" + ' </span>')
-
                                         }
                                         closeAjaxModal(true);
-                                        toastr.success(result.message);
+                                        if (settings.showAlertSuccess) {
+                                            toastr.success(result.message);
+                                        }
                                     } else {
                                         if (settings.forceBlock) {
                                             blockUI.release();
                                         }
-                                        toastr.success(result.message);
+                                        if (settings.showAlertSuccess) {
+                                            toastr.success(result.message);
+                                        }
                                     }
                                 } else {
                                     if (settings.onError(result)) {
                                         if (settings.isModal) {
-                                            
                                             blockUI.release();
                                             unmaskModal();
                                             if (result.message) {

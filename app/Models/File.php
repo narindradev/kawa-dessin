@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProjectFiles extends Model
+class File extends Model
 {
     use HasFactory;
-    protected $table = "project_files";
+    protected $table = "files";
     protected $guarded = [];
     protected $with = ["uploader"];
 

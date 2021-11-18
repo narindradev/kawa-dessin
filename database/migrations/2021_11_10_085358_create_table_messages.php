@@ -18,6 +18,8 @@ class CreateTableMessages extends Migration
             $table->longText("content");
             $table->foreignId("sender_id");
             $table->foreignId("project_id")->nullable();
+            $table->foreignId("group_id")->nullable();
+            $table->foreignId("receiver_id")->nullable();
             $table->longText("files")->nullable();
             $table->longText("seen_by")->default(0);
             $table->longText("deleted_by")->default(0);
@@ -25,7 +27,6 @@ class CreateTableMessages extends Migration
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      *

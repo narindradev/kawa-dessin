@@ -29,4 +29,30 @@ class Status extends Model
         }
         return $list;
     }
+    static function StepOfStateProject(Project $project)
+    {
+        
+        $states = [
+            ["step" => "1", "title" => "Création" ,"desc" => "Les informations du projet" , "current" => ($project->status_id  == 1) ,"completed" => ($project->status_id  > 1)],
+            ["step" => "2", "title" => "Traitement" ,"desc" => "En attente etude du projet" ,"current" => ($project->status_id  == 2) ,"completed" => ($project->status_id > 2)],
+            ["step" => "3", "title" => "Paiment" ,"desc" => "Paiment du 1er tranche","current" => ($project->status_id  == 3) ,"completed" => ($project->estimate =="accepted" && $project->price && $project->invoice->status->name != "not_paid"  )],
+            ["step" => "4", "title" => "Complétion" ,"desc" => "Complétion du dossier" ,"current" => ($project->status_id  == 3) ,"completed" => ($project->estimate =="accepted" && $project->price && $project->invoice->status->name == "part_paid"  )],
+            ["step" => "5", "title" => "Réalisation" ,"desc" => "Projet en cours de realisation" ,"current" => ($project->status_id  >= 5 ) ,"completed" => ( $project->status_id  > 7)],
+            ["step" => "6", "title" => "Paiment" ,"desc" => "Paiment du 2em tranche" ,"current" => ($project->status_id > 8) ,"completed" => ( $project->status_id == 8 && $project->invoice->status->name == "part_paid"  ) ],
+            ["step" => "7", "title" => "Terminé" ,"desc" => "Livraison","current" => ($project->status_id == 8) ,"completed" => ( $project->status_id == 8 &&  $project->invoice->status->name == "paid")],
+        ];
+        return $states;
+    }
+
+    static function validation($status)
+    {   
+        $validate = 0;
+        if($status == 7){
+            $validate = 0;
+        }
+        if($status == 8){
+            $validate= 1;
+        }
+        return $validate;
+    }
 }

@@ -604,11 +604,11 @@ if (!function_exists('invoice_data')) {
         return [
             "date" => now()->format('d-M-Y'),
             "invoice_num" => $invoiceItem_num,
-            "sub_total" => format_to_currency($sub_total),
+            "sub_total" => ($sub_total),
             "taxe_percent" => $invoice->taxe,
-            "price_of_taxe" => format_to_currency($price_of_taxe),
-            "price_with_taxe" =>  format_to_currency($price_with_taxe),
-            "50_50" => format_to_currency($payment_per_slice),
+            "price_of_taxe" => ($price_of_taxe),
+            "price_with_taxe" =>  ($price_with_taxe),
+            "50_50" => ($payment_per_slice),
             "total_paid" => $total_paid,
             "rest_to_paid" => $rest_to_paid,
             "first_slice" => $first_slice,
@@ -683,3 +683,5 @@ if (!function_exists('str_limite')) {
         return Str::limit($string,$limite,$end);
     }
 }
+
+

@@ -43,7 +43,7 @@ class ClientController extends Controller
             "offer" => $project->categories[0]->offer->name,
             "categories" => $project->categories->pluck("name")->implode(","),
             "status" => view("clients.column.status", ["project" => $project ,"for_user" => $for_user])->render(),
-            "messenger" => view("project.column.messenger", ["project" => $project])->render(),
+            // "messenger" => view("project.column.messenger", ["project" => $project ,])->render(),
             "estimate" => view("clients.column.estimate", ["project" => $project ,"relaunch" => $relaunch ,"last_relaunch" => $last_relaunch])->render(),
             "version" => $project->version,
             "invoice" => $this->invoice_column($project),

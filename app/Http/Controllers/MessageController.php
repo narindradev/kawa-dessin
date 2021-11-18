@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\File;
 use Auth;
 use Notification;
 use App\Models\User;
@@ -9,7 +10,7 @@ use App\Models\Message;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Notifications\ChatChannelNotification;
-use DB;
+use App\Notifications\ChatPrivateNotification;
 
 class MessageController extends Controller
 {
@@ -30,12 +31,11 @@ class MessageController extends Controller
         $per_page = $this->per_page;
         return [
             "view"=>view("messages.chat", compact("project_id", "messages", "auth" ,"per_page" ,"user_id"))->render() , 
-            "info"=> !$project_id ? "" : view("project.column.members", ["members" =>  get_cache_member($project) , "for_user" => $auth])->render(),
+            "info"=> !$project_id ? view("project.column.members", ["members" =>  User::where("id",$user_id )->get() , "for_user" => $auth])->render() : view("project.column.members", ["members" =>  get_cache_member($project) , "for_user" => $auth])->render(),
         ];
     }
     public function message(Request $request)
     {
-        
         if ($request->project_id) {
             $message = $this->save_project_message($request);
         }
@@ -48,30 +48,35 @@ class MessageController extends Controller
         return ["success" => true, "message" => trans("lang.message_sended"), "data" => view("messages.item", ["message" => $message, "my_message" => true ,"for_user" => auth()->user(),"need_load_more" => false])->render()];
     }
     private function save_project_message(Request $request){
+        $project = Project::find($request->project_id);
         if ($request->hasFile("files")) {
-            $this->uploads($request);
+            $this->uploads($request,$project);
         }
         $message = Message::create(["sender_id" => Auth::id(), "project_id" => $request->project_id, "content" => $request->message ,"files" => $this->files]);
-        $project = Project::find($request->project_id);
         Notification::send(get_cache_member($project), new ChatChannelNotification($message, $project));
         return $message;
     }
-    private function save_private_message($request){
-        // if ($request->hasFile("files")) {
-        //     $this->uploads($request);
-        // }
-        $message = Message::create(["sender_id" => Auth::id() , "content" => $request->message ,"files" => $this->files]);
-        User::find($request->user_id)->messages()->attach([$message->id]);
+    private function save_private_message(Request $request){
+        $message = Message::create(["sender_id" => Auth::id() , "content" => $request->message ,"receiver_id" => $request->user_id]);
+        if ($request->hasFile("files")) {
+            $this->uploads($request,$message);
+            $message->files = $this->files;
+            $message->save();
+        }
+        Notification::send( User::find($message->receiver_id), new ChatPrivateNotification($message));
         return $message;
     }
-    private function save_groupe_message($request){
-        
+    private function save_groupe_message(Request $request){
     }
-    private function uploads($request){
+    private function uploads($request , $object = null ){
         $attachements = [];
         $files = $request->file("files");
+        $path = "uploads";
+        if ($request->project_id) {
+            $path = "project_files/$request->project_id";
+        }
         foreach ($files as $file) {
-            $file_info = upload($file, "project_files/$request->project_id", "local");
+            $file_info = upload($file,  $path, "local");
             if ($file_info["success"]) {
                 unset($file_info["success"]);
                 $file_info["created_by"] = auth()->id();
@@ -80,7 +85,7 @@ class MessageController extends Controller
                 $attachements[] = $file_info;
             }
         }
-        $this->files = Project::find($request->project_id)->files()->createMany($attachements)->pluck("id")->implode(",");
+        $this->files = $object->files()->createMany($attachements)->pluck("id")->implode(",");
     }
     public function mark_seen(Request $request)
     {
@@ -134,5 +139,9 @@ class MessageController extends Controller
             $html.= view("messages.item" , ["message" => $message ,"my_message" => ($message->sender_id == $auth->id) ,"for_user" => $auth])->render();
         }
         return["success" => true,  "has_more" => $has_more,"offest" =>$offest + $this->per_page ,"data" =>  $html ,"message" => "Plus"];
+    }
+    public function download_file(File $file)
+    {
+        return response()->download(public_path($file->url), $file->originale_name);
     }
 }

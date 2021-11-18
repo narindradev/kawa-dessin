@@ -40,7 +40,6 @@
     app_lang.valid_password = "{{ trans('lang.valid_password') }}" 
     app_lang.success_login = "{{ trans('lang.success_login') }}" 
     app_lang.login_error = "{{ trans('lang.login_error') }}"
-    
     function dataTableaddRowIntheTop(tableInstance, data ,draw = false) {
         var table = tableInstance
         var currentPage = table.page();
@@ -56,7 +55,6 @@
         }
         table.page(currentPage).draw(draw);
     }
-
     function dataTableUpdateRow(tableInstance,row_id, data ,draw = false) {
             tableInstance.row("#"+row_id).data(data).draw(draw);
         
@@ -64,5 +62,4 @@
      function scrollBotton(target , vitesse = 2000) {
         $(target).animate({scrollTop: $(target)[0].scrollHeight}, vitesse);
     }
-  
 </script>

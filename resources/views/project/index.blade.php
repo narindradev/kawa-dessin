@@ -75,7 +75,7 @@
                     paging: false,
                     processing:true,
                     ordering: false,
-                    scrollY: 600,
+                    scrollY: 550,
                     scrollX:true,
                     // fixedColumns:   {
                     //     leftColumns: 2,
@@ -106,6 +106,9 @@
                         @endif
                         {data: 'start_date',"title" :"Début    ","orderable":false,"searchable":true,"class":"text-center min-w-100px"},
                         {data: 'due_date',"title" :"Fin      ","orderable":false,"searchable":true,"class":"text-center min-w-100px"},
+                        @if (!auth()->user()->is_dessignator()) 
+                        {   data: 'delivery_date',"title" :"Livraison","orderable":false,"searchable":false,"class":"text-center min-w-100px"},
+                        @endif
                         @if (auth()->user()->is_admin() || auth()->user()->is_commercial() ) 
                             {data: 'payment',"title" :"Paiment","orderable":true,"searchable":false,"class":"text-center min-w-100px"},
                         @endif

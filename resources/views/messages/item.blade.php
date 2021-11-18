@@ -4,7 +4,7 @@
     $date= $message->created_at->isToday() ? $message->created_at->diffForHumans() :  $message->created_at->format("d-m-Y H:m")
 @endphp
 <div  id="message-item-{{ $message->id }}" class="message-item d-flex justify-content-{{ $position }} mb-3 mt-3 me-2  ">
-    <div class="d-flex flex-column align-items-{{ $position }}">
+    <div  class="d-flex flex-column align-items-{{ $position }}">
         <div class="d-flex align-items-center mb-0">
             <div class="me-1">
                 <span class="text-muted fs-4 mb-0"> <i>{{ $date }}</i></span>
@@ -22,7 +22,7 @@
         {!! view("messages.action",["message" => $message ,"for_user" =>  $for_user ,"my_message" => $my_message])->render() !!}
         @if($message->files_info)
             @foreach ($message->files_info as $file)
-                {!! view("messages.file",["file" => $file ,"for_user" =>  $for_user])->render() !!}
+                {!! view("messages.file",["file" => $file ,"for_user" =>  $for_user ,"message" => $message])->render() !!}
             @endforeach
         @endif
     </div>
@@ -31,6 +31,7 @@
 @if (isset($from_notification) || ( !$my_message  && !in_array($for_user->id, explode(",",$message->seen)) ) )
     <script id="script-set-seen-{{$message->id}}">
         $(document).ready(function(){
+            // alert("ato")
             $.ajax({
                 url: url("/message/set/seen"),
                 type: 'POST',

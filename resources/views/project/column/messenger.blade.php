@@ -2,7 +2,7 @@
     $count = 0;
     if ($for_user->not_admin()) {
         if ($from_notification) {
-            $count =  $project->messages()->whereRaw("NOT FIND_IN_SET('$for_user->id',seen_by)")->whereRaw("NOT FIND_IN_SET('$for_user->id',deleted_by)")->where("sender_id" ,"<>" ,"$for_user->id")->get()->count();
+            $count =  $project->messages()->whereRaw("NOT FIND_IN_SET('$for_user->id',seen_by)")->whereRaw("NOT FIND_IN_SET('$for_user->id',deleted_by)")->whereDeleted(0)->where("sender_id" ,"<>" ,"$for_user->id")->get()->count();
         }else {
             $count = $project->messages->count();
         }

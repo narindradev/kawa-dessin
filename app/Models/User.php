@@ -23,6 +23,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
     ];
+    // protected $appends  = [
+    //     "message_not_seen"
+    // ];
+    
     /**
      * The attributes that should be cast to native types.
      *
@@ -53,11 +57,12 @@ class User extends Authenticatable implements MustVerifyEmail
     }
     public function getAvatarUrlAttribute()
     {
-        if ($this->info) {
-            return asset($this->info->avatar_url);
+        if ($this->avatar) {
+            return asset("user/avatar/".$this->avatar);
+        }else{
+            return "https://i.pravatar.cc/80?img={$this->id}";
+            // return asset(theme()->getMediaUrlPath() . 'avatars/blank.png');
         }
-        return "https://i.pravatar.cc/80?img={$this->id}";
-        // return asset(theme()->getMediaUrlPath() . 'avatars/blank.png');
     }
     public function info()
     {
@@ -67,10 +72,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(Project::class, "project_member");
     }
-    public function messages()
-    {
-        return $this->belongsToMany(Message::class, "message_user");
-    }
+   
     public function client()
     {
         return $this->hasOne(Client::class);
@@ -113,5 +115,17 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return   $this->user_type_id == 3;
     }
-    
+    public function getMessageNotSeenAttribute()
+    {
+        return $this->message_not_seen();
+    }
+    public function message_not_seen(){
+        $me = auth()->user();
+        return Message::select("id")
+                    ->where('sender_id',$this->id )->where('receiver_id',$me->id)
+                    ->whereRaw('NOT FIND_IN_SET('.$me->id.',deleted_by)')
+                    ->whereRaw('NOT FIND_IN_SET('.$me->id.',seen_by)')
+                    ->whereDeleted(0)
+                    ->count();
+    }
 }
