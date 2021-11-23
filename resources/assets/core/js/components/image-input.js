@@ -44,7 +44,6 @@ var KTImageInput = function(element, options) {
 
         // Set initialized
         the.element.setAttribute('data-kt-image-input', 'true');
-
         // Event Handlers
         _handlers();
 

@@ -18,6 +18,8 @@ class Util {
      *
     */
     public static function init() {
+   
+
         if (self::$initialized) {
             return;
         }

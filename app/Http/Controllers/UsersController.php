@@ -6,9 +6,11 @@ use Exception;
 use App\Models\User;
 use App\Models\UserType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\CreateUserRequest;
+use Illuminate\Support\Facades\Redirect;
 
 class UsersController extends Controller
 {
@@ -125,6 +127,7 @@ class UsersController extends Controller
     {
         echo User::whereDeleted(0)->whereEmail($request->input("email"))->first() ? json_encode(['valid' => false]) :  json_encode(['valid' => true]);
     }
+
     public function send_email(Request $request)
     {
         try {
@@ -141,5 +144,10 @@ class UsersController extends Controller
         } catch (Exception $e) {
             die(json_encode(["success" => false, "type" => "test"  ,"message" => $e->getMessage()]));
         }
+    }
+    public function save_theme_mode(Request $request)
+    {
+        Auth::user()->update(["theme_mode" => $request->skin ? "dark" :"default" ]);
+        return Redirect::back();
     }
 }

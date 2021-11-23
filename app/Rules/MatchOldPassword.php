@@ -29,7 +29,6 @@ class MatchOldPassword implements Rule
     public function passes($attribute, $value)
     {
         $user = User::where('email', request()->input('current_email'))->first();
-
         return Hash::check($value, $user->password);
     }
 
@@ -40,6 +39,7 @@ class MatchOldPassword implements Rule
      */
     public function message()
     {
-        return 'The :attribute is not match with old password.';
+        // return  'The :attribute is not match with old password.';
+        return  trans("lang.invalid_reset_pwd");
     }
 }

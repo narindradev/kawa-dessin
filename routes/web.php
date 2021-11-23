@@ -11,7 +11,6 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\Logs\AuditLogsController;
 use App\Http\Controllers\Logs\SystemLogsController;
 use App\Http\Controllers\MessageController;
-use App\Http\Controllers\Notification;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\PagesController;
@@ -34,9 +33,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     
-    
     return redirect('index');
-
 });
 
 $menu = theme()->getMenu();
@@ -112,7 +109,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/project/download/file/{file}', [ProjectController::class, 'download_file']);
     Route::post('/project/save_step2/info_ground/save/{project}', [ProjectController::class, 'save_info_ground']);
     Route::post('/project/save_step2/responses_of_question/save/{project}', [ProjectController::class, 'save_responses_of_question']);
-    
     Route::get('/project/kanban/index', [ProjectController::class, 'kanban']);
     
     /** Projects members */
@@ -137,6 +133,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/users/form/user', [UsersController::class, 'form']);
     Route::post('/users/create/user', [UsersController::class, 'store']);
     Route::post('/send/email', [UsersController::class, 'send_email']);
+    Route::post('/users/save/theme', [UsersController::class, 'save_theme_mode']);
     
     Route::group(['middleware' => ['auth'] ], function() {
          // Client projects
@@ -172,13 +169,14 @@ Route::middleware('auth')->group(function () {
    
    
    Route::post('/notification/set/seen', [NotificationController::class, 'set_as_senn']);
+  
    Route::post('/message/chat', [MessageController::class, 'chat']);
    Route::post('/message/send', [MessageController::class, 'message']);
    Route::post('/message/set/seen', [MessageController::class, 'mark_seen']);
    Route::post('/message/set/delete', [MessageController::class, 'mark_deleted']);
    Route::post('/message/get_message', [MessageController::class, 'get_message']);
    Route::post('/message/load/more', [MessageController::class, 'load_more']);
-   Route::get('download/file/{file}', [MessageController::class, 'download_file']);
+   Route::get('/message/download/file/{file}', [MessageController::class, 'download_file']);
 
 });
 

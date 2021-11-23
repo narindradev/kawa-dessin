@@ -109,14 +109,14 @@ var KTAccountSettingsSigninMethods = function () {
                                 text: "Your email has been successfully changed.",
                                 icon: "success",
                                 buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
+                                confirmButtonText: "Ok !",
                                 customClass: {
                                     confirmButton: "btn font-weight-bold btn-light-primary"
                                 }
                             });
                         })
                         .catch(function (error) {
-                            let dataMessage = error.response.data.message;
+                            let dataMessage = "" ;// error.response.data.message;
                             let dataErrors = error.response.data.errors;
 
                             for (const errorsKey in dataErrors) {
@@ -129,7 +129,7 @@ var KTAccountSettingsSigninMethods = function () {
                                     text: dataMessage,
                                     icon: "error",
                                     buttonsStyling: false,
-                                    confirmButtonText: "Ok, got it!",
+                                    confirmButtonText: "Ok!",
                                     customClass: {
                                         confirmButton: "btn btn-primary"
                                     }
@@ -150,7 +150,7 @@ var KTAccountSettingsSigninMethods = function () {
                         text: "Sorry, looks like there are some errors detected, please try again.",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "Ok !",
                         customClass: {
                             confirmButton: "btn font-weight-bold btn-light-primary"
                         }
@@ -201,7 +201,6 @@ var KTAccountSettingsSigninMethods = function () {
                         }
                     },
                 },
-
                 plugins: { //Learn more: https://formvalidation.io/guide/plugins
                     trigger: new FormValidation.plugins.Trigger(),
                     bootstrap: new FormValidation.plugins.Bootstrap5({
@@ -238,7 +237,7 @@ var KTAccountSettingsSigninMethods = function () {
                             });
                         })
                         .catch(function (error) {
-                            let dataMessage = error.response.data.message;
+                            let dataMessage = ""; //error.response.data.message;
                             let dataErrors = error.response.data.errors;
 
                             for (const errorsKey in dataErrors) {
@@ -281,7 +280,6 @@ var KTAccountSettingsSigninMethods = function () {
             });
         });
     }
-
     // Public methods
     return {
         init: function () {
@@ -291,7 +289,6 @@ var KTAccountSettingsSigninMethods = function () {
         }
     }
 }();
-
 // On document ready
 KTUtil.onDOMContentLoaded(function () {
     KTAccountSettingsSigninMethods.init();

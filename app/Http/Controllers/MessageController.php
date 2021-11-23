@@ -119,7 +119,7 @@ class MessageController extends Controller
     }
     public function load_more(Request $request)
     {
-        $options = $request->all(); $has_more = false;$html = ""; 
+        $options = $request->all(); $has_more = false; $html = ""; 
         $more = $this->per_page + 1; $auth = auth()->user();  $project_id = $request->project_id;
         if ($project_id){
             $options['project'] =  Project::find($project_id); 
@@ -130,16 +130,16 @@ class MessageController extends Controller
             $query->skip($offest)->take($more);
         }
         $results = $query->get();
-        if ($results->count() == $more) {
+        if ($results->count() == $more){
             $has_more = true;
-            $results= $results->take($this->per_page);
+            $results= $results->take($this->per_page); // take only per page
         }
-        $messages = $results->reverse();
-        foreach ($messages as $message) {
+        foreach ($results->reverse() as $message) {
             $html.= view("messages.item" , ["message" => $message ,"my_message" => ($message->sender_id == $auth->id) ,"for_user" => $auth])->render();
         }
         return["success" => true,  "has_more" => $has_more,"offest" =>$offest + $this->per_page ,"data" =>  $html ,"message" => "Plus"];
     }
+    /** Download file in chat private */
     public function download_file(File $file)
     {
         return response()->download(public_path($file->url), $file->originale_name);

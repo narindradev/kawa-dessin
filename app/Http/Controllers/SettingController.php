@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
-use Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Exception;
-use Prophecy\Call\Call;
 
 class SettingController extends Controller
 {
@@ -20,14 +18,37 @@ class SettingController extends Controller
     {
         return view("settings.notification");
     }
-
-
     public function save_sett_notification(Request $request)
     {
         $settings = ["sender_mail", "sender_name","mail_password"];
         if ($request->test_email) {
             $this->send_mail_test($request);
         }
+        foreach ($settings as $key) {
+            Setting::_save($key, $request->input($key));
+        }
+        die(json_encode(["success" => true, "message" => trans("lang.success_record")]));
+    }
+    
+    public function general_form(Request $request)
+    {
+        return view("settings.general");
+    }
+    public function save_sett_general(Request $request)
+    {
+        $settings = ["app_name" ,"currency_symbole","currency" ,"separator_decimal" ,"separtor_thousands" ,"nexmo_sender" ,"file_extension"];
+        foreach ($settings as $key) {
+            Setting::_save($key, $request->input($key));
+        }
+        die(json_encode(["success" => true, "message" => trans("lang.success_record")]));
+    }
+    public function payment_method_form(Request $request)
+    {
+        return view("settings.payment-method");
+    }
+    public function save_sett_payment_method(Request $request)
+    {
+        $settings = ["STRIPE_SECRET" ,"STRIPE_KEY"];
         foreach ($settings as $key) {
             Setting::_save($key, $request->input($key));
         }
@@ -49,30 +70,5 @@ class SettingController extends Controller
         } catch (Exception $e) {
             die(json_encode(["success" => false, "type" => "test"  ,"message" => $e->getMessage()]));
         }
-    }
-    public function general_form(Request $request)
-    {
-        return view("settings.general");
-    }
-    public function save_sett_general(Request $request)
-    {
-        $settings = ["app_name" ,"currency_symbole","currency" ,"separator_decimal" ,"separtor_thousands" ,"nexmo_sender" ,"file_extension"];
-        foreach ($settings as $key) {
-            Setting::_save($key, $request->input($key));
-        }
-        die(json_encode(["success" => true, "message" => trans("lang.success_record")]));
-    }
-    public function payment_method_form(Request $request)
-    {
-        return view("settings.payment-method");
-    }
-    public function save_sett_payment_method(Request $request)
-    {
-        
-        $settings = ["STRIPE_SECRET" ,"STRIPE_KEY"];
-        foreach ($settings as $key) {
-            Setting::_save($key, $request->input($key));
-        }
-        die(json_encode(["success" => true, "message" => trans("lang.success_record")]));
     }
 }

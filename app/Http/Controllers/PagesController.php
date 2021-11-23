@@ -19,7 +19,7 @@ class PagesController extends Controller
     */
     public function index()
     {
-       
+
         $redirect = request()->redirect;
         if($redirect){
             $redirect =  $redirect;
@@ -28,8 +28,8 @@ class PagesController extends Controller
         }
         return redirect($redirect);
     }
-    /*
-    public function index()
+  
+    public function index1()
     {
         // Get view file location from menu config
         $view = theme()->getOption('page', 'view');
@@ -42,7 +42,7 @@ class PagesController extends Controller
         // Get the default inner page
         return view('inner');
     }
-    */
+   
 
     /**
      * Temporary function to replace icon duotone

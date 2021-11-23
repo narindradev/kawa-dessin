@@ -1,4 +1,4 @@
-<div class="p-1 rounded bg-light-white text-white fw-bold   mt-2" data-kt-element="message-text">
+<div class="p-1 rounded bg-light-white text-white fw-bold  overlay overflow-hidden mt-2" data-kt-element="message-text">
     <div class="d-flex align-items-center">
         <span class="svg-icon svg-icon-3x svg-icon-primary me-1">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -6,11 +6,10 @@
                 <path d="M15 8H20L14 2V7C14 7.6 14.4 8 15 8Z" fill="black"></path>
             </svg>
         </span>
-        @if ($message->project_id)
-            <a href="{{ url("/project/download/file/$file->id") }}" class="text-gray-800 text-hover-primary">{{ $file->originale_name }}</a>
-        @endif
         @if ($message->receiver_id)
-            <a href="{{ url("download/file/$file->id") }}" class="text-gray-800 text-hover-primary">{{ $file->originale_name }}</a>
+            <a href="{{ url("/message/download/file/$file->id")}}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ file_sisze($file->size) }}" class="text-gray-800 text-hover-primary">{{ $file->originale_name }}</a>
+        @elseif($message->project_id)
+            <a href="{{ url("/project/download/file/$file->id")}}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ file_sisze($file->size) }}" class="text-gray-800 text-hover-primary" >{{ $file->originale_name }}</a>
         @endif
     </div>
 </div>

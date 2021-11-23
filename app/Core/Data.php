@@ -5,8 +5,8 @@ namespace App\Core;
 use function PHPSTORM_META\map;
 
 class Data {
-    public static function getCountriesList() {
-        return array(
+    public static function getCountriesList($key ="") {
+        $arrays = array(
             'AF' => array('name' => 'Afghanistan', 'flag' => 'flags/afghanistan.svg'),
             'AX' => array('name' => 'Aland Islands', 'flag' => 'flags/aland-islands.svg'),
             'AL' => array('name' => 'Albania', 'flag' => 'flags/albania.svg'),
@@ -255,6 +255,10 @@ class Data {
             'ZM' => array('name' => 'Zambia', 'flag' => 'flags/zambia.svg'),
             'ZW' => array('name' => 'Zimbabwe', 'flag' => 'flags/zimbabwe.svg')
         );
+        if($key){
+            return get_array_value($arrays ,$key);
+        }
+        return $arrays;
     }
 
     public static function getLanguagesList() {

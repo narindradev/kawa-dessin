@@ -310,7 +310,6 @@ class ProjectController extends Controller
         }
         return ($list);
     }
-
     public function detail(Project $project)
     {
         $project->load("categories");
@@ -327,9 +326,6 @@ class ProjectController extends Controller
         $states = Status::StepOfStateProject($project);
         return view("project.detail.index", compact("project" ,"invoice_data" ,"states"));
     }
-    
-    
-
     public function save_info_ground(Request $request, Project $project)
     {
         if ($request->ground_info_id) {
@@ -450,6 +446,7 @@ class ProjectController extends Controller
     
     public function add_start(StartProjectRequest $request, Project $project)
     {
+        $project->start_date = null; $project->due_date = null;
         $project->status_id = $request->status ? $request->status : 5; // in progress
         if($request->delivery_date){
             $project->delivery_date = to_date($request->delivery_date);
@@ -458,12 +455,9 @@ class ProjectController extends Controller
             $dates = explode("-", $request->dates);
             $project->start_date = to_date($dates[0]);
             $project->due_date = to_date($dates[1]);
-        }else{
-            $project->start_date = null;
-            $project->due_date = null;
         }
         $project->save();
-        die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "project" => $this->_make_row($project, Auth::user(),true)]));
+        die(json_encode(["success" => true , "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "project" => $this->_make_row($project, Auth::user(),true)]));
     }
     public function kanban(Request $request)
     {

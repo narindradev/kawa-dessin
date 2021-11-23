@@ -15,6 +15,7 @@ class BootstrapDemo1 extends BootstrapBase {
 
     // Private Methods
     private static function initHeader() {
+   
         if (Theme::getOption('layout', 'header/width') == 'fluid') {
             Theme::addHtmlClass('header-container', 'container-fluid');
         } else {

@@ -58,7 +58,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getAvatarUrlAttribute()
     {
         if ($this->avatar) {
-            return asset("user/avatar/".$this->avatar);
+            return asset("avatars/".$this->avatar);
         }else{
             return "https://i.pravatar.cc/80?img={$this->id}";
             // return asset(theme()->getMediaUrlPath() . 'avatars/blank.png');
@@ -86,6 +86,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function type()
     {
         return $this->belongsTo(UserType::class, "user_type_id");
+    }
+    public function function()
+    {
+        return $this->type();
     }
     public function is_admin()
     {

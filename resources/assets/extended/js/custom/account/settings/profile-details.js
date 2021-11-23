@@ -21,13 +21,6 @@ var KTAccountSettingsProfileDetails = function () {
                             }
                         }
                     },
-                    last_name: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Last name is required'
-                            }
-                        }
-                    },
                     phone: {
                         validators: {
                             notEmpty: {
@@ -39,20 +32,6 @@ var KTAccountSettingsProfileDetails = function () {
                         validators: {
                             notEmpty: {
                                 message: 'Please select a country'
-                            }
-                        }
-                    },
-                    timezone: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Please select a timezone'
-                            }
-                        }
-                    },
-                    language: {
-                        validators: {
-                            notEmpty: {
-                                message: 'Please select a language'
                             }
                         }
                     },

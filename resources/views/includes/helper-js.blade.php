@@ -40,6 +40,7 @@
     app_lang.valid_password = "{{ trans('lang.valid_password') }}" 
     app_lang.success_login = "{{ trans('lang.success_login') }}" 
     app_lang.login_error = "{{ trans('lang.login_error') }}"
+    app_lang.ok = "{{ trans('lang.ok') }}"
     function dataTableaddRowIntheTop(tableInstance, data ,draw = false) {
         var table = tableInstance
         var currentPage = table.page();

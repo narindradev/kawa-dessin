@@ -444,14 +444,14 @@ class Theme extends \App\Core\Theme
      */
     public static function getCurrentMode()
     {
-     
-        $mode = "dark";
-        return $mode;
-        /*
-        if (self::isDarkModeEnabled() && isset($_REQUEST['mode']) && $_REQUEST['mode']) {
-            return $_REQUEST['mode'] ;
+        $mode = "default";
+        if (isset($_SESSION["mode"])) {
+            $mode = ($_SESSION["mode"]);
         }
-        */
+        if (self::isDarkModeEnabled() &&  $mode ) {
+            return $mode ;
+        }
+        
         return 'default';
     }
 

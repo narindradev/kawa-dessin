@@ -219,7 +219,7 @@ if (!function_exists('get_array_value')) {
         if (!$value && $default) {
             return $default;
         }
-        if (!$value && $default == []) {
+        if (!$value && is_array($default)) {
             return $default;
         }
     }

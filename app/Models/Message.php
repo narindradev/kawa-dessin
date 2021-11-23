@@ -12,7 +12,7 @@ class Message extends Model
     protected $guarded = [];
     protected $table = "messages";
     protected $with = ["sender"];
-    protected $appends  = ["files_info"];
+    protected $appends  = ["attachements"];
 
     public function project()
     {
@@ -24,13 +24,12 @@ class Message extends Model
     }
     public function files()
     {
-        return $this->hasMany(File::class, "message_id");
+        return $this->hasMany(File::class,"message_id");
     }
-    public function getFilesInfoAttribute()
+    public function getAttachementsAttribute()
     {
         if ($this->files) {
-            $ids = explode(",", $this->files);
-            return File::findMany($ids);
+            return File::findMany(explode(",", $this->files));
         }
         return null;
     }
@@ -46,8 +45,8 @@ class Message extends Model
         /** Private's messages */
         $user_id = get_array_value($options, "user_id");
         if ($user_id) {
-            $message = Message::where(function ($query)use($user_id, $me) {
-                $query->where(function($q1)   use ($user_id ,$me){
+            $message = $this::where(function ($query)use($user_id, $me) {
+                $query->where(function($q1) use ($user_id ,$me){
                     $q1->where('sender_id',$user_id )->where('receiver_id', $me->id);
                 })->orWhere(function($q2) use ($user_id ,$me){
                     $q2->where('sender_id',$me->id )->where('receiver_id',$user_id);
@@ -59,6 +58,6 @@ class Message extends Model
         if ($group_id) {
             // $message = Group::find($group_id)->messages();
         }
-        return $message->whereRaw('NOT FIND_IN_SET(' . $me->id . ',deleted_by)')->whereDeleted(0)->orderBy('created_at', "DESC");
+        return $message->whereRaw('NOT FIND_IN_SET(' . $me->id . ',deleted_by)')->whereDeleted(0)->orderBy('id', "DESC");
     }
 }

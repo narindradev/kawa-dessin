@@ -4,7 +4,7 @@ namespace App\Http\Requests\Account;
 
 use App\Rules\MatchOldPassword;
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Validation\Rule;
 class SettingsEmailRequest extends FormRequest
 {
     /**
@@ -25,8 +25,10 @@ class SettingsEmailRequest extends FormRequest
     public function rules()
     {
         return [
-            'email'            => 'required|string|email|max:255|unique:users',
             'current_password' => ['required', new MatchOldPassword],
+            'email' => ['required', 'string', 'email', 'max:255',Rule::unique('users')->where(function ($query) {
+                return $query->whereDeleted(0)->where("id" ,"<>" , (request("id") ?? auth()->id()));
+            })],
         ];
     }
 }

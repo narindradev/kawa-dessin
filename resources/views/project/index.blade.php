@@ -69,7 +69,6 @@
     @section('scripts')
         <script>
             $(document).ready(function() {
-            
                 dataTableInstance.projectsTable = $("#projectsTable").DataTable({
                     dom: 'ti rl',
                     paging: false,
@@ -101,7 +100,7 @@
                         {data: 'mdp',"title" :"mdp","orderable":true,"searchable":false,"class":"text-center  min-w-80px"},
                         {data: 'dessignator',"title" :"dessignator","orderable":true,"searchable":false,"class":"text-center min-w-80px"},
 
-                        @if (auth()->user()->is_admin() ) 
+                        @if (auth()->user()->is_admin()) 
                             {data: 'invoice',"title" :"Facture","orderable":true,"searchable":false,"class":"text-center w-80px"},
                         @endif
                         {data: 'start_date',"title" :"Début    ","orderable":false,"searchable":true,"class":"text-center min-w-100px"},
@@ -109,12 +108,14 @@
                         @if (!auth()->user()->is_dessignator()) 
                         {   data: 'delivery_date',"title" :"Livraison","orderable":false,"searchable":false,"class":"text-center min-w-100px"},
                         @endif
+
                         @if (auth()->user()->is_admin() || auth()->user()->is_commercial() ) 
                             {data: 'payment',"title" :"Paiment","orderable":true,"searchable":false,"class":"text-center min-w-100px"},
                         @endif
                         @if (!auth()->user()->is_dessignator()) 
                             {data: 'date',"title" :"Creation","orderable":true,"searchable":false,"class":"text-center min-w-100px"},
                         @endif
+
                         {data: 'actions',"title" :"Actions","orderable":false,"searchable":false,"class":"text-center"},
                     ],
                     ajax: {

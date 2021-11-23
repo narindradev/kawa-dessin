@@ -65,7 +65,7 @@ var KTSigninGeneral = function () {
                                 text: app_lang.success_login,
                                 icon: "success",
                                 buttonsStyling: false,
-                                confirmButtonText: app_lang.got_it,
+                                confirmButtonText: app_lang.ok,
                                 customClass: {
                                     confirmButton: "btn btn-primary"
                                 }

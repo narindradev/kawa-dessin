@@ -65,7 +65,6 @@ class Theme {
      *
     */
     public static function init($theme, $demo = '') {
-      
         global $_COMMON_PATH, $_THEME_PATH;
 
         if (self::$initialized) {
