@@ -20,9 +20,9 @@
             <div class="d-flex flex-stack mb-2">
                 <label class="form-label fw-bolder text-dark fs-6 mb-0">@lang('lang.password')</label>
                 @if (Route::has('password.request'))
-                    {{-- <a href="{{ theme()->getPageUrl('password.request') }}" class="link-primary fs-6 fw-bolder">
+                    <a href="{{ theme()->getPageUrl('password.request') }}" class="link-primary fs-6 fw-bolder">
                         {{ __('Forgot Password ?') }}
-                    </a> --}}
+                    </a>
             @endif
             </div>
             <input class="form-control form-control-lg form-control-solid" type="password" name="password" autocomplete="off" value="demo" required/>

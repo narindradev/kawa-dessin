@@ -65,12 +65,10 @@ class SocialiteLoginController extends Controller
                 'email'      => $social_info->email,
                 'password'   => Hash::make($social_info->id),
             ]);
-
             $user_info         = new UserInfo;
             $user_info->avatar = $social_info->getAvatar();
             $user_info->user()->associate($user);
             $user_info->save();
-
             if ($user->markEmailAsVerified()) {
                 event(new Verified($user));
             }

@@ -14,7 +14,6 @@ class MailServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        
         $config = array(
             'transport'  => $this->_get_setting("transport") ?? "smtp",
             'host'       => $this->_get_setting("mail_host")   ?? "smtp.gmail.com",
@@ -23,6 +22,7 @@ class MailServiceProvider extends ServiceProvider
             'encryption' => $this->_get_setting("mail_encryption") ?? "tls",
             'username'   => $this->_get_setting("sender_mail") ,
             'password'   => $this->_get_setting("mail_password"),
+            'from_address'   => null,
         );
         Config::set('mail.mailers.smtp', $config);
     }

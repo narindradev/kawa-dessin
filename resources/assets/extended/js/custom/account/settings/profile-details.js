@@ -82,10 +82,10 @@ var KTAccountSettingsProfileDetails = function () {
                         .then(function (response) {
                             // Show message popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                             Swal.fire({
-                                text: "Thank you! You've updated your basic info",
+                                text: response.data.message,
                                 icon: "success",
                                 buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
+                                confirmButtonText: "Ok",
                                 customClass: {
                                     confirmButton: "btn btn-primary"
                                 }
@@ -108,7 +108,7 @@ var KTAccountSettingsProfileDetails = function () {
                                     text: dataMessage,
                                     icon: "error",
                                     buttonsStyling: false,
-                                    confirmButtonText: "Ok, got it!",
+                                    confirmButtonText: "Ok!",
                                     customClass: {
                                         confirmButton: "btn btn-primary"
                                     }
@@ -126,10 +126,10 @@ var KTAccountSettingsProfileDetails = function () {
                 } else {
                     // Show error popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                     Swal.fire({
-                        text: "Sorry, looks like there are some errors detected, please try again.",
+                        text: "Désolé, il semble qu'il y ait des erreurs détectées, veuillez réessayer",
                         icon: "error",
                         buttonsStyling: false,
-                        confirmButtonText: "Ok, got it!",
+                        confirmButtonText: "Ok!",
                         customClass: {
                             confirmButton: "btn btn-primary"
                         }

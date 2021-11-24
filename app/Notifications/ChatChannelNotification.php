@@ -9,7 +9,6 @@ use Illuminate\Notifications\Notification;
 use App\Http\Controllers\ProjectController;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\BroadcastMessage;
-use Illuminate\Support\Str;
 
 class ChatChannelNotification extends Notification
 {

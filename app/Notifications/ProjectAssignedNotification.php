@@ -51,6 +51,7 @@ class ProjectAssignedNotification extends Notification
      */
     public function toMail($notifiable)
     {
+       
         return (new MailMessage)
             ->from(app_setting("sender_mail") ,app_setting("sender_name"))
             ->markdown('mail-template.project-asssigned',["event" => $this->event , "project" => $this->project ,"causer" => $this->causer ]);

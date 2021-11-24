@@ -24,9 +24,6 @@
             <label class="form-label fw-bolder text-gray-900 fs-6">{{ __('Email') }}</label>
             <input class="form-control form-control-solid" type="email" name="email" autocomplete="off" value="{{ old('email') }}" required autofocus/>
         </div>
-        <!--end::Input group-->
-
-        <!--begin::Actions-->
         <div class="d-flex flex-wrap justify-content-center pb-lg-0">
             <button type="submit" id="kt_password_reset_submit" class="btn btn-lg btn-primary fw-bolder me-4">
                 @include('partials.general._button-indicator')

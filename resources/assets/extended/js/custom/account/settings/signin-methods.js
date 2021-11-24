@@ -104,9 +104,10 @@ var KTAccountSettingsSigninMethods = function () {
                     // Send ajax request
                     axios.post(form.getAttribute('action'), new FormData(form))
                         .then(function (response) {
+                            console.log(response)
                             // Show message popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                             Swal.fire({
-                                text: "Your email has been successfully changed.",
+                                text: response.data.message ,//"Your email has been successfully changed.",
                                 icon: "success",
                                 buttonsStyling: false,
                                 confirmButtonText: "Ok !",
@@ -147,7 +148,7 @@ var KTAccountSettingsSigninMethods = function () {
 
                 } else {
                     Swal.fire({
-                        text: "Sorry, looks like there are some errors detected, please try again.",
+                        text: "Désolé, il semble qu'il y ait des erreurs détectées, veuillez réessayer",
                         icon: "error",
                         buttonsStyling: false,
                         confirmButtonText: "Ok !",
@@ -227,10 +228,10 @@ var KTAccountSettingsSigninMethods = function () {
                         .then(function (response) {
                             // Show message popup. For more info check the plugin's official documentation: https://sweetalert2.github.io/
                             Swal.fire({
-                                text: "Your password has been successfully reset.",
+                                text: response.data.message,// "Your password has been successfully reset.",
                                 icon: "success",
                                 buttonsStyling: false,
-                                confirmButtonText: "Ok, got it!",
+                                confirmButtonText: "Ok!",
                                 customClass: {
                                     confirmButton: "btn font-weight-bold btn-light-primary"
                                 }
@@ -268,7 +269,7 @@ var KTAccountSettingsSigninMethods = function () {
 
                 } else {
                     Swal.fire({
-                        text: "Sorry, looks like there are some errors detected, please try again.",
+                        text: "Désolé, il semble qu'il y ait des erreurs détectées, veuillez réessayer",
                         icon: "error",
                         buttonsStyling: false,
                         confirmButtonText: "Ok, got it!",

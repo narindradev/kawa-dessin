@@ -4,6 +4,22 @@
         <div class="card-body ">
             @csrf
             <div class="form-group">
+                <div class="image-input image-input-outline image-input-empty" data-kt-image-input="true" style="background-image: url({{ asset(theme()->getMediaUrlPath() . 'avatars/blank.png') }})">
+            <div class="image-input-wrapper w-125px h-125px"></div>
+            <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Change avatar">
+                <i class="bi bi-pencil-fill fs-7"></i>
+                <input type="file" name="avatar" accept=".png, .jpg, .jpeg"/>
+                <input type="hidden" name="avatar_remove"/>
+            </label>
+            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Cancel avatar">
+                <i class="bi bi-x fs-2"></i>
+            </span>
+            <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip" title="Remove avatar">
+                <i class="bi bi-x fs-2"></i>
+            </span>
+        </div>
+            </div>
+            <div class="form-group">
                 <div class="mb-10">
                     <label for="first_name" class="required form-label">@lang('lang.first_name')</label>
                     <input type="text" value="{{ "" }}" autocomplete="off" name="first_name"

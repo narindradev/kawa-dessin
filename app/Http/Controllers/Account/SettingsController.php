@@ -33,7 +33,7 @@ class SettingsController extends Controller
      */
     public function update(SettingsInfoRequest $request)
     {
-        $data  =[];
+        $data = [];
         if ($avatar = $this->upload()) {
             $data["avatar"] = $avatar;
         }
@@ -42,9 +42,9 @@ class SettingsController extends Controller
             $data["avatar"] = null;
         }
         Auth::user()->update($request->except("_token" ,"avatar_remove","avatar") + $data);
-        return redirect()->intended('account/settings');
+        return['success' => true , "message" => trans("lang.success_update_info_user")];
+        // return redirect()->intended('account/settings');
     }
-
     /**
      * Function for upload avatar image
      *
@@ -73,10 +73,8 @@ class SettingsController extends Controller
     public function changeEmail(SettingsEmailRequest $request)
     {
         Auth::user()->update(['email' => $request->input('email')]);
-        if ($request->expectsJson()) {
-            return response()->json($request->all());
-        }
-        return redirect()->intended('account/settings');
+        return['success' => true , "message" => trans("lang.success_update_email")];
+        // return redirect()->intended('account/settings');
     }
     /**
      * Function to accept request for change password
@@ -85,12 +83,9 @@ class SettingsController extends Controller
      */
     public function changePassword(SettingsPasswordRequest $request)
     {
-        
+       
         Auth::user()->update(['password' => Hash::make($request->input('password'))]);
-
-        if ($request->expectsJson()) {
-            return response()->json($request->all());
-        }
-        return redirect()->intended('account/settings');
+        return['success' => true , "message" => trans("lang.success_update_pwd")];
+        // return redirect()->intended('account/settings');
     }
 }

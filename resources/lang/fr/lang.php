@@ -214,5 +214,8 @@ return [
     'reset_pwd' => 'Réinitialiser le mot de passe',
     'invalid_reset_pwd' => 'Les données fournies étaient invalides. Le mot de passe actuel ne correspond pas à \'ancien mot de passe',
     'allowed_file' => 'Fichier autorisé',
+    'success_update_info_user' => 'Merci! Vous avez mis à jour vos informations de base',
+    'success_update_email' => 'Votre e-mail a été modifié avec succès.',
+    'success_update_pwd' => 'Votre mot de passe a été réinitialisé avec succès.',
     
 ];

@@ -1,4 +1,8 @@
 <x-base-layout>
+    <div class="col-lg-8">
+        
+        <div class="form-text">@lang('lang.allowed_file') : png, jpg, jpeg.</div>
+    </div>
     <div class="card card-xxl-stretch mb-5 mb-xl-8">
         <div class="card-header border-0 pt-6">
             <h3 class="card-data align-items-start flex-column">
