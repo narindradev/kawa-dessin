@@ -13,7 +13,6 @@ class SettingController extends Controller
     {
         return view("settings.index");
     }
-
     public function notification_form(Request $request)
     {
         return view("settings.notification");
@@ -29,7 +28,6 @@ class SettingController extends Controller
         }
         die(json_encode(["success" => true, "message" => trans("lang.success_record")]));
     }
-    
     public function general_form(Request $request)
     {
         return view("settings.general");
@@ -38,7 +36,9 @@ class SettingController extends Controller
     {
         $settings = ["app_name" ,"currency_symbole","currency" ,"separator_decimal" ,"separtor_thousands" ,"nexmo_sender" ,"file_extension"];
         foreach ($settings as $key) {
-            Setting::_save($key, $request->input($key));
+            if ($request->input($key)) {
+                Setting::_save($key, $request->input($key));
+            }
         }
         die(json_encode(["success" => true, "message" => trans("lang.success_record")]));
     }
@@ -63,7 +63,6 @@ class SettingController extends Controller
             });
             if( count(Mail::failures()) ) {
                 die(json_encode(["success" => false, "type" => "test" , "message" => "Erreur! verifier bien les email ou le mot de passe ou faire une configuration dans l'email donnée"]));
-                
             } else {
                  die(json_encode(["success" => true, "type" => "test" , "message" => "Test email bien envoyé"]));
              }

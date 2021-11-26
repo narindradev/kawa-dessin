@@ -21,11 +21,12 @@
                 <label class="form-label fw-bolder text-dark fs-6 mb-0">@lang('lang.password')</label>
                 @if (Route::has('password.request'))
                     <a href="{{ theme()->getPageUrl('password.request') }}" class="link-primary fs-6 fw-bolder">
-                        {{ __('Forgot Password ?') }}
+                        @lang('lang.forget_pwd') 
+                       
                     </a>
             @endif
             </div>
-            <input class="form-control form-control-lg form-control-solid" type="password" name="password" autocomplete="off" value="demo" required/>
+            <input class="form-control form-control-lg form-control-solid" type="password" name="password" autocomplete="off" value="pwd"   required/>
         </div>
         {{-- <div class="fv-row mb-10">
             <label class="form-check form-check-custom form-check-solid">
@@ -35,7 +36,7 @@
             </label>
         </div> --}}
         <div class="text-center">
-            <button type="submit" id="kt_sign_in_submit" class="btn btn-lg btn-primary w-100 mb-5">
+            <button type="submit" id="kt_sign_in_submit" class="btn  btn-lg btn-primary w-100 mb-5">
                 @include('partials.general._button-indicator', ['label' => __('Continue')])
             </button>
             {{-- <div class="text-center text-muted text-uppercase fw-bolder mb-5">or</div>

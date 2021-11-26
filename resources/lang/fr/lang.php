@@ -217,5 +217,13 @@ return [
     'success_update_info_user' => 'Merci! Vous avez mis à jour vos informations de base',
     'success_update_email' => 'Votre e-mail a été modifié avec succès.',
     'success_update_pwd' => 'Votre mot de passe a été réinitialisé avec succès.',
-    
+    'forget_pwd' => 'Mot de passe oublié ?',
+    'email_to_reset' => 'Entrez votre e-mail pour réinitialiser votre mot de passe.',
+    'update_pwd_login' => 'Mettez à jour votre mot de passe.',
+    'secure_pwd' => 'Il s\'agit d\'une zone sécurisée de l\'application. Veuillez confirmer votre mot de passe avant de continuer.',
+    'confirm_password' => 'Confirmer le mot de passe',
+    'pwd_content' => 'Utilisez 8 caractères ou plus avec un mélange de lettres, de chiffres et de symboles.',
+    'reset' => 'Appliquer',
+    'member' => 'Membre',
+    'dark_mode' => 'Mode sombre',
 ];

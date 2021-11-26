@@ -7,13 +7,14 @@
         <div class="text-center mb-10">
             <!--begin::Title-->
             <h1 class="text-dark mb-3">
-                {{ __('Forgot Password ?') }}
+                @lang('lang.reset_pwd') 
             </h1>
             <!--end::Title-->
 
             <!--begin::Link-->
             <div class="text-gray-400 fw-bold fs-4">
-                {{ __('Enter your email to reset your password.') }}
+            </a>
+                @lang('lang.email_to_reset') 
             </div>
             <!--end::Link-->
         </div>
@@ -21,15 +22,15 @@
 
         <!--begin::Input group-->
         <div class="fv-row mb-10">
-            <label class="form-label fw-bolder text-gray-900 fs-6">{{ __('Email') }}</label>
+            <label class="form-label fw-bolder text-gray-900 fs-6"> @lang('lang.email') </label>
             <input class="form-control form-control-solid" type="email" name="email" autocomplete="off" value="{{ old('email') }}" required autofocus/>
         </div>
         <div class="d-flex flex-wrap justify-content-center pb-lg-0">
             <button type="submit" id="kt_password_reset_submit" class="btn btn-lg btn-primary fw-bolder me-4">
-                @include('partials.general._button-indicator')
+                @include('partials.general._button-indicator' ,['label' => trans('lang.send')])
             </button>
 
-            <a href="{{ theme()->getPageUrl('login') }}" class="btn btn-lg btn-light-primary fw-bolder">{{ __('Cancel') }}</a>
+            <a href="{{ theme()->getPageUrl('login') }}" class="btn  btn-lg btn-light-primary fw-bolder">@lang('lang.cancel') </a>
         </div>
         <!--end::Actions-->
     </form>

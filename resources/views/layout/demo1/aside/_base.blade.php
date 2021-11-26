@@ -1,6 +1,6 @@
 @php
     $logoFileName = 'logo-1-dark.svg';
-
+    $theme = auth()->user()->theme_mode === "dark" ? "aside-dark"  : "aside-light" ;
     if (theme()->getOption('layout', 'aside/theme') === 'light') {
         $logoFileName = 'logo-1.svg';
     }
@@ -9,7 +9,7 @@
 {{--begin::Aside--}}
 <div
     id="kt_aside"
-    class="aside {{ theme()->printHtmlClasses('aside', false) }}"
+    class="aside {{  $theme }} aside-hoverable"
     data-kt-drawer="true"
     data-kt-drawer-name="aside"
     data-kt-drawer-activate="{default: true, lg: false}"
@@ -18,10 +18,7 @@
     data-kt-drawer-direction="start"
     data-kt-drawer-toggle="#kt_aside_mobile_toggle"
 >
-
     {{--begin::Brand--}}
-  
-
     <div class="aside-logo flex-column-auto" style="padding: 40px 10px 40px 30px " id="kt_aside_logo">
         {{--begin::Logo--}}
         <a href="{{ theme()->getPageUrl('index') }}">
@@ -41,9 +38,7 @@
             {{--end::Aside toggler--}}
         @endif
     </div>
-
     {{--end::Brand--}}
-
     {{--begin::Aside menu--}}
     <div class="aside-menu flex-column-fluid">
         {{ theme()->getView('layout/aside/_menu') }}

@@ -8,6 +8,7 @@ use App\Models\Questionnaire;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreRequestClient;
 use App\Jobs\CreateClientProjectJob;
+use App\Models\Project;
 use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
@@ -16,7 +17,6 @@ class HomeController extends Controller
     public function index()
     {
         if ("allowed client request") {
-            // dd((new Questionnaire())->preliminary_question());
             return view("home.step", ["questions" => (new Questionnaire())->preliminary_question(), "offers" => Offer::whereDeleted(0)->whereActive(1)->has("categories")->get()]);
         }
     }
@@ -49,7 +49,7 @@ class HomeController extends Controller
             $attachements = $this->attachements($request, $user->id, $project->id);  
         }
         // Save project descritions and files uploaded jobs
-        dispatch(new CreateClientProjectJob($project ,$descriptions , $attachements));
+        dispatch(new CreateClientProjectJob($project , $user ,$descriptions , $attachements));
         return ["success" => true, "message" => trans("lang.success_client_request")];
     }
 

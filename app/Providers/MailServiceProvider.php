@@ -17,12 +17,12 @@ class MailServiceProvider extends ServiceProvider
         $config = array(
             'transport'  => $this->_get_setting("transport") ?? "smtp",
             'host'       => $this->_get_setting("mail_host")   ?? "smtp.gmail.com",
-            'port'       => $this->_get_setting("mail_port") ?? 587,
-            'from'       => $this->_get_setting("app_name"),
-            'encryption' => $this->_get_setting("mail_encryption") ?? "tls",
+            'port'       => $this->_get_setting("mail_port") ?? 465 ,
+            'from'       => null,
+            'encryption' => $this->_get_setting("mail_encryption") ?? "SSL",
             'username'   => $this->_get_setting("sender_mail") ,
             'password'   => $this->_get_setting("mail_password"),
-            'from_address'   => null,
+            // 'from.address'   => null,
         );
         Config::set('mail.mailers.smtp', $config);
     }

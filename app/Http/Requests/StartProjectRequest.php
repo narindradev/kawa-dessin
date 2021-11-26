@@ -37,7 +37,7 @@ class StartProjectRequest extends FormRequest
     {
         return [
             'dates.required' => trans("lang.start_value"),
-            'delivery_date.after' => trans("lang.delivery_value"),
+            'delivery_date.after_or_equal' => trans("lang.delivery_value"),
         ];
     }
     public function withValidator($validator)

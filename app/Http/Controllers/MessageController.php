@@ -36,7 +36,6 @@ class MessageController extends Controller
     }
     public function message(Request $request)
     {
-        dd($request->all());
         if ($request->project_id) {
             $message = $this->save_project_message($request);
         }

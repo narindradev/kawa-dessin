@@ -151,13 +151,13 @@ class Project extends Model
             });
         }
         /** Messages project message auth not seen*/ 
-        $projects->with(["messages" => function ($query)  {
-        $auth = auth()->id();
-        $query->whereRaw('NOT FIND_IN_SET('.$auth.',seen_by)')
-              ->whereRaw('NOT FIND_IN_SET('.$auth.',deleted_by)')
-              ->where("sender_id" ,"<>" ,$auth)
-              ->whereDeleted(0);
-        }]);
+        $projects->with(["messages" => function ($query)  use($AUTH) {
+            $me = $AUTH->id;
+            $query->select("id")->whereRaw('NOT FIND_IN_SET('.$me.',seen_by)')->whereRaw('NOT FIND_IN_SET('.$me.',deleted_by)')
+                  ->where("sender_id" ,"<>" ,$me)
+                  ->whereDeleted(0);
+            }]
+        );
         $projects->orderBy('status_id',"ASC");
         if ($user_id) {
             if (User::find($user_id)->is_commercial()) {

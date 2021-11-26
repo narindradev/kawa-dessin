@@ -101,8 +101,8 @@
     <script src="{{ url('demo1/plugins/custom/datatables/datatables.bundle.js')}}"></script>
     <link  href="{{ url('library/jkanban/jkanban.bundle.css')}}" rel="stylesheet" type="text/css" />
     <script src="{{ url('library/jkanban/jkanban.bundle.js')}}"></script> 
-    <script src="{{ asset('library/bootstrap-fileinput/js/fileinput.min.js')}}"></script>
-    <script src="{{ asset('library/bootstrap-fileinput/themes/explorer/theme.min.js') }}"></script>
+    {{-- <script src="{{ asset('library/bootstrap-fileinput/js/fileinput.min.js')}}"></script> --}}
+    {{-- <script src="{{ asset('library/bootstrap-fileinput/themes/explorer/theme.min.js') }}"></script> --}}
     @yield('scripts')
 @include('includes.ajax-drawer')
 @include('includes.debugs')

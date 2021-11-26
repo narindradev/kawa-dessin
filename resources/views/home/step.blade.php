@@ -517,8 +517,8 @@
                                         <!--end::Title-->
                                         <!--begin::Notice-->
 
-                                        {{-- <div class="text-muted fw-bold fs-6">Docs: Esquisse, plan, photo, courrier de la
-                                            mairie</div> --}}
+                                        <div class="text-muted fw-bold fs-6">Docs: Esquisse, plan, photo, courrier de la
+                                            mairie , ...</div>
                                         <!--end::Notice-->
                                     </div>
                                     <!--end::Heading-->

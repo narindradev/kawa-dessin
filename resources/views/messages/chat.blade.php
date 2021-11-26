@@ -21,7 +21,6 @@ if ($user_id) {
         {!! view("messages.item" ,["message" => $message ,"my_message" => ($message->sender_id == $auth->id) ,"for_user" => $auth ])->render() !!}
     @endforeach
 </div>
-  
 <form class="form" id="chat-form-{{$form}}-id-{{$target}}" method="POST" action="{{ url("/message/send") }} ">
     <div class="" id="kt_drawer_chat_messenger_footer">
         @csrf

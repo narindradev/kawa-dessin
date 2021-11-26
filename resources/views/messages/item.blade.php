@@ -18,8 +18,11 @@
                 <a href="#" class="fs-5 fw-bolder text-gray-900 text-hover-primary ms-1"> <u>{{ $my_message ? "" : "{$message->sender->name}" }}</u>  </a>
             </div>
             @if (!$my_message)
-                <div class="symbol symbol-35px symbol-circle mb-1">
+                <div class="symbol symbol-35px symbol-circle mb-1 top-10">
                     <img alt="Pic" src="{{$message->sender->avatar_url}}">
+                    @if ($message->sender->is_admin())
+                     <span class="badge badge-light-success fw-bolder fs-8 px-2 py-1 ms-2">Admin</span>
+                    @endif
                 </div>
             @endif
         </div>

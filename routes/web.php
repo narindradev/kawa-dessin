@@ -110,6 +110,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/project/save_step2/info_ground/save/{project}', [ProjectController::class, 'save_info_ground']);
     Route::post('/project/save_step2/responses_of_question/save/{project}', [ProjectController::class, 'save_responses_of_question']);
     Route::get('/project/kanban/index', [ProjectController::class, 'kanban']);
+    Route::post('/kanban/data/source', [ProjectController::class, 'kanban_data']);
     
     /** Projects members */
     Route::get('/project_member/data_list_member', [ProjectController::class, 'data_list_member']);

@@ -5,7 +5,7 @@
         </div>
     @endforeach
     @if (isset($add) &&  ($for_user->is_mdp()) )
-        {!!$add!!}
+        {!! $add !!}
     @endif
 </div>
 <script>

@@ -68,7 +68,7 @@ class ProjectAssignedNotification extends Notification
         return [
             "project_id" => $this->project->id,
             "event" => $this->event,
-            "created_by" => $this->causer->id,
+            "created_by" => $this->causer->id ?? null,
             "fake_id" => $this->fake_id,
         ]; 
     }
@@ -91,7 +91,7 @@ class ProjectAssignedNotification extends Notification
     public function prepare_notification_item($notifiable)
     {
         $notification = new stdClass();
-        $notification->data["created_by"] =  $this->causer->id;
+        $notification->data["created_by"] =  $this->causer->id ?? null;
         $notification->data["project_id"] =  $this->project->id;
         $notification->data["event"] = $this->event;
         $notification->id = $this->fake_id ;

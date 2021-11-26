@@ -19,6 +19,7 @@ if (!function_exists('get_response_of_question')) {
 if (!function_exists('get_cache_member')) {
     function get_cache_member(Project $project)
     {
+        // Cache::forget("members_list_$project->id");
         return Cache::rememberForever("members_list_$project->id", function () use ($project) {
             return $project->members()->get();
         });
@@ -46,6 +47,5 @@ if (!function_exists('get_cache_chat_user_target')) {
         return Cache::rememberForever("get_cache_chat_user_$auth ", function () use ($auth ) {
             return  User::whereDeleted(0)->where('user_type_id', '<>', 5)->where("id",'<>' ,  $auth->id)->get()->each->setAppends(['message_not_seen']);
         });
-        
     }
 }

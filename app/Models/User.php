@@ -7,12 +7,16 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Core\Traits\SpatieLogsActivity;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswords;
 
-class User extends Authenticatable implements MustVerifyEmail
+
+class User extends Authenticatable implements CanResetPassword
 {
-    use HasFactory, Notifiable , Billable, SpatieLogsActivity ,HasRoles;
+    use HasFactory, Notifiable , Billable, SpatieLogsActivity ,HasRoles ,CanResetPasswords;
     protected $guarded = [];
     /**
      * The attributes that should be hidden for arrays.
@@ -36,21 +40,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
     protected $with = ["client", "type"];
-    /**
-     * Route notifications for the Nexmo channel.
-     *
-     * @param  \Illuminate\Notifications\Notification  $notification
-     * @return string
-     */
+
     public function routeNotificationForNexmo($notification)
     {
         return $this->phone;
     }
-    /**
-     * Get a fullname combination of first_name and last_name
-     *
-     * @return string
-     */
     public function getNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";
@@ -64,6 +58,10 @@ class User extends Authenticatable implements MustVerifyEmail
             // return asset(theme()->getMediaUrlPath() . 'avatars/blank.png');
         }
     }
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
     public function info()
     {
         return $this->hasOne(UserInfo::class);
@@ -72,7 +70,10 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(Project::class, "project_member");
     }
-   
+    public function type()
+    {
+        return $this->belongsTo(UserType::class, "user_type_id");
+    }
     public function client()
     {
         return $this->hasOne(Client::class);
@@ -82,10 +83,6 @@ class User extends Authenticatable implements MustVerifyEmail
         if ($this->is_client()) {
             return $this->client->id;
         }
-    }
-    public function type()
-    {
-        return $this->belongsTo(UserType::class, "user_type_id");
     }
     public function function()
     {
@@ -117,18 +114,18 @@ class User extends Authenticatable implements MustVerifyEmail
     }
     public function is_commercial()
     {
-        return   $this->user_type_id == 3;
+        return  $this->user_type_id == 3;
     }
     public function getMessageNotSeenAttribute()
     {
         return $this->message_not_seen();
     }
     public function message_not_seen(){
-        $me = auth()->user();
+        $me = auth()->id();
         return Message::select("id")
-                    ->where('sender_id',$this->id )->where('receiver_id',$me->id)
-                    ->whereRaw('NOT FIND_IN_SET('.$me->id.',deleted_by)')
-                    ->whereRaw('NOT FIND_IN_SET('.$me->id.',seen_by)')
+                    ->where('sender_id',$this->id )->where('receiver_id',$me)
+                    ->whereRaw('NOT FIND_IN_SET('.$me.',deleted_by)')
+                    ->whereRaw('NOT FIND_IN_SET('.$me.',seen_by)')
                     ->whereDeleted(0)
                     ->count();
     }

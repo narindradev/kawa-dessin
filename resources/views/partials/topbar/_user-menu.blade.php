@@ -147,7 +147,7 @@
                 <label class="form-check form-switch form-check-custom form-check-solid " for="dark_mode_toggle">
                     <input class="form-check-input w-30px h-20px" type="checkbox"  value="1" name="skin" id="dark_mode_toggle" {{ auth()->user()->theme_mode=="dark" ? 'checked' : '' }}  />
                     <span class="form-check-label text-gray-600 fs-7">
-                        {{ __('Dark Mode') }}
+                        @lang('lang.dark_mode')
                     </span>
                 </label>
             </div>
