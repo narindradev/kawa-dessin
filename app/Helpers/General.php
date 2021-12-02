@@ -683,5 +683,10 @@ if (!function_exists('str_limite')) {
         return Str::limit($string,$limite,$end);
     }
 }
-
-
+if (!function_exists('project_tag')) {
+    function project_tag(Project $project ,$string = null)
+    {
+        // return '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner">sqdqsd</div></div>';
+        $title = "{$project->client->user->name} | {$project->categories->pluck("name")->implode(" , ", "name")}";
+        return '<a href ="#" data-bs-toggle="tooltip" data-bs-boundary="window" data-bs-placement="top" title="" data-bs-original-title="'.$title.'">#'. ($string ?? $project->id) . '</a>';   }
+    }

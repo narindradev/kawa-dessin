@@ -2,10 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-
-class NotificationTemplate extends Model
+class NotificationTemplate 
 {
     static function get_subject_info($notification){
         $subject = [];
@@ -15,7 +12,7 @@ class NotificationTemplate extends Model
             $subject['name'] = User::find($notification->data["created_by"])->name;
             $subject['profile'] = '<img alt="Pic" src="https://i.pravatar.cc/80?img=33">';
         } 
-       return  $subject ;
+       return $subject;
     }
     /** Event template */
     public static function invoice_item_paid($notification = null){
@@ -33,7 +30,6 @@ class NotificationTemplate extends Model
         $subject =  $subject_info['name'];
         $template["profile"] = $subject_info["profile"] ; 
         $template["sentence"] = "$subject vous a assigné un project.";
-
         return $template ;
     }
 }

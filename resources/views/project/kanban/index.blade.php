@@ -25,7 +25,6 @@
                     error: function() {}
                 });
             }
-
             function jkanban(data) {
                 var kanban = new jKanban({
                     element: '#jkanban_project',

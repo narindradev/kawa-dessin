@@ -2,25 +2,44 @@
 
 namespace App\Models;
 
-
 use Illuminate\Support\Facades\Auth;
+use App\Core\Traits\SpatieLogsActivity;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Contracts\Activity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Project extends Model
 {
-    use HasFactory;
+    use HasFactory, SpatieLogsActivity;
 
     protected $table = "projects";
     protected $guarded = [];
+    protected static $logName = 'project';
+    protected static $logAttributes = [];
+    protected static $logUsers = "";
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'start_date' => 'datetime',
         'due_date' => 'datetime',
         'delivery_date' => 'datetime'
-     ];
-    // protected  $with = ["categories", "client", "status"];
+    ];
+
+    public static function boot()
+    {
+        parent::boot();
+        static::saving(function (Model $model) {
+            static::$logAttributes = array_keys($model->getDirty());
+        });
+    }
+    public function tapActivity(Activity $activity)
+    {
+        if (in_array("price", static::$logAttributes)) {
+            $activity->users = null; // Don't show  this log on project members
+        }else {
+            $activity->users =  $this->members()->pluck("user_id")->implode(",","user_id");
+        }
+    }
     public function client()
     {
         return $this->belongsTo(Client::class);
@@ -73,18 +92,19 @@ class Project extends Model
     {
         return $this->hasMany(InvoiceItem::class);
     }
-    public function messages(){
-        return $this->hasMany(Message::class,"project_id");
+    public function messages()
+    {
+        return $this->hasMany(Message::class, "project_id");
     }
     public function scopeGetDetails($query, $options = [])
     {
         $AUTH = Auth::user();
         $user_id = get_array_value($options, "user_id");
         $client = get_array_value($options, "client");
-        if ($AUTH->is_admin() && !$user_id ) {
+        if ($AUTH->is_admin() && !$user_id) {
             /** load all project  */
             $projects = Project::query();
-        } elseif ($user_id ) {
+        } elseif ($user_id) {
             /** load the user's projects assigned */
             $projects = User::find($user_id)->projects();
         } elseif ($client) {
@@ -92,10 +112,10 @@ class Project extends Model
             $projects = Project::where("client_id", $client);
         } else {
             /** load Auth user's projects assigned */
-            $projects =$AUTH->projects();
+            $projects = $AUTH->projects();
         }
         $projects->whereDeleted(0);
-    
+
         $client_id = get_array_value($options, "client_id");
         if ($client_id) {
             $projects->where("client_id", $client_id);
@@ -133,8 +153,9 @@ class Project extends Model
         }
 
         $with = ["categories", "client", "status"];
-        if ($client || $AUTH->is_admin() ) {
-            $with[] = "invoiceItems"; $with[] = "invoice"; 
+        if ($client || $AUTH->is_admin()) {
+            $with[] = "invoiceItems";
+            $with[] = "invoice";
         }
         $projects->with($with);
 
@@ -150,26 +171,27 @@ class Project extends Model
                 $query->where('status', $status_invoice);
             });
         }
-        /** Messages project message auth not seen*/ 
-        $projects->with(["messages" => function ($query)  use($AUTH) {
-            $me = $AUTH->id;
-            $query->select("id")->whereRaw('NOT FIND_IN_SET('.$me.',seen_by)')->whereRaw('NOT FIND_IN_SET('.$me.',deleted_by)')
-                  ->where("sender_id" ,"<>" ,$me)
-                  ->whereDeleted(0);
+        /** Messages project message auth not seen*/
+        $projects->with(
+            ["messages" => function ($query)  use ($AUTH) {
+                $me = $AUTH->id;
+                $query->select("id")->whereRaw('NOT FIND_IN_SET(' . $me . ',seen_by)')->whereRaw('NOT FIND_IN_SET(' . $me . ',deleted_by)')
+                    ->where("sender_id", "<>", $me)
+                    ->whereDeleted(0);
             }]
         );
-        $projects->orderBy('status_id',"ASC");
+        $projects->orderBy('status_id', "ASC");
         if ($user_id) {
             if (User::find($user_id)->is_commercial()) {
-                $projects->orderBy('created_at',"DESC");
-            }else{
-                $projects->orderBy('due_date',"ASC");
+                $projects->orderBy('created_at', "DESC");
+            } else {
+                $projects->orderBy('due_date', "ASC");
             }
         }
         if ($AUTH->is_commercial() || $AUTH->is_admin()) {
-            $projects->orderBy('created_at',"DESC");
-        }else{
-            $projects->orderBy('due_date',"ASC");
+            $projects->orderBy('created_at', "DESC");
+        } else {
+            $projects->orderBy('due_date', "ASC");
         }
         return $projects;
     }
@@ -177,8 +199,8 @@ class Project extends Model
     public static function get_client_dropdown(User $for_user)
     {
         $client_dropdown = [];
-        if ($for_user && !Auth::user()->is_admin() ) // user not admin
-        { 
+        if ($for_user && !Auth::user()->is_admin()) // user not admin
+        {
             $results = $for_user->projects->groupby("client_id");
             foreach ($results as $client_id => $projects) {
                 $client_dropdown[] = ["value" => $client_id, "text" => $projects[0]->client->user->name];

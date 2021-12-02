@@ -167,6 +167,8 @@ Route::middleware('auth')->group(function () {
      });
    //Dashboard
    Route::get('dashboard/index', [DashboardController::class, 'index']);
+   // activity
+   Route::post('/load/more/activities', [AuditLogsController::class, 'load_more']);
    
    
    Route::post('/notification/set/seen', [NotificationController::class, 'set_as_senn']);

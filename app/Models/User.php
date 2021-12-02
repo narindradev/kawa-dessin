@@ -30,7 +30,7 @@ class User extends Authenticatable implements CanResetPassword
     // protected $appends  = [
     //     "message_not_seen"
     // ];
-    
+    protected static $logName = 'user';
     /**
      * The attributes that should be cast to native types.
      *

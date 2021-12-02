@@ -3,8 +3,8 @@
         <div class="col-xxl-4">
             {{ theme()->getView('partials/widgets/mixed/_widget-2', array('class' => 'card-xxl-stretch', 'chartCcolor' => 'danger', 'chartHeight' => '200px')) }}
         </div>
-        <div class="col-xxl-4">
-            @include('dashboard.activity')
+        <div class="col-xxl-4 ">
+            @include('dashboard.widgets.activities.activity' ,["activities" => $activities ])
         </div>
         <div class="col-xxl-4">
             {{ theme()->getView('partials/widgets/mixed/_widget-7', array('class' => 'card-xxl-stretch-50 mb-5 mb-xl-8', 'chartCcolor' => 'primary', 'chartHeight' => '150px')) }}

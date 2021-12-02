@@ -65,10 +65,9 @@ class UsersController extends Controller
     public function store(CreateUserRequest $request)
     
     {
-        dd($request->hasFile("avatar"));
+       
         $user = User::create($request->only("first_name", "last_name", "email","user_type_id") + ['password' => Hash::make("123456789")]);
         $new_user =  $user;
-        // $user->delete();
         die(json_encode(["success" => true, "message" => trans("lang.success_record") , "data" =>$this->_make_row( $new_user ) ]));
     }
 

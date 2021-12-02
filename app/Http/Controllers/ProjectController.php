@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use App\Models\File;
 use App\Models\User;
 use App\Models\Status;
 use App\Models\Project;
@@ -10,15 +11,15 @@ use App\Models\Category;
 use App\Models\Priority;
 use App\Models\Relaunch;
 use App\Models\InfoGround;
-use App\Models\File;
 use Illuminate\Http\Request;
+use App\Jobs\memberAssignedJob;
+use App\Jobs\memberDetachedJob;
 use App\Models\ProjectRelaunch;
 use App\Jobs\EstimateAssignedJob;
 use App\Models\ProjectDescription;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\PriceProjectRequest;
 use App\Http\Requests\StartProjectRequest;
-use App\Jobs\memberAssignedJob;
 
 class ProjectController extends Controller
 {
@@ -139,7 +140,6 @@ class ProjectController extends Controller
         } elseif ($project->due_date && $project->due_date->isTomorrow()) {
             $class  = "warning";
             $due_date = trans("lang.tomorrow");
-            "Demain";
         } elseif ($project->due_date) {
             $due_date = $project->due_date->format("d-M-Y");
         }
@@ -421,6 +421,7 @@ class ProjectController extends Controller
         } else {
             $project->members()->detach($request->user_id);
             $member = $project->members()->pluck("user_id")->toArray();
+            dispatch(new memberDetachedJob($project, $request->user_id, Auth::user()));
             die(json_encode(["success" => true, "message" => trans("lang.success_deleted"), "extra_data" => ["table" => "projectsTable", "row_id" => row_id("projects", $request->project_id), "data" => $this->_make_row($project, Auth::user(), true)], "row_id" => row_id("user", $request->user_id), "data" => $this->_make_row_member($user, $member, $project)]));
         }
     }
@@ -448,7 +449,7 @@ class ProjectController extends Controller
     {
         $project->start_date = null;
         $project->due_date = null;
-        $project->status_id = $request->status ? $request->status : 5; // in progress
+        $project->status_id = $request->status ? $request->status : 5; // in progress 
         if ($request->delivery_date) {
             $project->delivery_date = to_date($request->delivery_date);
         }
