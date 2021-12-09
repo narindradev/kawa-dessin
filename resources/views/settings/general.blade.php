@@ -57,10 +57,11 @@
                 <label for="separtor_thousands" class="required form-label">@lang('lang.separtor_thousands')</label>
                 @php
                     $separtor_thousands = app_setting('separtor_thousands');
-                @endphp
+                    @endphp
                     <select   data-rule-required="true"
                     autocomplete="off" name="separtor_thousands" data-hide-search="true" class="form-control form-control-solid" placeholder="" data-rule-required="true"
                     data-msg-required="@lang('lang.required_input') "  data-control="select2">
+                    <option value="escape" @if($separtor_thousands === "escape" ) selected @endif > Espace</option>
                     <option value="," @if($separtor_thousands ===",") selected @endif > Virgule (,)</option>
                     <option value="." @if($separtor_thousands ===".") selected @endif > Point (.)</option>
                 </select>

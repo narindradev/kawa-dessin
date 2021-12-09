@@ -65,8 +65,16 @@ class ChatPrivateNotification extends Notification
             "form" =>$this->form ,
             "message_id" => $this->message->id,
             "target" => $this->message->sender_id,
+            "sender_name" => $this->message->sender->name,
+            "sender_profile" => $this->message->sender->avatar_url,
             "need_load_more" => $need_load_more,
             "message" =>$message ,
+            "toast" => $this->toast_notification(),
         ]);
+    }
+    private function toast_notification(){
+        $content = "Un nouveau message";
+        $content .= " de " . "<u>" . $this->message->sender->name  . "</u>";
+        return ["content" => $content , "title" => trans("lang.message")] ; 
     }
 }

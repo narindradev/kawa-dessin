@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Models\Message;
 use App\Models\Project;
 use Illuminate\Http\Request;
-use App\Notifications\ChatChannelNotification;
+use App\Notifications\ChatProjectNotification;
 use App\Notifications\ChatPrivateNotification;
 
 class MessageController extends Controller
@@ -53,7 +53,7 @@ class MessageController extends Controller
             $this->uploads($request,$project);
         }
         $message = Message::create(["sender_id" => Auth::id(), "project_id" => $request->project_id, "content" => $request->message ,"files" => $this->files]);
-        Notification::send(get_cache_member($project), new ChatChannelNotification($message, $project));
+        Notification::send(get_cache_member($project), new ChatProjectNotification($message, $project));
         return $message;
     }
     private function save_private_message(Request $request){

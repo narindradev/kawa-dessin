@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreCatRequest extends FormRequest
 {
+    protected $min = 20; // euro 
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -23,15 +24,19 @@ class StoreCatRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name' => 'required|max:255',
-        ];
+        $rules = [];
+        $rules["name"] ='required|max:255';
+        if (request("estimate")) {
+            $rules["estimate"] = "required|numeric|min:$this->min";
+        }
+        return $rules;
 
     }
     public function messages()
     {
         return [
             'name.required' => sprintf(__("A %s is required.") , __("name")) ,
+            'estimate.min' => "La valeur du devis estimatif doit être supérieur à " . format_to_currency($this->min),
         ];
     }
     public function withValidator($validator)

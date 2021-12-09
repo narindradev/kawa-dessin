@@ -6,7 +6,7 @@
             <div class="form-group">
                 <div class="mb-10">
                     <label for="estimate" class="required form-label">@lang('lang.estimate')</label>
-                    <input type="text" autocomplete="off" name="devis" class="form-control form-control-solid"
+                    <input type="number" autocomplete="off" name="devis" class="form-control form-control-solid"
                         placeholder="@lang('lang.estimate')" data-rule-required="true"
                         data-msg-required="@lang('lang.required_input')" />
                 </div>

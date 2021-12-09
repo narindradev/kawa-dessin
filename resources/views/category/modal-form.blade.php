@@ -14,7 +14,14 @@
                 <div class="mb-10">
                     <label for="description" class="form-label">@lang('lang.description')</label>
                     <textarea name="description" autocomplete="off" class="form-control form-control-solid" rows="5"
-                        placeholder="Description du categorie ...">{{ $category->description ?? '' }}</textarea>
+                    placeholder="Description du categorie ...">{{ $category->description ?? '' }}</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="mb-10 >
+                    <label for="estimate" class="form-label">@lang('lang.estimate')  estimatif en {{ app_setting("currency_symbole") }} </label>
+                    <input type="text" value="{{ $category->estimate }}" autocomplete="off" name="estimate" class="form-control form-control-solid"
+                        placeholder="Ex : 50 000 "/>
                 </div>
             </div>
             <div class="form-group">

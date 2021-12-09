@@ -43,11 +43,10 @@ class ProjectController extends Controller
     {
         $data = [];
         $projects = Project::getDetails($request->all())->get();
-        // $count = $projects->count();
         foreach ($projects as $project) {
             $data[] = $this->_make_row($project, Auth::user(), true);
         }
-        return ["data" => $data,];
+        return ["data" => $data];
     }
     public function _make_row(Project $project, $for_user = null, $from_notification = false)
     {
@@ -90,6 +89,7 @@ class ProjectController extends Controller
             $last_relauch =  ProjectRelaunch::where("project_id", $project->id)->where("created_by", $client->user->id)->latest('created_at')->first();
             $relaunch = Relaunch::where("project_id", $project->id)->where("created_by", $client->user->id)->latest('created_at')->first();
             $columns["estimate"] =  view("project.column.estimate", ["project" => $project, "last_relaunch" => $last_relauch, "relaunch" =>  $relaunch, "for_user" => $for_user])->render();
+            $columns["estimate_price"] =  $project->estimate_price ? format_to_currency($project->estimate_price) : "-";
         }
         $columns["actions"] = view("project.column.actions", ["actions" => $actions, "project" => $project, "for_user" => $for_user])->render();
         return $columns;

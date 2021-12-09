@@ -24,7 +24,9 @@ class CategoryController extends Controller
         $category->name = $request->input("name");
         $category->description = $request->input("description");
         $category->active = $request->input("active") ?? 0;
-        
+        if ($request->input("estimate")) {
+            $category->estimate =  $request->input("estimate");
+        }
         if ($offer->categories()->save($category)) {
             die(json_encode(["success" => true, "message" => trans("lang.success_record")]));
         } else {
@@ -46,6 +48,7 @@ class CategoryController extends Controller
         return [
             "#" . $data->id,
             $data->name,
+            $data->estimate  ?  format_to_currency($data->estimate) : "-",
             $data->active ? '<span class="badge badge-light-primary fw-bolder fs-8 px-2 py-1 ms-2">Oui</span>' : '<span class="badge badge-light-danger fw-bolder fs-8 px-2 py-1 ms-2">Non</span>',
             Str::limit($data->description, 50) ?? '-',
             js_anchor('<i class="fas fa-question-circle" style="font-size:15px" ></i>', ["data-id" => $data->id, "data-action-url" => url("/questionnaire/list/$data->id"), "class" => "btn btn-sm btn-clean ", "title" => trans("lang.list_question"), "data-action" => "load-question"]).

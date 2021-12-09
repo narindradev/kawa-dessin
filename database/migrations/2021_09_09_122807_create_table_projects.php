@@ -20,7 +20,9 @@ class CreateTableProjects extends Migration
             $table->foreignId("status_id")->default(1);
             $table->decimal("price")->default(0.00);
             $table->enum("estimate" ,['accepted', 'refused'])->nullable();
+            $table->string("estimate_price")->nullable();
             $table->integer("validation")->nullable();
+            // $table->enum("" ,['accepted', 'refused'])->nullable();
             $table->integer("version")->nullable();
             $table->boolean("deleted")->default(0);
             $table->date("start_date")->nullable();

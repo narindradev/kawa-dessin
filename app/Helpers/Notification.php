@@ -14,7 +14,6 @@ if (!function_exists('get_template')) {
         }
     }
 }
-
 if (!function_exists('get_activities_template')) {
     function get_activities_template($activity = null)
     {

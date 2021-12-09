@@ -10,7 +10,7 @@ use App\Http\Controllers\ProjectController;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 
-class ChatChannelNotification extends Notification
+class ChatProjectNotification extends Notification
 {
     use Queueable;
     private $classification = "chat";
@@ -80,13 +80,20 @@ class ChatChannelNotification extends Notification
             "message_id" => $this->message->id,
             "target" => $this->message->project_id,
             "need_load_more" => $need_load_more,
-            "message" =>$message ,
+            "message" => $message ,
+            "sender_profile" => $this->message->sender->avatar_url,
             "extra_data" => [
                 "type" => "dataTable",
                 "table" => "projectsTable",
                 "row_id" => row_id("projects",$this->message->project_id),
                 "row" => $controller->_make_row($this->project,$notifiable,true)
-            ]
+            ],
+            "toast" => $this->toast_notification(),
         ]);
+    }
+    private function toast_notification(){
+        $content = "Un nouveau message";
+        $content .= " de " . "<u>" . $this->message->sender->name  . "</u>" . "$this->form " .  " #{$this->message->project_id}";
+        return ["content" => $content , "title" => trans("lang.message")] ; 
     }
 }

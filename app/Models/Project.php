@@ -35,7 +35,7 @@ class Project extends Model
     public function tapActivity(Activity $activity)
     {
         if (in_array("price", static::$logAttributes)) {
-            $activity->users = null; // Don't show  this log on project members
+            $activity->users = Auth::id(); // Don't show  this log on project members
         }else {
             $activity->users =  $this->members()->pluck("user_id")->implode(",","user_id");
         }
@@ -100,13 +100,19 @@ class Project extends Model
     {
         $AUTH = Auth::user();
         $user_id = get_array_value($options, "user_id");
+        // $user_id = [49,53];
         $client = get_array_value($options, "client");
         if ($AUTH->is_admin() && !$user_id) {
             /** load all project  */
             $projects = Project::query();
-        } elseif ($user_id) {
+        }elseif ($user_id && !is_array($user_id)) {
             /** load the user's projects assigned */
-            $projects = User::find($user_id)->projects();
+            $projects = User::find($user_id)->projects(); # code...
+           
+        }elseif ($user_id && is_array($user_id)) {
+            $projects = Project::whereHas("members" ,function ($query) use ($user_id) {
+                $query->whereIn('user_id', $user_id);
+            });
         } elseif ($client) {
             /** load client's projects  */
             $projects = Project::where("client_id", $client);
@@ -182,11 +188,13 @@ class Project extends Model
         );
         $projects->orderBy('status_id', "ASC");
         if ($user_id) {
-            if (User::find($user_id)->is_commercial()) {
+            if (is_array($user_id)) {
+                if (User::find($user_id[0])->is_commercial()) {
                 $projects->orderBy('created_at', "DESC");
-            } else {
+            }else {
                 $projects->orderBy('due_date', "ASC");
             }
+        } 
         }
         if ($AUTH->is_commercial() || $AUTH->is_admin()) {
             $projects->orderBy('created_at', "DESC");

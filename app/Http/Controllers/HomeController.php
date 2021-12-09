@@ -41,9 +41,10 @@ class HomeController extends Controller
             );
         }
         //Save client project
-        $project = $client->projects()->create(["status_id" => 1, "priority_id" => 1]);
+        $project = $client->projects()->create(["status_id" => 1, "priority_id" => 1  ]);
         // Attach project category
-        $project->categories()->attach([$request->input("categorie")]);
+        $project->categories()->attach($request->input("categorie"));
+        $project->update(['estimate_price' , $project->categories->sum("estimate")] );
         $attachements = [];
         if ($request->hasFile("files")) {
             $attachements = $this->attachements($request, $user->id, $project->id);  

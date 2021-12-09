@@ -2,6 +2,7 @@
     // initilisation file location assets/demo1/scripts.js
     function hadleNotification(notification = null) {
         console.log(notification)
+        
         if (notification.classification === "bell") {
             incrementBell()
             addItemNotification(notification)
@@ -14,37 +15,37 @@
                     addItemMessage(notification)
                 }
                 return false; // Dont add notification in dataTable row;
-            }else{
+            } else {
                 if (notification.form === "private") {
                     incrementChatPrivate(notification)
+                    if (typeof notification.toast != "undefined") {
+                        pushPopNotification(notification.toast)
+                    }
                     return false;
                 }
+                if (notification.form === "project") {
+                    if (typeof notification.toast != "undefined") {
+                        pushPopNotification(notification.toast)
+                    }
+                }
             }
         }
+       
         if (typeof notification.extra_data != "undefined" && notification.extra_data.type == "dataTable") {
-            var instanceTable = dataTableInstance[notification.extra_data.table];
-            if (!instanceTable) {
-                return false;
-            }
-            var newData = notification.extra_data.row;
-            if (typeof notification.extra_data.row_id != "undefined" && $("#" + notification.extra_data.row_id)) {
-                var row_id = notification.extra_data.row_id;
-                if ($("#" + row_id).length) {
-                    dataTableUpdateRow(instanceTable, row_id, newData, true);
-                } else {
-                    dataTableaddRowIntheTop(instanceTable, newData, true)
-                }
-            } else {
-                dataTableaddRowIntheTop(instanceTable, newData, true)
-            }
+            updateTableInstance(notification);
         }
     }
-
+    function pushPopNotification(message) {
+        toastr.options.closeButton = true; 
+        toastr.options.closeDuration = 6000;
+        toastr.info(message.content, message.title);
+        // toastr.info(" Un nouveau message  <a href='#' class='new-item-message-detected' data-message-id = " + notification.message_id + "> <u> Voir</u><a>");
+    }
     function incrementBell() {
         var notificationCount = $("#notifications-count").text();
         notificationCount = parseInt(notificationCount)
         if (notificationCount) {
-            notificationCount++;
+            notificationCount ++;
         } else {
             notificationCount = 1
         }
@@ -53,10 +54,11 @@
             $("#pulse-notification").addClass("pulse-ring")
         }
     }
+
     function incrementChatPrivate(notification) {
-        var target = $("#chat-private-id-notfication-count-"+notification.target)
-        target.css("display","")
-        console.log( $("#chat-private-id-notfication-count-"+notification.target).length);
+        var target = $("#chat-private-id-notfication-count-" + notification.target)
+        target.css("display", "")
+        console.log($("#chat-private-id-notfication-count-" + notification.target).length);
         var count = target.text();
         count = parseInt(count)
         if (count) {
@@ -75,14 +77,8 @@
         }
     }
 
-    function addItemMessage(notification = null ,) {
-        if (0) {
-            toastr.info(" Un nouveau message <a href='#' class='new-item-message-detected' data-message-id = "+notification.message_id+"> <u> Voir</u><a>");
-        }else{
-            setTimeout(() => {
-                scrollBotton("#messages-list", 3000)
-            }, 100);
-        }
+    function addItemMessage(notification = null, ) {
+      
         if ($("#message-item-" + notification.message_id).length) {
             $("#message-item-" + notification.message_id).replaceWith(notification.message)
             return false;
@@ -93,7 +89,24 @@
             $("#messages-list").html(notification.message)
         }
     }
-    
+
+    function updateTableInstance(notification) {
+        var instanceTable = dataTableInstance[notification.extra_data.table];
+        if (!instanceTable) {
+            return false;
+        }
+        var newData = notification.extra_data.row;
+        if (typeof notification.extra_data.row_id != "undefined" && $("#" + notification.extra_data.row_id)) {
+            var row_id = notification.extra_data.row_id;
+            if ($("#" + row_id).length) {
+                dataTableUpdateRow(instanceTable, row_id, newData, true);
+            } else {
+                dataTableaddRowIntheTop(instanceTable, newData, true)
+            }
+        } else {
+            dataTableaddRowIntheTop(instanceTable, newData, true)
+        }
+    }
 
     function load_more(message_id = 0) {
         $.ajax({
@@ -115,10 +128,10 @@
         }
         $("#notifications-count").text("0")
     })
-    $(document).on("click",'.new-item-message-detected' ,function() {
+    $(document).on("click", '.new-item-message-detected', function() {
         var id = $(this).attr("data-message-id");
-            $('#messages-list').animate({
-                scrollTop: $("#message-item-" + id).offset().top
-            }, 2000);
+        $('#messages-list').animate({
+            scrollTop: $("#message-item-" + id).offset().top
+        }, 2000);
     })
 </script>

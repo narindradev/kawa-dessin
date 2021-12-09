@@ -91,6 +91,7 @@
                         {data: 'status',"title" :"Statut","orderable":true,"searchable":false,"class":"text-center"},
                         @if (auth()->user()->is_admin() || auth()->user()->is_commercial()) 
                             {data: 'estimate',"title" :"Prix","class":"text-center  min-w-100px"},
+                            {data: 'estimate_price',"title" :"Devis en estimatif ","class":"text-center  min-w-100px"},
                         @endif
 
                         {data: 'version',"title" :"version","orderable":true,"searchable":false,"class":"text-center"},

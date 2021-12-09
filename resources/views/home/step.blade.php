@@ -7,12 +7,12 @@
                 <div class="card-header">
                     <h3 class="card-title"></h3>
                     <div class="card-toolbar">
-                        <a href="{{ url("/login")}}" class="btn btn-light-primary">@lang('lang.signin') <i class="fas fa-arrow-right"></i></a>
+                        <a href="{{ url('/login') }}" class="btn btn-light-primary">@lang('lang.signin') <i
+                                class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
             <div class="card">
-              
                 <!--begin::Card body-->
                 <div class="card-body">
                     <!--begin::Stepper-->
@@ -146,7 +146,7 @@
                                     <div class="pb-10 pb-lg-1">
                                         <!--begin::Title-->
                                         <h2 class="fw-bolder d-flex align-items-center text-dark">Information du client
-                                            
+
                                         </h2>
 
                                     </div>
@@ -173,7 +173,7 @@
                                                 <!--end::Info-->
                                             </div>
                                         </div> --}}
-                                       
+
 
                                         {{-- <div class="dropzone" id="filelist">
                                             <!--begin::Message-->
@@ -191,17 +191,18 @@
                                             </div>
                                         </div> --}}
                                         <div
-                                        class=" col-lg-6 pb-lg-1 fv-row mb-4  fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
-                                        <label class="form-label required">Nom</label>
-                                        <input name="first_name" autocomplete="off" value=""
-                                            class="form-control form-control-lg form-control-solid">
-                                        <div class="fv-plugins-message-container invalid-feedback"></div>
-                                    </div>
-                                    
-                                   
-                                      
+                                            class=" col-lg-6 pb-lg-1 fv-row mb-4  fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
+                                            <label class="form-label required">Nom</label>
+                                            <input name="first_name" autocomplete="off" value=""
+                                                class="form-control form-control-lg form-control-solid">
+                                            <div class="fv-plugins-message-container invalid-feedback"></div>
+                                        </div>
 
-                                        <div class=" col-lg-6 pb-lg-1 fv-row mb-4  fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
+
+
+
+                                        <div
+                                            class=" col-lg-6 pb-lg-1 fv-row mb-4  fv-plugins-icon-container fv-plugins-bootstrap5-row-valid">
                                             <label class="form-label ">Prénom</label>
                                             <input name="last_name" autocomplete="off" value=""
                                                 class="form-control form-control-lg form-control-solid">
@@ -328,37 +329,29 @@
                                     <div class="row form-group" data-kt-buttons="true">
                                         <div class=" mb-5  fv-row fv-plugins-icon-container">
                                             @foreach ($offers as $offer)
-                                                <h4 class="fw-bolder text-primary">{{ $offer->name }}
-                                                    @if ($offer->description)
-
-                                                        <i class="fas fa-exclamation-circle ms-2 fs-7"
-                                                            data-bs-toggle="tooltip" title=""
-                                                            data-bs-original-title="{{ $offer->description }}">
-                                                        </i>
-                                                    @endif
-                                                </h4>
-                                                <div class="row mb-5">
-                                                    @foreach ($offer->categories as $categorie)
-                                                        <div class="col-4 pb-2 ">
-
-                                                            <label
-                                                                class="btn btn-outline btn-outline-dashed btn-outline-default w-100 p-40">
-
-                                                                <input type="radio" class="btn-check" name="categorie"
-                                                                    value=" {{ $categorie->id }}">
-
-                                                                <span>{{ ucfirst($categorie->name) }}</span>
-
-                                                            </label>
-                                                            <!--end::Option-->
-                                                        </div>
-                                                    @endforeach
-                                                </div>
+                                                @if ($offer->categories->count())
+                                                    <h4 class="fw-bolder text-primary">{{ $offer->name }}
+                                                        @if ($offer->description)
+                                                            <i class="fas fa-exclamation-circle ms-2 fs-7"
+                                                                data-bs-toggle="tooltip" title=""
+                                                                data-bs-original-title="{{ $offer->description }}">
+                                                            </i>
+                                                        @endif
+                                                    </h4>
+                                                    <div class="row mb-5">
+                                                        @foreach ($offer->categories as $categorie)
+                                                            <div class="col-4 pb-2 ">
+                                                                <label data-estimate="{{$categorie->estimate}}" class="btn btn-outline btn-outline-dashed btn-outline-default w-100 p-40 category-item">
+                                                                    <input type="radio" class="btn-check"
+                                                                        name="categorie" value=" {{ $categorie->id }}">
+                                                                    <span>{{ ucfirst($categorie->name) }}</span>
+                                                                </label>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
                                             @endforeach
-
-
                                         </div>
-
                                         {{-- <div class="mb-8 fv-row ">
                                             <!--begin::Label-->
                                             <h4 class="fw-bolder text-dark ">Annexe
@@ -473,23 +466,12 @@
                                     <div class="pb-10 pb-lg-12">
                                         <!--begin::Title-->
                                         <h2 class="fw-bolder text-dark">Information requis</h2>
-                                        <!--end::Title-->
-                                        <!--begin::Notice-->
-                                        {{-- <div class="text-muted fw-bold fs-6">If you need more info, please check out
-                                            <a href="#" class="link-primary fw-bolder">Help Page</a>.
-                                        </div> --}}
-                                        <!--end::Notice-->
                                     </div>
-                                    <!--end::Heading-->
-                                    <!--begin::Input group-->
-
+                                    
                                     @foreach ($questions as $question)
                                         <div class="fv-row mb-10 fv-plugins-icon-container">
-                                            <!--begin::Label-->
                                             <label
                                                 class="form-label required">{{ get_array_value($question, 'question') }}</label>
-                                            <!--end::Label-->
-                                            <!--begin::Input-->
                                             <textarea placeholder="..." name="{{ get_array_value($question, 'name') }}"
                                                 class="form-control form-control-lg form-control-solid"
                                                 data-kt-autosize="true"
@@ -530,34 +512,39 @@
                                         <!--begin::Alert-->
                                         <script>
                                             var max = 1
-                                             function del(params) {
-                                               
-                                                if(max > 1){
+
+                                            function del(params) {
+
+                                                if (max > 1) {
                                                     max--
                                                     $(params).closest('.file-input').remove()
                                                 }
                                             }
+
                                             function add() {
-                                                if(max < 6 ){
+                                                if (max < 6) {
                                                     max++
                                                     $("#div").clone().insertBefore("#div").find("input[type='file']").val("");
                                                 }
                                             }
                                         </script>
-                                         <div class="row mb-2 ">
+                                        <div class="row mb-2 ">
                                             <div class="col-lg-4" id="add" onClick="add()">
-                                                <a href="javascript:;" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary">
-                                                <i class="la la-plus"></i></a>
+                                                <a href="javascript:;" data-repeater-create=""
+                                                    class="btn btn-sm font-weight-bolder btn-light-primary">
+                                                    <i class="la la-plus"></i></a>
                                             </div>
                                         </div>
-                                       
+
                                         <div class="row  mb-1 file-input" id="div">
                                             <div class="col-md-11">
                                                 <input class="form-control form-control-sm" name="files[]" type="file">
                                             </div>
-                                            <button type="button" onClick="del(this)" class="btn btn-sm btn-icon btn-light-danger col-1 "><i class="la la-trash-o"></i></button>
+                                            <button type="button" onClick="del(this)"
+                                                class="btn btn-sm btn-icon btn-light-danger col-1 "><i
+                                                    class="la la-trash-o"></i></button>
                                         </div>
-                                     
+
                                         <div class="fv-plugins-icon-container">
                                             <!--begin::Option-->
                                             <div class="pt-5 form-check form-check-custom form-check-solid"
@@ -578,27 +565,26 @@
                                 <!--end::Wrapper-->
                             </div>
                             <div data-kt-stepper-element="content">
-                                <!--begin::Wrapper-->
                                 
                                 <div class="w-100">
                                     <div class="pb-8 pb-lg-10">
                                         <!--begin::Title-->
-                                        <h2 class="fw-bolder text-dark">Nous avons besoin de votre attention!</h2>
-                                        <!--end::Title-->
-                                        <!--begin::Notice-->
-
-                                        
-                                        <!--end::Notice-->
+                                        <h2 class="fw-bolder text-dark">Terminé !</h2>
                                     </div>
                                     <!--begin::Heading-->
-                                    <div class="notice d-flex bg-light-warning rounded border-warning border border-dashed p-6">
-                                        <!--begin::Icon-->
-                                        <!--begin::Svg Icon | path: icons/duotune/general/gen044.svg-->
+                                    <div
+                                    class="notice d-flex bg-light-warning rounded border-warning border border-dashed p-6 mb-10">
+                                    <!--begin::Icon-->
+                                    <!--begin::Svg Icon | path: icons/duotune/general/gen044.svg-->
                                         <span class="svg-icon svg-icon-2tx svg-icon-warning me-4">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="black"></rect>
-                                                <rect x="11" y="14" width="7" height="2" rx="1" transform="rotate(-90 11 14)" fill="black"></rect>
-                                                <rect x="11" y="17" width="2" height="2" rx="1" transform="rotate(-90 11 17)" fill="black"></rect>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none">
+                                                <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="black">
+                                                </rect>
+                                                <rect x="11" y="14" width="7" height="2" rx="1"
+                                                transform="rotate(-90 11 14)" fill="black"></rect>
+                                                <rect x="11" y="17" width="2" height="2" rx="1"
+                                                    transform="rotate(-90 11 17)" fill="black"></rect>
                                             </svg>
                                         </span>
                                         <!--end::Svg Icon-->
@@ -608,19 +594,38 @@
                                             <!--begin::Content-->
                                             <div class="fw-bold">
                                                 <h4 class="text-gray-900 fw-bolder"></h4>
-                                                <div class="fs-6 text-gray-700">Des e-mails seront envoyés sur l'email precedente. Et vous aurrez un espace d'utilisateur liée a votre e-mail pour que vous puissez suivre et supervier le traitretement de votre dossier. 
-                                                {{-- <a href="#" class="fw-bolder">Create Team Platform</a>--}}
-                                            </div> 
+                                                <div class="fs-6 text-gray-700">Des e-mails seront envoyés sur l'email
+                                                    precedente. Et vous aurrez un espace d'utilisateur pour que vous puissez suivre et supervier le traitretement de votre
+                                                    dossier.
+                                                    {{-- <a href="#" class="fw-bolder">Create Team Platform</a> --}}
+                                                </div>
                                             </div>
                                             <!--end::Content-->
                                         </div>
                                         <!--end::Wrapper-->
+                                        
                                     </div>
-                                  
+                                    <div class="d-flex align-items-center bg-light-primary rounded p-5 mb-7" id="estimate-section">
+                                        <!--begin::Icon-->
+                                        <span class="svg-icon svg-icon-primary me-5">
+                                            <span class="svg-icon svg-icon-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                    <path opacity="0.3" d="M21.25 18.525L13.05 21.825C12.35 22.125 11.65 22.125 10.95 21.825L2.75 18.525C1.75 18.125 1.75 16.725 2.75 16.325L4.04999 15.825L10.25 18.325C10.85 18.525 11.45 18.625 12.05 18.625C12.65 18.625 13.25 18.525 13.85 18.325L20.05 15.825L21.35 16.325C22.35 16.725 22.35 18.125 21.25 18.525ZM13.05 16.425L21.25 13.125C22.25 12.725 22.25 11.325 21.25 10.925L13.05 7.62502C12.35 7.32502 11.65 7.32502 10.95 7.62502L2.75 10.925C1.75 11.325 1.75 12.725 2.75 13.125L10.95 16.425C11.65 16.725 12.45 16.725 13.05 16.425Z" fill="black"></path>
+                                                    <path d="M11.05 11.025L2.84998 7.725C1.84998 7.325 1.84998 5.925 2.84998 5.525L11.05 2.225C11.75 1.925 12.45 1.925 13.15 2.225L21.35 5.525C22.35 5.925 22.35 7.325 21.35 7.725L13.05 11.025C12.45 11.325 11.65 11.325 11.05 11.025Z" fill="black"></path>
+                                                </svg>
+                                            </span>
+                                        </span>
+                                        <div class="flex-grow-1 me-2 ">
+                                            <a href="#" class="fw-bolder text-gray-800 text-hover-primary fs-6">Devis estimatif  :</a>
+                                            
+                                        </div>
+                                        <span class="fw-bolder text-primary py-1 fs-5" id="estimate-choice">2000 €</span>
+                                    </div>
+                                    
                                 </div>
                                 <!--end::Wrapper-->
                             </div>
-
+                            
                             <!--end::Step 5-->
                             <!--begin::Actions-->
                             <div class="separator my-1"></div>
@@ -700,51 +705,71 @@
         </div>
         <!--end::Container-->
     </div>
-<style>
-    .file-preview {
-    border: 1px dashed #3699FF !important;
-    padding: 8px;
-    width: 100%;
-    margin-bottom: 5px;
-}
-    .explorer-frame:hover{
-        background-color: #2B2B40;
-    }
-    .theme-explorer .file-preview-frame {
-    border: 0px dashed #2B2B40 !important; 
-    margin: 2px 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.file-drop-zone {
-    border: 0px dashed #3699FF !important;
-    min-height: 260px;
-    border-radius: 4px;
-    text-align: center;
-    vertical-align: middle;
-    margin: 12px 15px 12px 12px;
-    padding: 5px;
-}
-.kv-file-upload{
-    /* display: none  !important */
-}
-.file-upload-indicator{
-    /* display: none  !important */
-}
-.btn.btn-flex {
-    display: list-item;
-    align-items: center;
-}
-</style>
-    
+    <style>
+        .hide{
+            display: none !important;
+        }
+        .file-preview {
+            border: 1px dashed #3699FF !important;
+            padding: 8px;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .explorer-frame:hover {
+            background-color: #2B2B40;
+        }
+
+        .theme-explorer .file-preview-frame {
+            border: 0px dashed #2B2B40 !important;
+            margin: 2px 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-drop-zone {
+            border: 0px dashed #3699FF !important;
+            min-height: 260px;
+            border-radius: 4px;
+            text-align: center;
+            vertical-align: middle;
+            margin: 12px 15px 12px 12px;
+            padding: 5px;
+        }
+
+        .kv-file-upload {
+            /* display: none  !important */
+        }
+
+        .file-upload-indicator {
+            /* display: none  !important */
+        }
+
+        .btn.btn-flex {
+            display: list-item;
+            align-items: center;
+        }
+
+    </style>
+
 @endsection
 @section('scripts')
     @include('home.step-script',["questions" => json_encode($questions) ])
-<script>
-    $(document).ready(function () {
-   
-    })
-</script>
+    <script>
+        $(document).ready(function() {
+            var currency_symbol = "{{ app_setting('currency_symbole') }}"
+            $(".category-item").on("click",function (){
+                    var estimate  = $(this).attr("data-estimate") 
+                    if (estimate) {
+                        $("#estimate-section").removeClass("hide")
+                        $("#estimate-choice").text(estimate + " " + currency_symbol )
+                    }else{
+                        $("#estimate-section").addClass("hide")
+                        $("#estimate-choice").text("")
+                    }
+            })
+        })
+    </script>
 @endsection

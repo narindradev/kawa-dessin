@@ -19,7 +19,7 @@ class PagesController extends Controller
     */
     public function index()
     {
-
+        
         $redirect = request()->redirect;
         if($redirect){
             $redirect =  $redirect;

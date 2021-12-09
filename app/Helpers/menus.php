@@ -47,9 +47,6 @@ if (!function_exists('get_menus_list')) {
 
 
             // $menu_vertical[] = ["title" => __("lang.clients"), 'path'  => 'questionnaire/preliminary_info',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
-
-      
-
         /**  Menu horizontal */
         $menu_horizontal[] =  ['title'   => 'Dashboard', 'path'    => 'index', 'classes' => array('item' => 'me-lg-1')];
         $resources_sub_items[] =  ["title" => "Documentation", "path" => 'documentation/getting-started/overview', 'icon'  => theme()->getSvgIcon("demo1/media/icons/duotune/abstract/abs027.svg", "svg-icon-2")];

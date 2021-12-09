@@ -21,7 +21,7 @@ class CreateTableMessages extends Migration
             $table->foreignId("group_id")->nullable();
             $table->foreignId("receiver_id")->nullable();
             $table->longText("files")->nullable();
-            $table->longText("seen_by")->default(0);
+            $table->longText("seen_by")->default("0");
             $table->longText("deleted_by")->default(0);
             $table->boolean("deleted")->default(0);
             $table->timestamps();

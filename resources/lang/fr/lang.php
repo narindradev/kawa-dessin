@@ -28,8 +28,8 @@ return [
     'required_response' => 'Veuillez repondre au question s\'il vous plait.',
     'required_preliminary_question' => 'Veuillez repondre pour chaque question de l <<information préliminaire>> s\'il vous plait.',
     'required_input_type_email' => 'Veulliez entrer un e-mail valide.',
-    'accept_rgbd' => 'Veulliez accepter les terms et conditions ',
-    'email_already_taked' => 'Cet email est déjà utilisé. Merci d\'en saisir un nouveau.' ,
+    'accept_rgbd' => 'Veulliez accepter les terms et les conditions ',
+    'email_already_taked' => 'Cet email est déjà utilisé. Merci d\'en saisir un autre.' ,
     'add_new_offer' => 'Ajouter un offre',
     'success_record' => 'Enregistrement avec succes.',
     'success_deleted' => 'Suppression avec succes.',
@@ -236,4 +236,5 @@ return [
     'nothing' => 'Aucun',
     'view_all_activities' => 'Voir toutes',
     'load_more' => 'Afficher plus',
+    'message' => 'Message',
 ];

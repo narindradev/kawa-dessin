@@ -578,7 +578,7 @@ if (!function_exists('row_id')) {
 if (!function_exists('format_to_currency')) {
     function format_to_currency($value = 0.00)
     {
-        return  app_setting("currency_symbole") . number_format($value, 2, app_setting("separator_decimal"), app_setting("separtor_thousands"));
+        return  app_setting("currency_symbole") . number_format($value, 2, app_setting("separator_decimal"), (app_setting("separtor_thousands") == "escape" ? " " : app_setting("separtor_thousands")));
     }
 }
 if (!function_exists('invoice_data')) {
