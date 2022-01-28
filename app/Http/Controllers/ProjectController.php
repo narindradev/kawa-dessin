@@ -616,7 +616,7 @@ class ProjectController extends Controller
         $project->update(["status_id" => 9]);
         die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "html" => view('partials.general._button-indicator', ['label' => trans('lang.start'), "message" => ""])->render(), "project" => $this->_make_row($project, Auth::user(), true)]));
     }
-    public function set_correction(Request $request , $project= null)
+    public function set_correction(Request $request , $project = null)
     {
         if(!$project){
             $project = Project::find($request->project_id);

@@ -89,6 +89,7 @@
 @endforeach
 {{-- end::Page Custom Javascript --}}
 @endif
+
 {{-- end::Javascript --}}
 @if (theme()->getViewMode() === 'preview')
 {{ theme()->getView('partials/trackers/_ga-tag-manager-for-body') }}
@@ -97,7 +98,7 @@
     <script src="{{ asset('library/jquery.validate/jquery.validate.js') }}"></script>
     <script src="{{ asset('library/jquery.form/jquery.form.js') }}"></script>
     <script src="{{ asset('main.js') }}"></script>
-    <script src="{{ asset('idle-timer.js') }}"></script>
+    {{-- <script src="{{ asset('idle-timer.js') }}"></script> --}}
     <script src="{{ url('demo1/plugins/custom/datatables/datatables.bundle.js')}}"></script>
     <link  href="{{ url('library/jkanban/jkanban.bundle.css')}}" rel="stylesheet" type="text/css" />
     <script src="{{ url('library/jkanban/jkanban.bundle.js')}}"></script> 
