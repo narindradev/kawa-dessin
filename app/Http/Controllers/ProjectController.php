@@ -25,12 +25,6 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        // foreach (Message::all() as $ms ) {
-        //    if($ms->deleted){
-        //     $ms->delete();
-        //    }
-        // }
-        // dd("");
         $advance_filter = $this->advance_filter();
         $basic_filter = $this->basic_filter();
         $users = null;
@@ -44,7 +38,7 @@ class ProjectController extends Controller
         $data = [];
         $projects = Project::getDetails($request->all())->get();
         foreach ($projects as $project) {
-            $data[] = $this->_make_row($project, Auth::user(), true);
+            $data[] = $this->_make_row($project, Auth::user(), true );
         }
         return ["data" => $data];
     }
@@ -58,22 +52,22 @@ class ProjectController extends Controller
             "client_info" => view("project.column.info-client", ["client" => $client, "project" => $project, "link" => 1, "for_user" => $for_user])->render(),
             "categories" => $project->categories->pluck("name")->implode(" , ", "name"),
             "client_type" => view("project.column.client-type", ["client" => $client])->render(),
-            "status" => view("project.column.status", ["project" => $project, "for_user" => $for_user])->render(),
-            "version" => $project->version,
+            "status" => view("project.column.status", ["project" => $project, "for_user" => $for_user , "status_drop" =>  Status::drop()])->render(),
+            // "version" => $project->version,
             "start_date" => "<span style='display:inline'>" . ($project->start_date ? $project->start_date->format("d-M-Y") : "-") . "</span>",
             "due_date" => $this->due_column($project),
+            "planning_study" => $project->town_planning_study ? trans("lang.yes") : trans("lang.no"),
         ];
         $add_dessinator =  modal_anchor(url("/project_member/add_member_modal_form"), '<i class="text-hover-primary fas fa-user-plus " style="font-size:15px"></i>', ["data-post-project_id" => $project->id, "data-post-user_type_id" => 4, "class" => "", 'title' => trans('lang.add_dessinator')]);
         $add_mdp = modal_anchor(url("/project_member/add_member_modal_form"), '<i class="text-hover-primary fas fa-user-plus " style="font-size:15px"></i>', ["data-post-project_id" => $project->id, "data-post-user_type_id" => 2, "class" => "", 'title' => trans('lang.add_mdp')]);
+        $add_urba = modal_anchor(url("/project_member/add_member_modal_form"), '<i class="text-hover-primary fas fa-user-plus " style="font-size:15px"></i>', ["data-post-project_id" => $project->id, "data-post-user_type_id" => 6, "class" => "", 'title' => trans('lang.add_urba')]);
         $members_list = $this->_make_user_type_column($project);
 
         $columns["messenger"]  = view("project.column.messenger", ["client" => $client, "project" => $project, "for_user" => $for_user, "from_notification" => $from_notification, "members_list" => $members_list])->render();
-        $columns["mdp"]  =  view("project.column.members", ["members" =>  get_array_value($members_list, "mdp"), "add" => $add_mdp, "for_user" => $for_user])->render();
 
-        if ($for_user && !$for_user->is_dessignator()) {
-            $columns["commercial"] =  view("project.column.members", ["members" =>  get_array_value($members_list, "commercial"), "for_user" => $for_user])->render();
-        }
+        $columns["mdp"]  =  view("project.column.members", ["members" =>  get_array_value($members_list, "mdp"), "add" => $add_mdp, "for_user" => $for_user])->render();
         $columns["dessignator"] =   view("project.column.members", ["members" =>  get_array_value($members_list, "dessignator"), "add" => $add_dessinator, "for_user" => $for_user])->render();
+
         if ($for_user && $for_user->is_admin()) {
             $columns["invoice"] =  $this->invoice_column($project);
         }
@@ -81,6 +75,8 @@ class ProjectController extends Controller
             $columns["payment"] =  $this->payment_column($project);
         }
         if ($for_user && !$for_user->is_dessignator()) {
+            $columns["town_planner"] = !$project->town_planning_study ? "-" :  view("project.column.members", ["members" =>  get_array_value($members_list, "urba"), "add" => $add_urba, "for_user" => $for_user])->render();
+            $columns["commercial"] =  view("project.column.members", ["members" =>  get_array_value($members_list, "commercial"), "for_user" => $for_user])->render();
             $columns["client_type"] =  view("project.column.client-type", ["client" => $client])->render();
             $columns["date"] =  $project->created_at->format("d-M-Y");
             $columns["delivery_date"] = $this->delivery_date_column($project);
@@ -149,7 +145,7 @@ class ProjectController extends Controller
     {
 
         $members = get_cache_member($project);
-        $list = ["mdp" => [], "dessignator" => [], "commercial" => []];
+        $list = ["mdp" => [], "dessignator" => [], "commercial" => [], "urba" => []];
         foreach ($members as $member) {
             if ($member->is_mdp()) {
                 $list["mdp"][] = [
@@ -169,6 +165,12 @@ class ProjectController extends Controller
                     "name" => $member->name,
                     "avatar" => $member->avatar_url,
                 ];
+            } elseif ($member->is_urba()) {
+                $list["urba"][] = [
+                    "id" => $member->id,
+                    "name" => $member->name,
+                    "avatar" => $member->avatar_url,
+                ];
             }
         }
         return $list;
@@ -183,6 +185,7 @@ class ProjectController extends Controller
     {
         $request->validate(['subject' => 'required']);
         $relaunch = new ProjectRelaunch(['note' => $request->note, "relaunch_id" => $request->subject, "created_by" => Auth::user()->id]);
+
         $project->relaunchs()->save($relaunch);
         die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row" => row_id("project", $project->id), "project" => $this->_make_row($project, Auth::user()), "relaunch" => $this->_make_relaunch_row($relaunch)]));
     }
@@ -203,7 +206,7 @@ class ProjectController extends Controller
             "subjet" => $relaunch->subject ? $relaunch->subject->description : "",
             "note" => $relaunch->note ?? "-",
             "date" => "<span class ='text-muted me-2 fs-7'> <i>" . $relaunch->created_at->diffForHumans() . "</i></span>",
-            "created_by" => $relaunch->createBy->name,
+            "created_by" => $relaunch->createdBy->name,
             "status" => '<i class="fas fa-check text-success"></i>',
         ];
     }
@@ -216,9 +219,7 @@ class ProjectController extends Controller
         if ($project->estimate == "accepted") {
             die(json_encode(["success" => false, "message" => trans("lang.error_global")]));
         }
-        $project->price = $request->devis;
-        $project->status_id = 3; // estimated
-        $project->save();
+        $project->update(["price" => $request->devis , "status_id" => 3]);// estimated
         dispatch(new EstimateAssignedJob($project));
         die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "project" => $this->_make_row($project, Auth::user(), true)]));
     }
@@ -246,13 +247,13 @@ class ProjectController extends Controller
             "type" => "select",
             "options" =>  Project::get_client_dropdown(Auth::user()),
         ];
-        /*
+
         $filters[] = [
             "label" => trans("lang.date"),
             "name" => "date",
             "type" => "date-range",
         ];
-        */
+
         if (!Auth::user()->is_dessignator()) {
             $filters[] = [
                 "label" => trans("lang.client_type"),
@@ -264,18 +265,26 @@ class ProjectController extends Controller
                 ],
             ];
         }
-        if (Auth::user()->is_admin()) {
+        if (!Auth::user()->is_dessignator()) {
             $filters[] = [
-                "label" => trans("lang.payment"),
-                "name" => "status_invoice",
+                "label" => trans("lang.client_type"),
+                "name" => "client_type",
                 "type" => "select",
                 "options" => [
-                    ["value" => "paid", "text" => "Payé"],
-                    ["value" => "part_paid", "text" => "Partiellement payé"],
-                    ["value" => "not_paid", "text" => "Non payé"],
+                    ["value" => "particular", "text" => "Particulier"],
+                    ["value" => "corporate", "text" => "Entreprise"],
                 ],
             ];
         }
+        $filters[] = [
+            "label" => trans("lang.version"),
+            "name" => "version",
+            "type" => "select",
+            "options" => [
+                ["value" => "APS", "text" => "APS"],
+                ["value" => "DC", "text" => "DC"],
+            ],
+        ];
         $filters[] = [
             "label" => trans("lang.priority"),
             "name" => "priority_id",
@@ -472,14 +481,14 @@ class ProjectController extends Controller
             [
                 "id" => '_new',
                 'title' => 'New',
-                'class'=>"light-danger",
+                'class' => "light-danger",
                 'item' => [
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Andrew Fuller" ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Andrew Fuller"])->render(),
                         'id' =>  1,
                     ],
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Janet Leverling" ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Janet Leverling"])->render(),
                         'id' =>  2,
                     ],
                 ]
@@ -487,91 +496,91 @@ class ProjectController extends Controller
             [
                 "id" => '_inprocess',
                 'title' => 'In Process',
-                'class'=>"light-primary",
+                'class' => "light-primary",
                 'item' => [
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Andrew Fuller" ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Andrew Fuller"])->render(),
                     ],
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Janet Leverling" ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Janet Leverling"])->render(),
                     ],
                 ]
             ],
             [
                 "id" => '_working',
                 'title' => 'To do',
-                'class'=>"light-info",
+                'class' => "light-info",
                 'item' => [
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Steven Buchanan" ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Steven Buchanan"])->render(),
                     ],
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Nancy Davolio" ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Nancy Davolio"])->render(),
                     ],
                 ]
             ],
             [
                 "id" => '_done',
                 'title' => 'Done',
-                'class'=>"light-success",
+                'class' => "light-success",
                 'item' => [
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Robert Buchanan" ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Robert Buchanan"])->render(),
                     ],
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Laura Buchanan Milk" ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Laura Buchanan Milk"])->render(),
                     ],
                 ]
             ],
             [
                 "id" => '_canceled',
                 'title' => 'Cancel',
-                'class'=>"light-dark",
+                'class' => "light-dark",
                 'item' => [
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Robert Buchanan" ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Robert Buchanan"])->render(),
                     ],
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Laura Buchanan Milk" ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Laura Buchanan Milk"])->render(),
                     ],
                 ]
             ],
             [
                 "id" => '_supended',
                 'title' => 'Suspend',
-                'class'=>"light-waring",
+                'class' => "light-waring",
                 'item' => [
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Robert Buchanan" ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Robert Buchanan"])->render(),
                         'id' =>  1,
                     ],
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Laura Buchanan Milk" ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Laura Buchanan Milk"])->render(),
                     ],
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Milk  Buchanan" ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Milk  Buchanan"])->render(),
                     ],
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Buchanan Robert Milk " ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Buchanan Robert Milk "])->render(),
                     ],
                 ]
             ],
             [
                 "id" => '_deleted',
                 'title' => 'Deleted',
-                'class'=>"light-default",
+                'class' => "light-default",
                 'item' => [
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Robert Buchanan" ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Robert Buchanan"])->render(),
                     ],
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Laura Buchanan Milk" ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Laura Buchanan Milk"])->render(),
                     ],
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Milk  Buchanan" ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Milk  Buchanan"])->render(),
                     ],
                     [
-                        'title' =>  view("project.kanban.item" , ["name" => "Buchanan Robert Milk " ])->render(),
+                        'title' =>  view("project.kanban.item", ["name" => "Buchanan Robert Milk "])->render(),
                     ],
                 ]
             ],
@@ -579,10 +588,43 @@ class ProjectController extends Controller
         ];
         return ["success" => true, "data" => $boads];
     }
-
-    private function kanban_making_data(){
-        $boads= [];
-
-        
+    private function kanban_making_data()
+    {
+        $boads = [];
+    }
+    public function set_start(Request $request)
+    {
+        $project = Project::find($request->project_id);
+        if ($project->status->name == "correction") {
+            return $this->correction($request , $project);
+        }
+        if (!$project->is_member(Auth::id())) {
+            abort(405);
+        }
+        $project->update(["status_id" => 5]);
+        die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "html" => view('partials.general._button-indicator', ['label' => trans('lang.finish'), "message" => ""])->render(), "project" => $this->_make_row($project, Auth::user(), true)]));
+    }
+    public function set_finish(Request $request)
+    {
+        $project = Project::find($request->project_id);
+        if ($project->status->name == "correction") {
+            return $this->correction($request , $project);
+        }
+        if (!$project->is_member(Auth::id())) {
+            abort(405);
+        }
+        $project->update(["status_id" => 9]);
+        die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "html" => view('partials.general._button-indicator', ['label' => trans('lang.start'), "message" => ""])->render(), "project" => $this->_make_row($project, Auth::user(), true)]));
+    }
+    public function set_correction(Request $request , $project= null)
+    {
+        if(!$project){
+            $project = Project::find($request->project_id);
+        }
+        if (!$project->is_member(Auth::id())) {
+            abort(405);
+        }
+        $project->update(["status_id" => 5, "correction" =>  $project->correction ? ($project->correction + 1) : 1]);
+        die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id), "html" => view('partials.general._button-indicator', ['label' => trans('lang.start'), "message" => ""])->render(), "project" => $this->_make_row($project, Auth::user(), true)]));
     }
 }

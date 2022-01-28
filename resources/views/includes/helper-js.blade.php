@@ -15,7 +15,7 @@
         "closeButton": true,
         "newestOnTop": 1,
         "progressBar": true,
-        "positionClass": "toast-bottom-right",
+        "positionClass": "toastr-bottom-right",
         "preventDuplicates": false,
         "onclick": null,
         "preventDuplicates": 0,

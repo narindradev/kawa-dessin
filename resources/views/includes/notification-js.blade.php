@@ -30,7 +30,8 @@
                 }
             }
         }
-       
+        /** Notififcation not a chat*/ 
+        pushPopNotification(notification.toast)
         if (typeof notification.extra_data != "undefined" && notification.extra_data.type == "dataTable") {
             updateTableInstance(notification);
         }

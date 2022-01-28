@@ -14,10 +14,13 @@ class Relaunch extends Model
 
   
 
-    static function drop()
+    static function drop($project = null)
     {
         $list = [];
-        $relaunchs = Relaunch::all();
+        $relaunchs = $project ? Relaunch::where("project_id" , $project->id)->orWhere(function ($q)
+        {
+            $q->whereNull('project_id');
+        })->get() : Relaunch::all();
         foreach ($relaunchs as $relaunch) {
             $list[] = ["value" => $relaunch->id , "text" => $relaunch->description];
         }

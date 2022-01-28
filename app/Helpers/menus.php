@@ -24,19 +24,18 @@ if (!function_exists('get_menus_list')) {
         }elseif($auth_user->is_client()){
 
             // $menu_vertical[] = ["title" => __("lang.my_project"), 'path'  => 'client/project/index',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
-        }elseif($auth_user->is_commercial() || $auth_user->is_dessignator() || $auth_user->is_mdp()){
+        }elseif($auth_user->is_commercial() || $auth_user->is_dessignator() || $auth_user->is_mdp() || $auth_user->is_urba()){
             $menu_vertical[] = ["classes" => ['content' => 'pt-8 pb-2'], 'content' => '<span class="menu-section text-muted text-uppercase fs-8 ls-1">Modules</span>',];
             $menu_vertical[] = ["title" => __("lang.projects"), 'path'  => 'project',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
-
             // $menu_vertical[] = ["title" => __("lang.my_project"), 'path'  => 'client/project/index',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
         }
-            // $account_sub_items = [];
-            /*
+            $account_sub_items = [];
             $account_sub_items[]  = ["title" => "Overview", "path" => "account/overview", "bullet" => '<span class="bullet bullet-dot"></span>'];
             $account_sub_items[]  = ["title" => "Settings", "path" => "account/settings", "bullet" => '<span class="bullet bullet-dot"></span>'];
             $account_sub_items[]  = ["title" => "Security", "path" => "#", "bullet" => '<span class="bullet bullet-dot"></span>', "attributes" => ["tiltle" => "blabla"]];
            
             $menu_vertical[] = ["title" => "Account", "sub" => ["class" => "menu-sub-accordion menu-active-bg", "items" => $account_sub_items],  'attributes' => array("data-kt-menu-trigger" => "click"), 'classes'    => array('item' => 'menu-accordion'),  'icon' => ['svg'  => theme()->getSvgIcon("demo1/media/icons/duotune/communication/com006.svg", "svg-icon-2"), 'font' => '<i class="bi bi-person fs-2"></i>']];
+             /*
             $system_sub_items = [];
             $system_sub_items[]  = ["title" => "Settings", "path" => '#', "bullet" => '<span class="bullet bullet-dot"></span>'];
             $system_sub_items[]  = ["title" => "Audit Log", "path" => "log/audit", "bullet" => '<span class="bullet bullet-dot"></span>'];
@@ -48,6 +47,9 @@ if (!function_exists('get_menus_list')) {
 
             // $menu_vertical[] = ["title" => __("lang.clients"), 'path'  => 'questionnaire/preliminary_info',  'icon'  => '<i class="fas fa-briefcase fs-3"></i>'];
         /**  Menu horizontal */
+
+
+        
         $menu_horizontal[] =  ['title'   => 'Dashboard', 'path'    => 'index', 'classes' => array('item' => 'me-lg-1')];
         $resources_sub_items[] =  ["title" => "Documentation", "path" => 'documentation/getting-started/overview', 'icon'  => theme()->getSvgIcon("demo1/media/icons/duotune/abstract/abs027.svg", "svg-icon-2")];
         $resources_sub_items[] =  ["title" => "Changelog", "path" => 'documentation/getting-started/changelog', 'icon'  => theme()->getSvgIcon("demo1/media/icons/duotune/general/gen005.svg", "svg-icon-2")];

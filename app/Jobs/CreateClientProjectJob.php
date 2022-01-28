@@ -47,7 +47,7 @@ class CreateClientProjectJob implements ShouldQueue
         }
         $user->notify(new ProjectAssignedNotification($this->project, null));
         $this->client->notify(new ProjectCreatedNotification());
-        $this->project->status_id = 2;
-        $this->project->save();
+        // $this->project->status_id = 2;
+        // $this->project->save();
     }
 }

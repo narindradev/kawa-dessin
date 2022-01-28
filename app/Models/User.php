@@ -6,7 +6,6 @@ use Laravel\Cashier\Billable;
 use Spatie\Permission\Traits\HasRoles;
 use App\Core\Traits\SpatieLogsActivity;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -115,6 +114,10 @@ class User extends Authenticatable implements CanResetPassword
     public function is_commercial()
     {
         return  $this->user_type_id == 3;
+    }
+    public function is_urba()
+    {
+        return  $this->user_type_id == 6;
     }
     public function getMessageNotSeenAttribute()
     {

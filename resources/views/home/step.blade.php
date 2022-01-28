@@ -467,7 +467,7 @@
                                         <!--begin::Title-->
                                         <h2 class="fw-bolder text-dark">Information requis</h2>
                                     </div>
-                                    
+                                  
                                     @foreach ($questions as $question)
                                         <div class="fv-row mb-10 fv-plugins-icon-container">
                                             <label
@@ -480,9 +480,16 @@
                                             <div class="fv-plugins-message-container invalid-feedback"></div>
                                         </div>
                                     @endforeach
-
                                     <!--begin::Col-->
-
+                                    <div class="fv-plugins-icon-container mb-5  ">
+                                        <div class="pt-0 form-check form-check-custom form-check-solid" style="display: block;">
+                                            <label class="form-label col-12"  style=" display: inline;">
+                                                 Voulez vous une étude d’urbanisme ? Si oui, cochez ceci.
+                                            </label>
+                                            <input class="form-check-input h-20px w-20px" type="checkbox" name="town_planning_study" value="1" id="town_planning_study">
+                                            <br>
+                                            <div class="fv-plugins-message-container invalid-feedback"></div></div>
+                                    </div>
                                 </div>
                                 <!--end::Wrapper-->
                             </div>
@@ -512,17 +519,16 @@
                                         <!--begin::Alert-->
                                         <script>
                                             var max = 1
-
+                                            var maxfiles = "{{ $max_files }}"
+                                            
                                             function del(params) {
-
                                                 if (max > 1) {
                                                     max--
                                                     $(params).closest('.file-input').remove()
                                                 }
                                             }
-
                                             function add() {
-                                                if (max < 6) {
+                                                if (max < maxfiles) {
                                                     max++
                                                     $("#div").clone().insertBefore("#div").find("input[type='file']").val("");
                                                 }

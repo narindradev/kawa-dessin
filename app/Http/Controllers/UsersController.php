@@ -81,7 +81,6 @@ class UsersController extends Controller
     public function show($id)
     {
         $config = theme()->getOption('page');
-
         return User::find($id);
     }
 

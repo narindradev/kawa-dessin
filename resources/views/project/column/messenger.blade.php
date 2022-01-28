@@ -7,6 +7,6 @@
             $count = $project->messages->count();
         }
     }
-    $message_not_seen = $count ? "<span class='position-absolute top-0 start-100 translate-middle  badge badge-circle  badge-sm badge-light-danger' id='project_message_user_unread_$project->id'>".$count."</span>": "" ;
+    $message_not_seen = $count ? "<span class='position-absolute top-0 start-100 translate-middle  badge badge-circle  badge-sm badge-light-danger' id='project_message_user_unread_$project->id'>".$count."</span>":  "" ;
     echo modal_anchor(url("/message/chat"), '<i class="fab text-primary fa-facebook-messenger fa-lg"></i>'.$message_not_seen, ['class' => 'position-relative me-5', 'data-post-project_id' => $project->id , 'data-drawer' => true, 'title' => trans('lang.chat')]);
 @endphp

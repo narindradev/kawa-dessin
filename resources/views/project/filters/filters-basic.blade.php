@@ -11,7 +11,6 @@
                     $input['attributes']['data-control'] = 'select2';
                 }
                 $input['attributes']['class'] = $class ;
-                
                 @endphp
             @include("field-inputs.".get_array_value($input,"type") ,["input" => $input])
         </div>

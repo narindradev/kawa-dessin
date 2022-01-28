@@ -48,6 +48,7 @@
 
         $("#category-form").appForm({
             onSuccess: function(response) {
+                // dataTableaddRowIntheTop(dataTableInstance.categoryTable ,response.data)
                 dataTableInstance.categoryTable.ajax.reload();
             },
         })

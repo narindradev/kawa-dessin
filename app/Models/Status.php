@@ -16,7 +16,7 @@ class Status extends Model
         $list = [];
         $status = Status::all();
         foreach ($status as $s) {
-            $list[] = ["value" => $s->id , "text" => trans("lang.$s->name") ];
+            $list[] = ["value" => $s->id , "text" => trans("lang.$s->name") ,"class" => $s->class ];
         }
         return $list;
     }

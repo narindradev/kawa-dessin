@@ -17,6 +17,8 @@ class CreateTableProjectRelanuchs extends Migration
             $table->id();
             $table->foreignId("project_id");
             $table->foreignId("relaunch_id")->nullable();
+            $table->string("seen_by")->nullable()->default("0");
+            $table->string("files")->nullable();
             $table->bigInteger("created_by")->nullable();
             $table->longText("note")->nullable();
             $table->timestamps();

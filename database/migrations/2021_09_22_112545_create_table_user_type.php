@@ -33,7 +33,7 @@ class CreateTableUserType extends Migration
                 ['name' => 'commercial',"description" => "Commercial"],
                 ['name' => 'dessinator',"description" => "Dessignateur"],
                 ['name' => 'client',"description" => "Client"],
-               
+                ['name' => 'urba',"description" => "Urbaniste"],
             ]
         );
     }

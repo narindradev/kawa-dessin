@@ -237,4 +237,10 @@ return [
     'view_all_activities' => 'Voir toutes',
     'load_more' => 'Afficher plus',
     'message' => 'Message',
+    'add_urba' => 'Ajouter un urbaniste',
+    'me' => 'Moi',
+    'version' => 'Version',
+    'start' => 'Demarrer',
+    'validated' => 'A validé',
+    'correction' => 'correction',
 ];

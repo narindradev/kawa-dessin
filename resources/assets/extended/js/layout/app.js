@@ -431,9 +431,6 @@ var KTApp = function () {
 
 
             this.initDebug();
-
-
-
         },
         initAjaxModal: function () {
             initAjaxModal()
