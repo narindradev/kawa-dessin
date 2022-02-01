@@ -92,7 +92,7 @@
                         @endif
                        
                         {data: 'status',"title" :"Statut","orderable":true,"searchable":false,"class":"text-center"},
-                        // {data: 'version',"title" :"version","orderable":true,"searchable":false,"class":"text-center"},
+                        {data: 'version',"title" :"version","orderable":true,"searchable":false,"class":"text-center"},
                         {data: 'planning_study',"title" :"Urba","orderable":true,"searchable":false,"class":"text-center min-w-50px"},
                         @if (auth()->user()->is_admin() || auth()->user()->is_commercial()) 
                             {data: 'estimate',"title" :"Prix","class":"text-center  min-w-100px"},

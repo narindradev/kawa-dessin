@@ -53,7 +53,7 @@ class ProjectController extends Controller
             "categories" => $project->categories->pluck("name")->implode(" , ", "name"),
             "client_type" => view("project.column.client-type", ["client" => $client])->render(),
             "status" => view("project.column.status", ["project" => $project, "for_user" => $for_user , "status_drop" =>  Status::drop($for_user)])->render(),
-            // "version" => $project->version,
+            "version" => view("project.column.version", ["project" => $project])->render(),
             "start_date" => "<span style='display:inline'>" . ($project->start_date ? $project->start_date->format("d-M-Y") : "-") . "</span>",
             "due_date" => $this->due_column($project),
             "planning_study" => $project->town_planning_study ? trans("lang.yes") : trans("lang.no"),
@@ -635,8 +635,18 @@ class ProjectController extends Controller
         if ($project->status->name == "correction") {
             return $this->set_correction($request , $project);
         }
-        $project->status_id = $request->new_project_status;
-        $project->save();
+        $project->update(["status_id" => $request->new_project_status]) ;
+        return ["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id),  "data" =>$this->_make_row($project, Auth::user(), true) ,"message" => trans("lang.success_record")];
+    }
+    public function set_version(Request $request ,Project $project )
+    {
+        if (!$project->is_member(Auth::id())) {
+            abort(405);
+        }
+        // set version
+        if(in_array($request->new_project_version , ["APS" , "DS"] )){
+            $project->update(["version" => $request->new_project_version]);
+        }
         return ["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id),  "data" =>$this->_make_row($project, Auth::user(), true) ,"message" => trans("lang.success_record")];
     }
 }

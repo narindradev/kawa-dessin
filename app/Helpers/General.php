@@ -682,10 +682,10 @@ if (!function_exists('project_correction_range')) {
             return null;
         }
         if ($project->correction === 1) {
-            return "<span> 1<sup>ère</sup></span>";
+            return " 1<sup>ère</sup>";
         }
         if ($project->correction > 1) {
-            return "<span>$project->correction<sup>éme</sup><span>";
+            return "$project->correction<sup>éme</sup>";
         }
     }
 }

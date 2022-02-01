@@ -136,6 +136,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/project/start/form/{project}', [ProjectController::class, 'start_form']);
     Route::post('/project/start/add/{project}', [ProjectController::class, 'add_start']);
     Route::post('/project/set_status/{project}', [ProjectController::class, 'set_status']);
+    Route::post('/project/set_version/{project}', [ProjectController::class, 'set_version']);
     /** Users */ 
     Route::get('/users/list', [UsersController::class, 'index']);
     Route::get('/users/data_list', [UsersController::class, 'data_list']);
