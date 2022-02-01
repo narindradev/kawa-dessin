@@ -15,7 +15,7 @@
 
             </div>
             <div class="modal-body modal-body-content" id="ajax-modal-content">
-
+                    
             </div>
             <div id='ajax-modal-original-content' class='center-align'>
                 <div class="original-modal-body ">

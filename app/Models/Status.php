@@ -9,14 +9,17 @@ class Status extends Model
 {
     use HasFactory;
     protected $table = "status";
-
-
-    static function drop()
+    private static $execlude_status = [2,3];
+    static function drop($for_user )
     {
         $list = [];
-        $status = Status::all();
+        $q = Status::query();
+        if ($for_user->is_mdp() || $for_user->dessignator()) {
+            $q->whereNotIn("id",self::$execlude_status);
+        }
+        $status =  $q->get();
         foreach ($status as $s) {
-            $list[] = ["value" => $s->id , "text" => trans("lang.$s->name") ];
+            $list[] = ["value" => $s->id , "text" => trans("lang.$s->name") ,"class" => $s->class ];
         }
         return $list;
     }

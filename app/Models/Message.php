@@ -40,12 +40,12 @@ class Message extends Model
         $project_id = get_array_value($options, "project_id");
         if ($project_id) {
             $project = get_array_value($options, "project");
-            $message =  $project->messages();
+            $messages =  $project->messages();
         }
         /** Private's messages */
         $user_id = get_array_value($options, "user_id");
         if ($user_id) {
-            $message = $this::where(function ($query)use($user_id, $me) {
+            $messages = $this::where(function ($query)use($user_id, $me) {
                 $query->where(function($q1) use ($user_id ,$me){
                     $q1->where('sender_id',$user_id )->where('receiver_id', $me->id);
                 })->orWhere(function($q2) use ($user_id ,$me){
@@ -56,8 +56,8 @@ class Message extends Model
         /** Group's messages */
         $group_id = get_array_value($options, "group_id");
         if ($group_id) {
-            // $message = Group::find($group_id)->messages();
+            // $messages = Group::find($group_id)->messages();
         }
-        return $message->whereRaw('NOT FIND_IN_SET(' . $me->id . ',deleted_by)')->whereDeleted(0)->orderBy('id', "DESC");
+        return $messages->whereRaw('NOT FIND_IN_SET(' . $me->id . ',deleted_by)')->whereDeleted(0)->orderBy('id', "DESC");
     }
 }

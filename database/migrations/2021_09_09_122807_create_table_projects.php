@@ -23,7 +23,9 @@ class CreateTableProjects extends Migration
             $table->string("estimate_price")->nullable();
             $table->integer("validation")->nullable();
             // $table->enum("" ,['accepted', 'refused'])->nullable();
-            $table->integer("version")->nullable();
+            $table->enum("version",["APS" , "DC"])->default("APS");
+            $table->integer("correction")->nullable()->default(0);
+            $table->boolean("town_planning_study")->default(0);
             $table->boolean("deleted")->default(0);
             $table->date("start_date")->nullable();
             $table->date("due_date")->nullable();

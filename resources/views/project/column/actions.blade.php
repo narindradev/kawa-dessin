@@ -1,3 +1,4 @@
+@if (0)
 <div class="card-toolbar">
     <button type="button" data-bs-toggle="dropdown"
         class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" data-kt-menu-trigger="click"
@@ -40,9 +41,9 @@
             </div>
         @endif
         @if ($for_user->is_dessignator())
-            <div class="menu-item px-3 my-1">
+            {{-- <div class="menu-item px-3 my-1">
                 <a href="#" class="menu-link px-3">Dessi action</a>
-            </div>
+            </div> --}}
         @endif
         @if ($for_user->is_mdp())
         <div class="menu-item px-3 my-1">
@@ -58,4 +59,30 @@
         @endif
         
     </div>
-</div>
+</div>   
+@endif
+@if ($for_user->is_dessignator() )
+<form class="form" id="start-project-form-{{ $project->id }}" method="POST" action="{{ "/project/set/".($project->status_id == 5 ? "finish" : "start") }}">
+    @csrf 
+    <input type="hidden" name="project_id" value="{{$project->id}}">
+    @php
+        $text = ($project->status_id == 5 ) ? "finish" : "start";
+        $icon = ($project->status_id == 5) ? '<i class="fas fa-arrow-circle-right"></i>' : '<i class="fas fa-check-circle"></i>';
+    @endphp
+    <button type="submit" id="submit-form" class="btn btn-sm btn-light-primary py-1 px-2" title="{{ trans("lang.$text") }} ce projet ">
+        @include('partials.general._button-indicator', ['label' => trans("lang.$text")." ". $icon ,"message" => ""])
+    </button>
+</form>
+    <script>
+        $(document).ready(function() {
+            $("#start-project-form-{{$project->id}}").appForm({
+                onSuccess: function(response) {
+                    if (response.success) {
+                        dataTableInstance.projectsTable.ajax.reload()
+                        $("#submit-form").html(response.html)
+                    }
+                },
+            })
+        })
+    </script>
+@endif

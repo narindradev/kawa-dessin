@@ -11,8 +11,8 @@ return array(
             ),
         ),
         'css'     => array(
-            'plugins/global/plugins.bundle.css',
-            'plugins/global/plugins-custom.bundle.css',
+            'public/plugins/global/plugins.bundle.css',
+            'public/plugins/global/plugins-custom.bundle.css',
             'css/style.bundle.css',
         ),
         'js'      => array(

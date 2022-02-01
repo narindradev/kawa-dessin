@@ -51,7 +51,6 @@ class ProjectAssignedNotification extends Notification
      */
     public function toMail($notifiable)
     {
-       
         return (new MailMessage)
             ->from(app_setting("sender_mail") ,app_setting("sender_name"))
             ->markdown('mail-template.project-asssigned',["event" => $this->event , "project" => $this->project ,"causer" => $this->causer ]);
@@ -85,7 +84,8 @@ class ProjectAssignedNotification extends Notification
                 "table" => "projectsTable",
                 "row_id" => row_id("projects",$this->project->id),
                 "row" => $controller->_make_row($this->project ,$notifiable)
-            ]
+            ],
+            "toast" => $this->toast_notification(),
         ]);
     }
     public function prepare_notification_item($notifiable)
@@ -98,5 +98,10 @@ class ProjectAssignedNotification extends Notification
         $notification->created_at =  Carbon::now();
         $notification->read_at =  null;
         return view('notifications.template', ['notification' => $notification])->render();
+    }
+    private function toast_notification(){
+        $content = "Un nouveau projet ";
+        $content .= project_tag($this->project);
+        return ["content" => $content , "title" => trans("lang.project")] ; 
     }
 }

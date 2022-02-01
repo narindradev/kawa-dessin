@@ -67,6 +67,4 @@ class CategoryController extends Controller
             die(json_encode(["success" => true, "message" => trans("lang.success_deleted")]));
         }
     }
-
-    
 }

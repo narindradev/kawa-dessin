@@ -9,7 +9,7 @@
     <link rel="shortcut icon" href="{{ asset("app/logo/logo.png") }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script> 
-    <link href="{{ url('demo1/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('demo1/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
         {{-- begin::Fonts --}}
         {{ theme()->includeFonts() }}
         {{-- end::Fonts --}}
@@ -93,19 +93,19 @@
 @if (theme()->getViewMode() === 'preview')
 {{ theme()->getView('partials/trackers/_ga-tag-manager-for-body') }}
 @endif
-
-@include('includes.helper-js')
+    @include('includes.helper-js')
     <script src="{{ asset('library/jquery.validate/jquery.validate.js') }}"></script>
     <script src="{{ asset('library/jquery.form/jquery.form.js') }}"></script>
     <script src="{{ asset('main.js') }}"></script>
-    <script src="{{ url('demo1/plugins/custom/datatables/datatables.bundle.js')}}"></script>
-    <link  href="{{ url('library/jkanban/jkanban.bundle.css')}}" rel="stylesheet" type="text/css" />
-    <script src="{{ url('library/jkanban/jkanban.bundle.js')}}"></script> 
+  
+    <script src="{{ asset('demo1/plugins/custom/datatables/datatables.bundle.js')}}"></script>
+    <link  href="{{ asset('library/jkanban/jkanban.bundle.css')}}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset('library/jkanban/jkanban.bundle.js')}}"></script> 
     {{-- <script src="{{ asset('library/bootstrap-fileinput/js/fileinput.min.js')}}"></script> --}}
     {{-- <script src="{{ asset('library/bootstrap-fileinput/themes/explorer/theme.min.js') }}"></script> --}}
     @yield('scripts')
-@include('includes.ajax-drawer')
-@include('includes.debugs')
-@include('includes.notification-js')
+    @include('includes.ajax-drawer')
+    @include('includes.debugs')
+    @include('includes.notification-js')
 </body>
 </html>

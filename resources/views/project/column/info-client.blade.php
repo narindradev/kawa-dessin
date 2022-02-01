@@ -18,14 +18,12 @@
                 echo mailing($client->user->email, ['class' => 'text-gray-600', 'data-mail' => true, 'mail' => $client->user->email, 'title' => trans('lang.mail-to')]);
             @endphp
         </span>
-        @if ($client->user->phone)
+        @if ($client->user->phone && $for_user->is_commercial())
             <div class="d-flex align-items-center flex-wrap">
             <i class="fas fa-phone-alt"></i> &nbsp;<span id="phone-{{ $client->user->id }}" class="text-gray-600"> {{ $client->user->phone }}</span>
-            @if ($for_user->is_commercial())
                 <a class="btn btn-icon btn-sm btn-light " style="width: 20px;height:17px" data-clipboard-target="#phone-{{ $client->user->id }}">
                     {!! theme()->getSvgIcon('icons/duotune/general/gen054.svg') !!}
                 </a>
-            @endif
         </div>
         @endif
         

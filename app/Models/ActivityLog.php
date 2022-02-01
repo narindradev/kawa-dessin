@@ -11,7 +11,7 @@ class ActivityLog
 {   
     public static $colunms =[
         "status_id" => ["model" => Status::class ,"colunm" => "name" ,"has_lang" => true],
-        "client_id" => ["model" => Client::class ,"colunm" =>"client" ]
+        "client_id" => ["model" => Client::class ,"colunm" =>"client" ],
     ];
     public static function get_relation($key = "" ,$val =""){
         $colunms = self::$colunms;
@@ -109,11 +109,11 @@ class ActivityLog
         $template["profile"] =  get_array_value($causer ,"profile");
         
         $project = $activity->subject_type::find($activity->subject_id);
-        $template["sentence"] = get_array_value($template , "causer" ) ." a  mis à jour le projet ".project_tag($project) ;               
+        $template["sentence"] = " Nouveau projet crée ".project_tag($project) ;               
         $template["changed"] = "";
-        if ($activity->properties) {
-            $template["changed"] = get_changed_column($activity);
-        }
+        // if ($activity->properties) {
+        //     $template["changed"] = get_changed_column($activity);
+        // }
         return $template;
     }
     public static function project_member_added($activity){

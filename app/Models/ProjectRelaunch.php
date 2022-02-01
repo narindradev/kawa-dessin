@@ -11,19 +11,27 @@ class ProjectRelaunch extends Model
 
     protected $table = "project_relaunchs";
     protected $guarded = [];
-    protected $with = ["createBy","subject"];
-    
+    protected $with = ["createdBy","subject"];
+    protected $appends  = ["attachements"];
 
     public function project()
     {
         return $this->belongsTo(Project::class);
     }
-    public function createBy()
+    public function createdBy()
     {
         return $this->belongsTo(User::class,"created_by");
     }
     public function subject()
     {
         return $this->belongsTo(Relaunch::class,"relaunch_id");
+    }
+
+    public function getAttachementsAttribute()
+    {
+        if ($this->files) {
+            return File::findMany(explode(",", $this->files));
+        }
+        return null;
     }
 }

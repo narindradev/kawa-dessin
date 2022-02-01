@@ -36,8 +36,8 @@ class Project extends Model
     {
         if (in_array("price", static::$logAttributes)) {
             $activity->users = Auth::id(); // Don't show  this log on project members
-        }else {
-            $activity->users =  $this->members()->pluck("user_id")->implode(",","user_id");
+        } else {
+            $activity->users =  $this->members()->pluck("user_id")->implode(",", "user_id");
         }
     }
     public function client()
@@ -105,12 +105,12 @@ class Project extends Model
         if ($AUTH->is_admin() && !$user_id) {
             /** load all project  */
             $projects = Project::query();
-        }elseif ($user_id && !is_array($user_id)) {
+        } elseif ($user_id && !is_array($user_id)) {
             /** load the user's projects assigned */
             $projects = User::find($user_id)->projects(); # code...
-           
-        }elseif ($user_id && is_array($user_id)) {
-            $projects = Project::whereHas("members" ,function ($query) use ($user_id) {
+
+        } elseif ($user_id && is_array($user_id)) {
+            $projects = Project::whereHas("members", function ($query) use ($user_id) {
                 $query->whereIn('user_id', $user_id);
             });
         } elseif ($client) {
@@ -142,10 +142,6 @@ class Project extends Model
         if ($validation) {
             $projects->where("validation", $validation);
         }
-        $version = get_array_value($options, "version");
-        if ($version) {
-            $projects->where("version", $version);
-        }
         $type = get_array_value($options, "client_type");
         if ($type) {
             $projects->whereHas('client', function ($query) use ($type) {
@@ -157,14 +153,16 @@ class Project extends Model
             $dates = explode("-", $date);
             $projects->whereBetween("start_date", [to_date($dates[0]), to_date($dates[1])]);
         }
-
+        $version = get_array_value($options, "version");
+        if ($version) {
+            $projects->where("version", $version);
+        }
         $with = ["categories", "client", "status"];
         if ($client || $AUTH->is_admin()) {
             $with[] = "invoiceItems";
             $with[] = "invoice";
         }
         $projects->with($with);
-
         $categorie_id = get_array_value($options, "categorie_id");
         if ($categorie_id) {
             $projects->whereHas('categories', function ($query) use ($categorie_id) {
@@ -186,21 +184,22 @@ class Project extends Model
                     ->whereDeleted(0);
             }]
         );
-        $projects->orderBy('status_id', "ASC");
         if ($user_id) {
             if (is_array($user_id)) {
                 if (User::find($user_id[0])->is_commercial()) {
-                $projects->orderBy('created_at', "DESC");
-            }else {
-                $projects->orderBy('due_date', "ASC");
+                    $projects->orderBy('created_at', "DESC");
+                } else {
+                    $projects->orderBy('due_date', "ASC");
+                }
             }
-        } 
         }
         if ($AUTH->is_commercial() || $AUTH->is_admin()) {
             $projects->orderBy('created_at', "DESC");
         } else {
             $projects->orderBy('due_date', "ASC");
         }
+        $projects->orderBy('status_id', "ASC");
+
         return $projects;
     }
 

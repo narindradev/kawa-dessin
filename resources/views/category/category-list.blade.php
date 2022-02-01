@@ -1,7 +1,5 @@
 <x-base-layout>
-
     <div class="row">
-        
         <div class="col-xxl-12" id="category-section">
             <div class="card card-xxl-stretch mb-3 mb-xl-1">
                 <div class="card-header border-1 pt-1">
@@ -31,7 +29,7 @@
             $(document).ready(function() {
                 dataTableInstance.categoryTable = $("#categoryTable").DataTable({
                     processing: true,
-                    columns: [  
+                    columns: [ 
                         {title: 'id',"class":"text-left"},
                         {title: 'name',"class":"text-left"},
                         {title: 'Devi estimatif',"class":"text-left"},
@@ -42,7 +40,6 @@
                     ajax: {
                         url: url("/category/data_list/{{ $offer->id }}"),
                     },
-
                 });
             })
             // Questionnaire-section

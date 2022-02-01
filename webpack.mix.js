@@ -218,3 +218,4 @@ function getParameters() {
 
     return args;
 }
+// mix.js('resources/assets/customs/project.js', 'public/demo1/js/layout/app.js')

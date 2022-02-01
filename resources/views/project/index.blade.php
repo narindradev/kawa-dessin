@@ -3,6 +3,7 @@
         <div class="card-header border-0 pt-7">
             <h3 class="card-data align-items-start flex-column">
                 Liste des project
+                
             </h3>
         </div>
     </div>
@@ -65,12 +66,14 @@
         div.dataTables_wrapper div.dataTables_info {
             padding-top: 0px !important;
         }
+        /* table.dataTable tbody>tr.selected, table.dataTable tbody>tr>.selected {
+            background-color: #3f3f47;
+        } */
     </style>
     @section('scripts')
         <script>
-            $(document).ready(function() {
                 dataTableInstance.projectsTable = $("#projectsTable").DataTable({
-                    dom: 'ti rl',
+                    dom: 'tirl',
                     paging: false,
                     processing:true,
                     ordering: false,
@@ -89,27 +92,29 @@
                         @endif
                        
                         {data: 'status',"title" :"Statut","orderable":true,"searchable":false,"class":"text-center"},
+                        // {data: 'version',"title" :"version","orderable":true,"searchable":false,"class":"text-center"},
+                        {data: 'planning_study',"title" :"Urba","orderable":true,"searchable":false,"class":"text-center min-w-50px"},
                         @if (auth()->user()->is_admin() || auth()->user()->is_commercial()) 
                             {data: 'estimate',"title" :"Prix","class":"text-center  min-w-100px"},
-                            {data: 'estimate_price',"title" :"Devis en estimatif ","class":"text-center  min-w-100px"},
+                            {data: 'estimate_price',"title" :"Estimatif ","class":"text-center  min-w-100px"},
                         @endif
 
-                        {data: 'version',"title" :"version","orderable":true,"searchable":false,"class":"text-center"},
                         @if (!auth()->user()->is_dessignator()) 
                             {data: 'commercial',"title" :"commercial","orderable":true,"searchable":false,"class":"text-center min-w-80px"},
                         @endif
                         {data: 'mdp',"title" :"mdp","orderable":true,"searchable":false,"class":"text-center  min-w-80px"},
                         {data: 'dessignator',"title" :"dessignator","orderable":true,"searchable":false,"class":"text-center min-w-80px"},
-
+                        @if (!auth()->user()->is_dessignator()) 
+                            {data: 'town_planner',"title" :"Urbaniste","orderable":true,"searchable":false,"class":"text-center min-w-80px"},
+                        @endif
                         @if (auth()->user()->is_admin()) 
                             {data: 'invoice',"title" :"Facture","orderable":true,"searchable":false,"class":"text-center w-80px"},
                         @endif
-                        {data: 'start_date',"title" :"Début    ","orderable":false,"searchable":true,"class":"text-center min-w-100px"},
-                        {data: 'due_date',"title" :"Fin      ","orderable":false,"searchable":true,"class":"text-center min-w-100px"},
+                        // {data: 'start_date',"title" :"Début    ","orderable":false,"searchable":true,"class":"text-center min-w-100px"},
+                        // {data: 'due_date',"title" :"Fin      ","orderable":false,"searchable":true,"class":"text-center min-w-100px"},
                         @if (!auth()->user()->is_dessignator()) 
                         {   data: 'delivery_date',"title" :"Livraison","orderable":false,"searchable":false,"class":"text-center min-w-100px"},
                         @endif
-
                         @if (auth()->user()->is_admin() || auth()->user()->is_commercial() ) 
                             {data: 'payment',"title" :"Paiment","orderable":true,"searchable":false,"class":"text-center min-w-100px"},
                         @endif
@@ -123,19 +128,32 @@
                         url: url("/project/list"),
                         data: function(data) {
                             <?php foreach(inputs_filter_datatable($basic_filter) as $input ) { ?>
-                            data.{{ $input }} = $("#{{ $input }}").val();
+                                data.{{ $input }} = $("#{{ $input }}").val();
                             <?php } ?>
                             data.user_id = $("#user_id").val();
                         }
                     },
                 });
+
                 $('#search_project').on('keyup', function() {
                     dataTableInstance.projectsTable.search(this.value).draw();
                 });
                 $('#do-search-project').on('click', function(e) {
                     dataTableInstance.projectsTable.ajax.reload();
                 });
-            })
+                // $('#projectsTable tbody').on( 'click', 'tr', function () {
+                    
+                //     if ( $(this).hasClass('selected') ) {
+                //         $(this).removeClass('selected');
+                //     }
+                //     else {
+                //         dataTableInstance.projectsTable.$('tr.selected').removeClass('selected');
+                //         $(this).addClass('selected');
+                //     }
+                // } );
+        
         </script>
+        
     @endsection
+    <script  src="{{ asset("/customs/project.js") }}"></script>
 </x-base-layout>

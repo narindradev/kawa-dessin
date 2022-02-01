@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
 class PagesController extends Controller
@@ -19,13 +18,8 @@ class PagesController extends Controller
     */
     public function index()
     {
-        
-        $redirect = request()->redirect;
-        if($redirect){
-            $redirect =  $redirect;
-        }else {
-            $redirect = "dashboard/index";
-        }
+        $redirect =  request()->redirect ?? "dashboard/index";
+       
         return redirect($redirect);
     }
   

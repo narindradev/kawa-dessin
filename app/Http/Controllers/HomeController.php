@@ -13,11 +13,12 @@ use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
 {
+    public  $max_files_uplodable = 6;
 
     public function index()
     {
         if ("allowed client request") {
-            return view("home.step", ["questions" => (new Questionnaire())->preliminary_question(), "offers" => Offer::whereDeleted(0)->whereActive(1)->has("categories")->get()]);
+            return view("home.step", ["questions" => (new Questionnaire())->preliminary_question(), "max_files" => $this->max_files_uplodable , "offers" => Offer::whereDeleted(0)->whereActive(1)->has("categories")->get()]);
         }
     }
     public function save(StoreRequestClient $request)
@@ -41,10 +42,12 @@ class HomeController extends Controller
             );
         }
         //Save client project
-        $project = $client->projects()->create(["status_id" => 1, "priority_id" => 1  ]);
+        $project = $client->projects()->create([ "version" => "APS", "status_id" => 1, "priority_id" => 1 ,"town_planning_study" => ($request->input('town_planning_study') == "1" ? 1 : 0)  ]);
         // Attach project category
         $project->categories()->attach($request->input("categorie"));
-        $project->update(['estimate_price' , $project->categories->sum("estimate")] );
+        activity()->disableLogging();
+        $project->update(['estimate_price' => $project->categories->sum("estimate")] );
+        activity()->enableLogging();
         $attachements = [];
         if ($request->hasFile("files")) {
             $attachements = $this->attachements($request, $user->id, $project->id);  

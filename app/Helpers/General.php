@@ -660,6 +660,10 @@ if (!function_exists('project_custom_status')) {
             $status->name = "new";
         }
         /** status started is new for dessignator */
+        if ($status->id == 4  && $user->is_dessignator()) {
+            $status->class = "danger";
+            $status->name = "new";
+        }
         if ($status->id == 5  && $user->is_dessignator()) {
             $status->class = "primary";
             $status->name = "in_progress";
@@ -669,6 +673,20 @@ if (!function_exists('project_custom_status')) {
             $status->name = "in_progress";
         }
         return $status;
+    }
+}
+if (!function_exists('project_correction_range')) {
+    function project_correction_range(Project $project)
+    {
+        if (!$project->correction) {
+            return null;
+        }
+        if ($project->correction === 1) {
+            return "<span> 1<sup>ère</sup></span>";
+        }
+        if ($project->correction > 1) {
+            return "<span>$project->correction<sup>éme</sup><span>";
+        }
     }
 }
 if (!function_exists('convert_date')) {

@@ -1,1 +1,0 @@
-<span class="badge badge-light-success fs-8 fw-bolder">{{ $status }}</span>

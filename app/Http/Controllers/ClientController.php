@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\File;
 use Auth;
 use App\Models\Invoice;
 
@@ -15,6 +16,9 @@ use App\Models\ProjectRelaunch;
 
 class ClientController extends Controller
 {
+    protected $files;
+
+
     public function index()
     {
         /** Dashbord client */
@@ -27,13 +31,13 @@ class ClientController extends Controller
     public function data_list()
     {
         $data = [];
-        $projects = $projects = Project::getDetails(["client" => Auth::user()->client_id()])->get();
+        $projects =  Project::getDetails(["client" => Auth::user()->client_id()])->get();
         foreach ($projects as $project) {
             $data[] = $this->_make_row($project ,Auth::user());
         }
         return ["data" => $data];
     }
-    public function _make_row($project ,$for_user = null ,$from_notification = false)
+    public function _make_row($project ,$for_user = null , $from_notification = false )
     {
         $last_relaunch = ProjectRelaunch::where("project_id",$project->id)->where("created_by",$for_user->id)->latest('created_at')->first();
         $relaunch = Relaunch::where("project_id",$project->id)->where("created_by",$for_user->id)->latest('created_at')->first();
@@ -43,7 +47,7 @@ class ClientController extends Controller
             "offer" => $project->categories[0]->offer->name,
             "categories" => $project->categories->pluck("name")->implode(","),
             "status" => view("clients.column.status", ["project" => $project ,"for_user" => $for_user])->render(),
-            // "messenger" => view("project.column.messenger", ["project" => $project ,])->render(),
+            "relaunch" => view("clients.column.relaunch", ["project" => $project ,"for_user" => $for_user])->render(),
             "estimate" => view("clients.column.estimate", ["project" => $project ,"relaunch" => $relaunch ,"last_relaunch" => $last_relaunch])->render(),
             "version" => $project->version,
             "invoice" => $this->invoice_column($project),
@@ -86,7 +90,7 @@ class ClientController extends Controller
         }
         $project->load("categories");
         $project->load("client");
-        $taxe = 20; //20%
+        $taxe = 20;  // 20%
         $invoice = Invoice::create(["project_id" => $project->id, "client_id" => $project->client->id, "taxe" => $taxe, "total" => $project->price ,"status" => "not_paid"]);
         $this->generate_invoice_items($project,$invoice);
     }
@@ -119,6 +123,44 @@ class ClientController extends Controller
             return ["success" => true, "message" => trans("lang.accepted")];
         }else {
             return ["success" => false, "message" => trans("lang.error_accept_estimate")];
+        }
+    }
+    public function relaunch(Project $project){
+        $relaunchs =  $project->relaunchs()->latest()->get()->reverse();
+        return view("project.relaunch.lists", ["relaunchs" => $relaunchs ,"project_id" => $project->id,  "subjects" =>  Relaunch::drop($project)]);
+    }
+
+    public  function add_relaunch(Request $request, Project $project)
+    {
+        $request->validate(['subject' => 'required']);
+        if ($request->hasFile("files")) {
+            $this->uploads($request,$project);
+        }
+        $relaunch = new ProjectRelaunch(['note' => $request->note,  "files" => $this->files , "relaunch_id" => $request->subject, "created_by" => Auth::user()->id]);
+        
+        $relaunch = $project->relaunchs()->save($relaunch);
+        die(json_encode(["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("project", $project->id), "project" => $this->_make_row($project, Auth::user()), "id" =>$relaunch->id ,"data" => view("project.relaunch.item" ,["relaunch" => $relaunch ,"for_user" => auth()->user()])->render()]));
+    }
+    public  function mark_as_seen(Request $request)
+    {
+        $relaunch = ProjectRelaunch::find( $request->id);
+        $relaunch->update(["seen_by" => ($relaunch->seen_by .",". auth()->id()) ]);
+        return ["succes" => true ];
+    }
+
+    private function uploads(Request $request ,Project $project ){
+        $files = $request->file("files");
+        $path = "project_files/$project->id";
+        foreach ($files as $file) {
+            $file_info = upload($file,  $path, "local");
+            if ($file_info["success"]) {
+                unset($file_info["success"]);
+                $file_info["created_by"] = auth()->id();
+                $file_info["project_id"] = $project->id;
+                $file_info["preliminary"] = 0;
+            }
+            $file = File::create($file_info);
+            $this->files .= "," .$file->id;
         }
     }
 }

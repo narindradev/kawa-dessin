@@ -31,8 +31,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    
+Route::get("/erp_dessin/", function () {
+    return redirect('index');
+});
+Route::get('', function () {
     return redirect('index');
 });
 
@@ -120,7 +122,12 @@ Route::middleware('auth')->group(function () {
     /** Relaunch project */
     Route::post('/project/relaunch/summary/{project}', [ProjectController::class, 'relaunch']);
     Route::post('/project/relaunch/add/{project}', [ProjectController::class, 'add_relaunch']);
+    Route::post('/project/relaunch/add2/{project}', [ClientController::class, 'add_relaunch']);
+    Route::post('/project/relaunch/mark/seen', [ClientController::class, 'mark_as_seen']);
     Route::get('/project/relaunch/list/{project}', [ProjectController::class, 'relaunch_list']);
+    Route::post('/project/set/start', [ProjectController::class, 'set_start']);
+    Route::post('/project/set/finish', [ProjectController::class, 'set_finish']);
+    Route::post('/project/set/correction', [ProjectController::class, 'set_correction']);
    
     /** Add  estimate for project */
     Route::post('/project/estimate/form/{project}', [ProjectController::class, 'estimat_form']);
@@ -128,6 +135,7 @@ Route::middleware('auth')->group(function () {
     /* Start a project */
     Route::post('/project/start/form/{project}', [ProjectController::class, 'start_form']);
     Route::post('/project/start/add/{project}', [ProjectController::class, 'add_start']);
+    Route::post('/project/set_status/{project}', [ProjectController::class, 'set_status']);
     /** Users */ 
     Route::get('/users/list', [UsersController::class, 'index']);
     Route::get('/users/data_list', [UsersController::class, 'data_list']);
@@ -180,6 +188,7 @@ Route::middleware('auth')->group(function () {
    Route::post('/message/get_message', [MessageController::class, 'get_message']);
    Route::post('/message/load/more', [MessageController::class, 'load_more']);
    Route::get('/message/download/file/{file}', [MessageController::class, 'download_file']);
+   Route::post('/message/relaunch/{project}', [ClientController::class, 'relaunch']);
 
 });
 

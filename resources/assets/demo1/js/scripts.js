@@ -32,11 +32,13 @@ var initLaravelEcho = function () {
         broadcaster: 'pusher',
         key: process.env.MIX_PUSHER_APP_KEY,
         cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-        forceTLS: true
+        forceTLS: false,
+        // encrypted: true,
+        authEndpoint: '/erp_dessin/public/broadcasting/auth'
     });
 }
 var listingLaravelEcho = function () {
-    console.log("listLaravelEcho")
+    console.log("initlaravelecho")
     window.Echo.private('App.Models.User.' + authUser.id)
         .notification((notification) => {
             hadleNotification(notification)
