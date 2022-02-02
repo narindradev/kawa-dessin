@@ -592,13 +592,14 @@ class ProjectController extends Controller
     {
         $boads = [];
     }
+
     public function set_start(Request $request)
     {
         $project = Project::find($request->project_id);
         if ($project->status->name == "correction") {
             return $this->correction($request , $project);
         }
-        if (!$project->is_member(Auth::id())) {
+        if (!$project->is_member()) {
             abort(405);
         }
         $project->update(["status_id" => 5]);
@@ -610,7 +611,7 @@ class ProjectController extends Controller
         if ($project->status->name == "correction") {
             return $this->set_correction($request , $project);
         }
-        if (!$project->is_member(Auth::id())) {
+        if (!$project->is_member()) {
             abort(405);
         }
         $project->update(["status_id" => 9]);
@@ -621,7 +622,7 @@ class ProjectController extends Controller
         if(!$project){
             $project = Project::find($request->project_id);
         }
-        if (!$project->is_member(Auth::id())) {
+        if (!$project->is_member()) {
             abort(405);
         }
         $project->update(["status_id" => 5, "correction" =>  $project->correction ? ($project->correction + 1) : 1]);
@@ -629,7 +630,7 @@ class ProjectController extends Controller
     }
     public function set_status(Request $request ,Project $project )
     {
-        if (!$project->is_member(Auth::id())) {
+        if (!$project->is_member()) {
             abort(405);
         }
         if ($project->status->name == "correction") {
@@ -640,11 +641,10 @@ class ProjectController extends Controller
     }
     public function set_version(Request $request ,Project $project )
     {
-        if (!$project->is_member(Auth::id())) {
+        if (!$project->is_member()) {
             abort(405);
         }
-        // set version
-        if(in_array($request->new_project_version , ["APS" , "DS"] )){
+        if(in_array($request->new_project_version , Project::$versions)){   //  version in ["APS" , "DS"]
             $project->update(["version" => $request->new_project_version]);
         }
         return ["success" => true, "message" => trans("lang.success_record"), "row_id" => row_id("projects", $project->id),  "data" =>$this->_make_row($project, Auth::user(), true) ,"message" => trans("lang.success_record")];

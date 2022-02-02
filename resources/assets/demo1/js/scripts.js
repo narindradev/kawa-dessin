@@ -34,7 +34,7 @@ var initLaravelEcho = function () {
         cluster: process.env.MIX_PUSHER_APP_CLUSTER,
         forceTLS: false,
         // encrypted: true,
-        authEndpoint: '/erp_dessin/public/broadcasting/auth'
+        // authEndpoint: '/erp_dessin/public/broadcasting/auth'
     });
 }
 var listingLaravelEcho = function () {

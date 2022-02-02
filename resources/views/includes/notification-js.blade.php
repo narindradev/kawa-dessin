@@ -72,7 +72,7 @@
 
     function addItemNotification(notification = null) {
         if ($(".notification-item").length) {
-            $(".notification-item:last").prepend(notification.item)
+            $(".notification-item:first").prepend(notification.item)
         } else {
             $("#notification-item").html(notification.item)
         }

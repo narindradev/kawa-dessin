@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Support\Facades\Auth;
 use App\Core\Traits\SpatieLogsActivity;
+use App\Jobs\SendUpdatedProjectNotification;
+use App\Notifications\ProjectUpdatedNotification;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Contracts\Activity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Notification;
 
 class Project extends Model
 {
@@ -17,6 +20,7 @@ class Project extends Model
     protected static $logName = 'project';
     protected static $logAttributes = [];
     protected static $logUsers = "";
+    public  static $versions = ["APS" , "DS"];
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -24,12 +28,17 @@ class Project extends Model
         'due_date' => 'datetime',
         'delivery_date' => 'datetime'
     ];
-
     public static function boot()
     {
         parent::boot();
+        
         static::saving(function (Model $model) {
             static::$logAttributes = array_keys($model->getDirty());
+        });
+        static::updating(function (Model $model) {
+            if (!in_array("price", static::$logAttributes)) {
+                dispatch(new SendUpdatedProjectNotification($model , Auth::user()));
+            }
         });
     }
     public function tapActivity(Activity $activity)
@@ -78,7 +87,8 @@ class Project extends Model
     }
     public function is_member($user_id = null)
     {
-        return in_array($user_id ?? Auth::user()->id, cache("project_members_$this->id", $this->members()->pluck("user_id")->toArray())) || Auth::user()->is_admin();
+        return in_array(($user_id ?? Auth::id()), cache("project_members_$this->id", $this->members()->pluck("user_id")->toArray())) 
+            || Auth::user()->is_admin();
     }
     public function own_project()
     {
@@ -142,6 +152,10 @@ class Project extends Model
         if ($validation) {
             $projects->where("validation", $validation);
         }
+        $version = get_array_value($options, "version");
+        if ($version) {
+            $projects->where("version", $version);
+        }
         $type = get_array_value($options, "client_type");
         if ($type) {
             $projects->whereHas('client', function ($query) use ($type) {
@@ -153,10 +167,7 @@ class Project extends Model
             $dates = explode("-", $date);
             $projects->whereBetween("start_date", [to_date($dates[0]), to_date($dates[1])]);
         }
-        $version = get_array_value($options, "version");
-        if ($version) {
-            $projects->where("version", $version);
-        }
+       
         $with = ["categories", "client", "status"];
         if ($client || $AUTH->is_admin()) {
             $with[] = "invoiceItems";

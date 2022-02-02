@@ -14,7 +14,7 @@ class Status extends Model
     {
         $list = [];
         $q = Status::query();
-        if ($for_user->is_mdp() || $for_user->dessignator()) {
+        if ($for_user->is_mdp() || $for_user->is_dessignator()) {
             $q->whereNotIn("id",self::$execlude_status);
         }
         $status =  $q->get();
@@ -34,7 +34,6 @@ class Status extends Model
     }
     static function StepOfStateProject(Project $project)
     {
-        
         $states = [
             ["step" => "1", "title" => "Création" ,"desc" => "Les informations du projet" , "current" => ($project->status_id  == 1) ,"completed" => ($project->status_id  > 1)],
             ["step" => "2", "title" => "Traitement" ,"desc" => "En attente etude du projet" ,"current" => ($project->status_id  == 2) ,"completed" => ($project->status_id > 2)],

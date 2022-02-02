@@ -5,11 +5,16 @@
         // $status_dropdown_html = view("project.column.statust")->render() ;//$status_dropdown_html . "<div><a href='/link'>- {$s["text"]}</a> </b></div></b>";
     // }
 @endphp
-<span type="button" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-bs-toggle="dropdown" class="badge badge-light-{{$project->status->class}} "> 
-        @if ($project->status->name =="correction" &&  $project->correction)
-            {!! project_correction_range($project) !!}
-        @endif
-        {{ trans("lang.{$status->name}") }} 
+<span id="project-current-status" type="button" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-bs-toggle="dropdown" class="badge badge-light-{{$project->status->class}} "> 
+    @php
+        $text = "" ;
+        if ($project->status->name =="correction" &&  $project->correction) {
+          $text = project_correction_range($project);
+        }else {
+            $text = trans("lang.{$status->name}");
+        }
+    @endphp
+    @include('partials.general._button-indicator', ['label' =>$text ,"message" => trans('lang.processing'). " ..." ])
 </span>
 {!! view("project.column.status-dropdown",["status_drop" => $status_drop , "project" => $project])->render() !!}
 {{-- <div class="d-flex"> --}}

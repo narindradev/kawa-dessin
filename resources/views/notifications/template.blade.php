@@ -7,7 +7,7 @@
 <div class="notice d-flex mb-1">
     <div class="d-flex flex-stack flex-grow-1 text-right" >
         <div class="fw-bold">
-            <span id="notification-event" class="text-gray-{{ $notification->read_at ? "500" :"800" }} fw-bolder"># {{ get_array_value($subject,"title") ?? 'Action' }} </span><span class="badge badge-light-success me-1">Ajout </span>
+            <span id="notification-event" class="text-gray-{{ $notification->read_at ? "500" :"800" }} fw-bolder"># {{ get_array_value($subject,"title") ?? 'Action' }} </span><span class="badge badge-light-success me-1">{{ get_array_value($subject,"event") ?? 'Ajout' }} </span>
         </div>
         <div class="d-flex align-items-center mt-1 fs-6">
             <div class="text-muted me-2 fs-7"> <i>{{ $notification->created_at->diffForHumans() }}</i> </div>

@@ -32,4 +32,15 @@ class NotificationTemplate
         $template["sentence"] = "$subject vous a assigné un project.";
         return $template ;
     }
+    public static function project_updated($notification = null){
+        $template = [];
+        $template["title"]= "Projet MAJ";
+        $template["event"]= "Mise à jour";
+        $subject_info = self::get_subject_info($notification);
+        
+        $subject =  $subject_info['name'];
+        $template["profile"] = $subject_info["profile"] ; 
+        $template["sentence"] = "$subject  a mise à jour le project #" . $notification->data["project_id"];
+        return $template ;
+    }
 }
