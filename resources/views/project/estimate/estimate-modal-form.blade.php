@@ -1,5 +1,5 @@
 <div class="card card-custom ">
-    <form class="form" id="estimate-form" method="POST" action="{{ "/project/estimate/add/$project->id" }}"
+    <form class="form" id="estimate-form" method="POST" action="{{ url("/project/estimate/add/$project->id") }}"
         enctype="multipart/form-data">
         <div class="card-body ">
             @csrf

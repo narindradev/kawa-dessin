@@ -1,5 +1,5 @@
 <div class="card card-custom ">
-    <form class="form" id="category-form" method="POST" action="{{ "/category/store/$offer->id/$category->id" }}">
+    <form class="form" id="category-form" method="POST" action="{{ url("/category/store/$offer->id/$category->id") }}">
         <div class="card-body ">
             @csrf
             <div class="form-group">

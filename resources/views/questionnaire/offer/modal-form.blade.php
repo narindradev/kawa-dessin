@@ -1,6 +1,6 @@
 <table id = "questionnaireTable" class="table dataTables_wrapper dt-bootstrap4 no-footer"></table>
 <div class="card card-custom ">
-    <form class="form" id="question-form" method="POST" action="{{ "/questionnaireOffer/storeOffer/$offer->id/$question->id" }}">
+    <form class="form" id="question-form" method="POST" action="{{ url("/questionnaireOffer/storeOffer/$offer->id/$question->id") }}">
         <div class="card-footer">
             @csrf
             <div class="form-group">

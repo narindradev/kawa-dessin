@@ -1,5 +1,5 @@
 <div class="card card-custom ">
-    <form class="form" id="question-form" method="POST" action="{{ "/questionnaire/preliminary_info/store" }}">
+    <form class="form" id="question-form" method="POST" action="{{ url("/questionnaire/preliminary_info/store") }}">
         <div class="card-body ">
             @csrf
             <div class="form-group">

@@ -22,7 +22,7 @@
     <div class="aside-logo flex-column-auto" style="padding: 40px 10px 40px 30px " id="kt_aside_logo">
         {{--begin::Logo--}}
         <a href="{{ theme()->getPageUrl('index') }}">
-            <img alt="Logo" src="{{ asset("app/logo/logo.png") }}" class="h-60px logo"/>
+            {{-- <img alt="Logo" src="{{ asset("app/logo/logo.png") }}" class="h-60px logo"/> --}}
         </a>
         {{--end::Logo--}}
         @if (theme()->getOption('layout', 'aside/minimize') === true)

@@ -1,5 +1,5 @@
 <div class="card card-custom ">
-    <form class="form" id="users-form" method="POST" action="{{ '/users/create/user' }}"
+    <form class="form" id="users-form" method="POST" action="{{ url('/users/create/user') }}"
         enctype="multipart/form-data">
         <div class="card-body ">
             @csrf
